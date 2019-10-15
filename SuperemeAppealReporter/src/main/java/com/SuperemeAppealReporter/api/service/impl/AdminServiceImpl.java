@@ -213,15 +213,28 @@ public class AdminServiceImpl implements AdminService {
 		CommonMessageResponse deleteResponse = new CommonMessageResponse();
 		try
 		{
-		UserEntity userEntity = adminDao.findStaffById(deleteStaffBo.getStaffId()).orElseThrow(() -> new AppException(ErrorConstant.InvalidStaffIdError.ERROR_TYPE,
+		 
+		int id = Integer.parseInt(deleteStaffBo.getStaffId());
+		// Checking if staff exists or not
+		UserEntity userEntity = adminDao.findStaffById(id).orElseThrow(() -> new AppException(ErrorConstant.InvalidStaffIdError.ERROR_TYPE,
 					ErrorConstant.InvalidStaffIdError.ERROR_CODE,
 					ErrorConstant.InvalidStaffIdError.ERROR_MESSAGE));
-		if(userEntity.getUserType().equals(UserType.USER))
+		// Checking if requested id is belong to only staff users or not
+		if(userEntity.getUserType().equals(UserType.USER.toString()))
 		{
 			throw new AppException(ErrorConstant.InvalidStaffIdError.ERROR_TYPE,
 					ErrorConstant.InvalidStaffIdError.ERROR_CODE,
 					ErrorConstant.InvalidStaffIdError.INVALID_STAFF_ERROR_MESSAGE);
 		}
+		
+		// checking if staff is already deactivated
+		if(!userEntity.getActive())
+		{
+			throw new AppException(ErrorConstant.InvalidStaffIdError.ERROR_TYPE,
+					ErrorConstant.InvalidStaffIdError.ERROR_CODE,
+					ErrorConstant.InvalidStaffIdError.STAFF_DEACTIVATED_ERROR_MESSAGE);
+		}
+		
 		adminDao.deleteStaffById(userEntity.getId());
 		
 		}
@@ -253,6 +266,8 @@ public class AdminServiceImpl implements AdminService {
 		
 		try
 		{
+		
+		// Fetching Staff record and checking if exist or  not
 		UserEntity userEntity = adminDao.findStaffById(id).orElseThrow(() -> new AppException(ErrorConstant.InvalidStaffIdError.ERROR_TYPE,
 				ErrorConstant.InvalidStaffIdError.ERROR_CODE,
 				ErrorConstant.InvalidStaffIdError.ERROR_MESSAGE));
@@ -317,21 +332,34 @@ public class AdminServiceImpl implements AdminService {
 		return updateResponse;
 	}
 
+	@Transactional
 	@Override
 	public CommonMessageResponse deleteClient(DeleteClientBo deleteClientBo) {
 		CommonMessageResponse deleteResponse = new CommonMessageResponse();
 		try
 		{
-		UserEntity userEntity = adminDao.findStaffById(deleteClientBo.getClientId()).orElseThrow(() -> new AppException(ErrorConstant.InvalidClientIdError.ERROR_TYPE,
+			int id = Integer.parseInt(deleteClientBo.getClientId());
+			// checking if Client id exists or not
+		UserEntity userEntity = adminDao.findStaffById(id).orElseThrow(() -> new AppException(ErrorConstant.InvalidClientIdError.ERROR_TYPE,
 					ErrorConstant.InvalidClientIdError.ERROR_CODE,
 					ErrorConstant.InvalidClientIdError.ERROR_MESSAGE));
-		if(!userEntity.getUserType().equals(UserType.USER))
+		
+		// Checking if client id belongs to only user or not
+		if(!userEntity.getUserType().equals(UserType.USER.toString()))
 		{
 			throw new AppException(ErrorConstant.InvalidClientIdError.ERROR_TYPE,
 					ErrorConstant.InvalidClientIdError.ERROR_CODE,
 					ErrorConstant.InvalidClientIdError.INVALID_CLIENT_ERROR_MESSAGE);
 		}
-			adminDao.deleteClientById(userEntity.getId());
+		
+		// checking if Client is already deactivated
+		if(!userEntity.getActive())
+		{
+			throw new AppException(ErrorConstant.InvalidClientIdError.ERROR_TYPE,
+					ErrorConstant.InvalidClientIdError.ERROR_CODE,
+					ErrorConstant.InvalidClientIdError.CLIENT_DEACTIVATED_ERROR_MESSAGE);
+		}	
+		adminDao.deleteClientById(userEntity.getId());
 		
 		}
 		
@@ -352,6 +380,7 @@ public class AdminServiceImpl implements AdminService {
 		return deleteResponse;
 	}
 
+	@Transactional
 	@Override
 	public CommonMessageResponse updateClient(UpdateClientBo updateClientBo) {
 
@@ -421,7 +450,7 @@ public class AdminServiceImpl implements AdminService {
 			throw appException;
 			
 		}
-		updateResponse.setMsg(StaffMessage.STAFF_UPDATED);
+		updateResponse.setMsg(ClientMessage.CLIENT_UPDATED);
 		return updateResponse;
 	
 	}

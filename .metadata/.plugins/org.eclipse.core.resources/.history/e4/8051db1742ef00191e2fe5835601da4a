@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SAROnline Onboarding Email</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'></link>
+
+ 
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 48px;
+        }
+        li a[href]{
+        text-decoration:none;
+        }
+        
+    </style>
+</head>
+<body style="margin: 0; padding: 0;">
+
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
+        <tr>
+            <td align="center" bgcolor="maroon" style="padding: 0 0 0 0;">
+                <img src="https://mybucket786786.s3.ap-south-1.amazonaws.com/Images/profile/a12%40gmail.com/Public/2019/July/18/logo.PNG" alt="EIEAS" style="display: block;" />
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" style="padding: 40px 30px 40px 30px;">
+                <p>Hello <b><span th:text = "${userName}"/></b>,</p>
+                <p>Welcome to <b>Supreme Appeal Reporter!</b></p>
+                <p>Your Profile has been successfully updated</p>
+                 <p>Please use the below credentials to sign in :</p>
+                 <br></br>
+                 <p><b>UserId   - </b><span th:text = "${userEmail}"/></p>
+                 <p><b>Password - </b><span th:text = "${userPassword}"/></p>
+                <br></br>
+                <p><i>Questions? Please visit our support team at  </i><span style="text-decoration:underline;">support@saronline.co.in.</span></p>
+                <p><b>Happy Reading!</b></p>
+            </td>
+            
+        </tr>
+
+<tr>       
+    <td  bgcolor="maroon" style="padding: 15px 30px 0 30px;">
+  
+            
+                <p><i><b></b>This is an auto-triggered mail. Please do not reply.<b></b></i></p>
+            </td> 
+     </tr>    
+</table>
+</body>
+</html>

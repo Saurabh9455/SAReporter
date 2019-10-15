@@ -12,5 +12,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @ToString
 public class DeleteClientBo {
-	private int clientId;
+	private String clientId;
 }

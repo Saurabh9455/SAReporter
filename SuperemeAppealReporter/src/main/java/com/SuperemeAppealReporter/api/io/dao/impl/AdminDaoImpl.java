@@ -63,6 +63,7 @@ public class AdminDaoImpl implements AdminDao {
 		userEntity.get().setActive(false);
 	}
 
+	@Transactional
 	@Override
 	public void deleteClientById(Integer id) {
 		

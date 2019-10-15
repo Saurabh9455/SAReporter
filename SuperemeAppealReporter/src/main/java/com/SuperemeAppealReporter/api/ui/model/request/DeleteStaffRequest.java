@@ -1,5 +1,7 @@
 package com.SuperemeAppealReporter.api.ui.model.request;
 
+import javax.validation.constraints.NotEmpty;
+
 import groovy.transform.ToString;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @ToString
 public class DeleteStaffRequest {
-
-	private int staffId;
+	
+	@NotEmpty(message = "Staff Id can not be blank")
+	private String staffId;
 }
