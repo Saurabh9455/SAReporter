@@ -1,0 +1,25 @@
+package com.SuperemeAppealReporter.api.ui.model.request;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public class ForgetPasswordRequest {
+
+	
+	@NotBlank(message = "Email should not be blank")
+	@Email(message = "Email is not valid")
+	private String userEmail;
+	
+	
+}
