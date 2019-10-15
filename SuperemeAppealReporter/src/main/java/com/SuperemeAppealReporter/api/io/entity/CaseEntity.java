@@ -1,6 +1,6 @@
 package com.SuperemeAppealReporter.api.io.entity;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,7 +20,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @Entity
-@Table(name="case")
+@Table(name="case_entity")
 public class CaseEntity extends BaseEntity {
 
 
@@ -70,14 +70,14 @@ public class CaseEntity extends BaseEntity {
 	private CitationEntity citationEntity;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntity")
-	private Set<AdditionalAppellantRespondentEntity> additionalAppellantRespondentEntitySet;
+	private List<AdditionalAppellantRespondentEntity> additionalAppellantRespondentEntitySet;
 	
 	@OneToOne
 	private CaseHistoryEntity caseHistoryEntity;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntity")
-	private Set<CasesRefferedEntity> casesReferredEntitySet;
+	private List<CasesRefferedEntity> casesReferredEntitySet;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntity")
-	private Set<HeadnoteEntity> headNoteEntitySet;
+	private List<HeadnoteEntity> headNoteEntitySet;
 }

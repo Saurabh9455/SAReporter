@@ -17,7 +17,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @Entity
-@Table(name = "double_council_detail_entity")
+@Table(name = "head_note")
 public class HeadnoteEntity extends BaseEntity{
 
 	

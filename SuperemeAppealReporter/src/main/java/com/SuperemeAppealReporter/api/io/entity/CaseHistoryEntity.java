@@ -43,8 +43,8 @@ public class CaseHistoryEntity extends BaseEntity{
 	
 	/**------------------------Mappings-------------------------**/
 	
-	@OneToOne
-	private CaseEntity caseEntity;
+/*	@OneToOne
+	private CaseEntity caseEntity;*/
 	
 
 }
