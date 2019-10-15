@@ -5,7 +5,6 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 
 import com.SuperemeAppealReporter.api.bo.AddStaffBo;
-import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
 import com.SuperemeAppealReporter.api.bo.UserSignupBo;

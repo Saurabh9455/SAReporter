@@ -15,6 +15,6 @@ public interface NotificationService {
 	
 	public void sendEmail(SimpleMailMessage simpleMailMessage);
 
-	public void sendStaffEmailNotification(StaffMail onBoardingMail, String updateFlag) throws MessagingException;
+	public void sendStaffEmailNotification(StaffMail onBoardingMail) throws MessagingException;
 	
 }
