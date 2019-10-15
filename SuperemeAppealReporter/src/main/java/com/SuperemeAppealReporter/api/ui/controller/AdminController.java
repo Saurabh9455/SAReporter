@@ -133,5 +133,35 @@ public class AdminController {
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
 		
 	}
+	/***********************************Delete Staff*********************** */
+	@PostMapping(path =RestMappingConstant.Staff.DELETE_STAFF_URI)
+	public ResponseEntity<BaseApiResponse> deleteStaff(@Valid @RequestBody DeleteStaffRequest deleteStaffRequest){
+		
+		/** Converting request to bo **/
+		DeleteStaffBo deleteStaffBo = AdminConverter
+				.convertDeleteStaffRequestToDeleteStaffBo(deleteStaffRequest);
+		
+		/** Calling service **/
+		DeleteStaffResponse deleteStaffResponse = adminService.deleteStaff(deleteStaffBo);
+
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(deleteStaffResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	}
 	
+	/***********************************Update Staff*********************** */
+	@PostMapping(path =RestMappingConstant.Staff.UPDATE_STAFF_URI)
+	public ResponseEntity<BaseApiResponse> updateStaff(@Valid @RequestBody UpdateStaffRequest updateStaffRequest){
+		
+		/** Converting request to bo **/
+		UpdateStaffBo updateStaffBo = AdminConverter
+				.convertUpdateStaffRequestToUpdateStaffBo(updateStaffRequest);
+		
+		/** Calling service **/
+		 adminService.updateStaff(updateStaffBo);
+
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse("Your profile has been updated successfully.");
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	}
 }
