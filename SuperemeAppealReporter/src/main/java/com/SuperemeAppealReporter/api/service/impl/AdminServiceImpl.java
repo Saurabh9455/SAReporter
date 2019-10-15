@@ -1,7 +1,12 @@
 package com.SuperemeAppealReporter.api.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,20 +15,29 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
+import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
+import com.SuperemeAppealReporter.api.constant.AppConstant;
 import com.SuperemeAppealReporter.api.constant.ErrorConstant;
 import com.SuperemeAppealReporter.api.enums.UserType;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
 import com.SuperemeAppealReporter.api.io.dao.AdminDao;
+import com.SuperemeAppealReporter.api.io.entity.CityEntity;
+import com.SuperemeAppealReporter.api.io.entity.CountryEntity;
 import com.SuperemeAppealReporter.api.io.entity.RoleEntity;
+import com.SuperemeAppealReporter.api.io.entity.StateEntity;
 import com.SuperemeAppealReporter.api.io.entity.UserEntity;
+import com.SuperemeAppealReporter.api.pojo.StaffMail;
 import com.SuperemeAppealReporter.api.service.AdminService;
+import com.SuperemeAppealReporter.api.service.MasterService;
+import com.SuperemeAppealReporter.api.service.NotificationService;
 import com.SuperemeAppealReporter.api.service.RoleService;
 import com.SuperemeAppealReporter.api.shared.dto.ClientDto;
 import com.SuperemeAppealReporter.api.shared.dto.StaffDto;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
-
+import com.SuperemeAppealReporter.api.ui.model.response.DeleteStaffResponse;
 @Service
 public class AdminServiceImpl implements AdminService {
 
@@ -31,6 +45,11 @@ public class AdminServiceImpl implements AdminService {
 	private AdminDao adminDao;
 	@Autowired
 	private RoleService roleService;
+	@Autowired
+	private MasterService masterService;
+	
+	@Autowired
+	private NotificationService notificationService;
 	@Override
 	public CommonPaginationResponse getClientListResponseService(int pageNumber, int perPage, String userType, GetClientListBo getClientListBo) {
 
@@ -144,4 +163,72 @@ public class AdminServiceImpl implements AdminService {
 		
 		return commonPaginationResponse;
 	}
+	
+	@Transactional
+	@Override
+	public DeleteStaffResponse deleteStaff(DeleteStaffBo deleteStaffBo) {
+		
+		DeleteStaffResponse deleteResponse = new DeleteStaffResponse();
+		UserEntity userEntity = adminDao.findStaffById(deleteStaffBo.getStaffId()).orElseThrow(() -> new AppException(ErrorConstant.InvalidStaffIdError.ERROR_TYPE,
+					ErrorConstant.InvalidStaffIdError.ERROR_CODE,
+					ErrorConstant.InvalidStaffIdError.ERROR_MESSAGE));
+		
+		adminDao.deleteStaffById(userEntity.getId());
+		deleteResponse.setMsg("Staff deleted Successfully");
+		return deleteResponse;
+	}
+
+	@Transactional
+	@Override
+	public void updateStaff(UpdateStaffBo updateStaffBo) {
+		int id = Integer.parseInt(updateStaffBo.getStaffId());
+		
+		UserEntity userEntity = adminDao.findStaffById(id).orElseThrow(() -> new AppException(ErrorConstant.InvalidStaffIdError.ERROR_TYPE,
+				ErrorConstant.InvalidStaffIdError.ERROR_CODE,
+				ErrorConstant.InvalidStaffIdError.ERROR_MESSAGE));
+		
+		CountryEntity countryEntity = masterService.getCountryEntityByCountryId(updateStaffBo.getCountryId());
+		StateEntity stateEntity = masterService.getStateEntityByStateId(updateStaffBo.getStateId());
+		CityEntity cityEntity = masterService.getCityEntityByCityId(updateStaffBo.getCityId());
+		RoleEntity roleEntity = roleService.findByRoleId(updateStaffBo.getRoleId());
+		
+		userEntity.setName(updateStaffBo.getName());
+		userEntity.setMobile(updateStaffBo.getMobile());
+		userEntity.setPassword(updateStaffBo.getPassword());
+		userEntity.setDesgination(updateStaffBo.getDesgination());
+		userEntity.setUserType(roleEntity.getName());
+		userEntity.getAddressEntity().setCountryEntity(countryEntity);
+		userEntity.getAddressEntity().setStateEntity(stateEntity);
+		userEntity.getAddressEntity().setCityEntity(cityEntity);
+		userEntity.getAddressEntity().setZipcode(updateStaffBo.getZipCode());
+		/** Assigning Role to User **/
+		ArrayList<RoleEntity> roleList = new ArrayList<RoleEntity>();
+		roleList.add(roleEntity);
+		
+		userEntity.setRoleEntityList(roleList);
+		
+		
+		/** Creating OnBoardingMail object **/
+		StaffMail onBoardingMail = new StaffMail();
+		onBoardingMail.setBelongsTo(roleEntity.getName());
+		onBoardingMail.setTo(userEntity.getEmail());
+		onBoardingMail.setSubject(AppConstant.Mail.OnBoardingMail.CUSTOM_SUBJECT);
+		Map<String, Object> onBoardingModel = new HashMap<String, Object>();
+		onBoardingModel.put(AppConstant.Mail.EMAIL_KEY, userEntity.getEmail());
+		onBoardingModel.put(AppConstant.Mail.PASSWORD_KEY, userEntity.getPassword());
+		onBoardingModel.put(AppConstant.Mail.USERNAME_KEY, userEntity.getName());
+		onBoardingModel.put(AppConstant.Mail.ROLE_ASSIGNED, roleEntity.getName());
+		onBoardingMail.setModel(onBoardingModel);
+
+		/** Sending OnBoaringMail **/
+		String updateFlag = "Y";
+		try {
+			notificationService.sendStaffEmailNotification(onBoardingMail,updateFlag);
+		} catch (MessagingException ex) {
+			throw new AppException(ErrorConstant.SendingEmailError.ERROR_TYPE,
+					ErrorConstant.SendingEmailError.ERROR_CODE, ErrorConstant.SendingEmailError.ERROR_MESSAGE);
+		}
+		
+	}
+
 }

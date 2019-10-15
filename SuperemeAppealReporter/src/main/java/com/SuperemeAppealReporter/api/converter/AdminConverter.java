@@ -5,14 +5,17 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 
 import com.SuperemeAppealReporter.api.bo.AddStaffBo;
+import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
 import com.SuperemeAppealReporter.api.bo.UserSignupBo;
 import com.SuperemeAppealReporter.api.ui.model.request.AddClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.AddStaffRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.DeleteStaffRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.UpdateStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetClientListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetStaffListRequest;
-
+import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 public class AdminConverter {
 
 	public static GetClientListBo convertGetClientListRequestToGetClientListResponse(GetClientListRequest getClientListRequest)
@@ -40,4 +43,16 @@ public class AdminConverter {
 		BeanUtils.copyProperties(addStaffRequest, addStaffBo);
 		return addStaffBo;
 	}
+	
+	public static DeleteStaffBo convertDeleteStaffRequestToDeleteStaffBo(DeleteStaffRequest deleteStaffRequest) {
+		DeleteStaffBo deleteStaffBo = new DeleteStaffBo();
+		BeanUtils.copyProperties(deleteStaffRequest, deleteStaffBo);
+		return deleteStaffBo;
+	}
+
+	public static UpdateStaffBo convertUpdateStaffRequestToUpdateStaffBo(UpdateStaffRequest updateStaffRequest) {
+		UpdateStaffBo updateStaffBo = new UpdateStaffBo();
+		BeanUtils.copyProperties(updateStaffRequest, updateStaffBo);
+		return updateStaffBo;
+}
 }

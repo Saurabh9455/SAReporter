@@ -133,4 +133,10 @@ public interface ErrorConstant {
 		String ERROR_TYPE = "Invalid Staff category ERROR";
 		String ERROR_MESSAGE = "Please select a valid Staff category [\"ALL\", \"INACTIVE\",\"ACTIVE\"]";
 	}
+	public interface InvalidStaffIdError
+	{
+		String ERROR_CODE = "201";
+		String ERROR_TYPE = "Invalid staff id ERROR";
+		String ERROR_MESSAGE = "This staff user does not exist";
+	}
 }

@@ -2,6 +2,7 @@ package com.SuperemeAppealReporter.api.io.dao;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,5 +18,8 @@ public interface AdminDao {
 	public Page<UserEntity> getInActiveUserEntityPageByUserType(Pageable pageableRequest,String userType);
 
 	public Page<UserEntity> getUserEntityPageForAllStaff(List<String> staffType, Pageable pageableRequest);
+	public Optional<UserEntity> findStaffById(int staffId);
+
+	public void deleteStaffById(Integer id);
 
 }

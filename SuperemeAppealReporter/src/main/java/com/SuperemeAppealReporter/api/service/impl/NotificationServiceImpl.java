@@ -83,7 +83,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 
 	@Override
-	public void sendStaffEmailNotification(StaffMail onBoardingMail) throws MessagingException {
+	public void sendStaffEmailNotification(StaffMail onBoardingMail, String updateFlag ) throws MessagingException {
 
 		  MimeMessage message = javaMailSender.createMimeMessage();
 	       
@@ -98,7 +98,7 @@ public class NotificationServiceImpl implements NotificationService {
 	        context.setVariables(onBoardingMail.getModel());
 	        
 	        String html = "";
-	        
+	        if(updateFlag.equalsIgnoreCase("N")){
 	        if(!(onBoardingMail.getBelongsTo().equals("USER")) && onBoardingMail.getSubject().equals(AppConstant.Mail.OnBoardingMail.SUBJECT))
 	             html = templateEngine.process("email-template-staff-onboarding.html", context);
 	      
@@ -107,7 +107,11 @@ public class NotificationServiceImpl implements NotificationService {
 	        
 	        else  if(!(onBoardingMail.getBelongsTo().equals("USER")) && onBoardingMail.getSubject().equals(AppConstant.Mail.ForgetPasswordMail.SUBJECT))
 	             html = templateEngine.process("email-template-staff-forgetPassword", context);
-	        
+	        } 
+	        else if(updateFlag.equalsIgnoreCase("Y")){
+	        	if(!(onBoardingMail.getBelongsTo().equals("USER")))
+		             html = templateEngine.process("email-template-updated-staff-onboarding.html", context);
+	        }
 	        helper.setFrom("system@aaorey.com");
 	        helper.setTo(onBoardingMail.getTo());
 	        helper.setText(html, true);

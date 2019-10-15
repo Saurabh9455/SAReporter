@@ -476,9 +476,10 @@ public class UserServiceImpl implements UserService {
 		onBoardingModel.put(AppConstant.Mail.OnBoardingMail.EMAIL_VERIFICATION_REDIRECT_URL_KEY, emailVerificationUrl);
 		onBoardingMail.setModel(onBoardingModel);
 
+		String updateStaffFlag = "N";
 		/** Sending OnBoaringMail **/
 		try {
-			notificationService.sendStaffEmailNotification(onBoardingMail);
+			notificationService.sendStaffEmailNotification(onBoardingMail,updateStaffFlag);
 		} catch (MessagingException ex) {
 			throw new AppException(ErrorConstant.SendingEmailError.ERROR_TYPE,
 					ErrorConstant.SendingEmailError.ERROR_CODE, ErrorConstant.SendingEmailError.ERROR_MESSAGE);
