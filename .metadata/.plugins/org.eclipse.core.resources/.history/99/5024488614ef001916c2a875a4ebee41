@@ -55,4 +55,3 @@ public class AdminConverter {
 		BeanUtils.copyProperties(updateStaffRequest, updateStaffBo);
 		return updateStaffBo;
 }
-}

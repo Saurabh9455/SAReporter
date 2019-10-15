@@ -1,12 +1,7 @@
 package com.SuperemeAppealReporter.api.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.mail.MessagingException;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,25 +14,18 @@ import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
-import com.SuperemeAppealReporter.api.constant.AppConstant;
 import com.SuperemeAppealReporter.api.constant.ErrorConstant;
 import com.SuperemeAppealReporter.api.enums.UserType;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
 import com.SuperemeAppealReporter.api.io.dao.AdminDao;
-import com.SuperemeAppealReporter.api.io.entity.CityEntity;
-import com.SuperemeAppealReporter.api.io.entity.CountryEntity;
 import com.SuperemeAppealReporter.api.io.entity.RoleEntity;
-import com.SuperemeAppealReporter.api.io.entity.StateEntity;
 import com.SuperemeAppealReporter.api.io.entity.UserEntity;
-import com.SuperemeAppealReporter.api.pojo.StaffMail;
 import com.SuperemeAppealReporter.api.service.AdminService;
-import com.SuperemeAppealReporter.api.service.MasterService;
-import com.SuperemeAppealReporter.api.service.NotificationService;
 import com.SuperemeAppealReporter.api.service.RoleService;
 import com.SuperemeAppealReporter.api.shared.dto.ClientDto;
 import com.SuperemeAppealReporter.api.shared.dto.StaffDto;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
-import com.SuperemeAppealReporter.api.ui.model.response.DeleteStaffResponse;
+
 @Service
 public class AdminServiceImpl implements AdminService {
 
@@ -45,11 +33,6 @@ public class AdminServiceImpl implements AdminService {
 	private AdminDao adminDao;
 	@Autowired
 	private RoleService roleService;
-	@Autowired
-	private MasterService masterService;
-	
-	@Autowired
-	private NotificationService notificationService;
 	@Override
 	public CommonPaginationResponse getClientListResponseService(int pageNumber, int perPage, String userType, GetClientListBo getClientListBo) {
 

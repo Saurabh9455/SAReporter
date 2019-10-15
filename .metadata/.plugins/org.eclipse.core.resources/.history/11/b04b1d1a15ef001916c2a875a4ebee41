@@ -1,9 +1,6 @@
 package com.SuperemeAppealReporter.api.io.dao.impl;
 
 import java.util.List;
-import java.util.Optional;
-
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,19 +45,6 @@ public class AdminDaoImpl implements AdminDao {
 		Page<UserEntity> userEntityPage = userRepository.getUserEntityPageForAllStaff(staffType, pageableRequest);
 		
 		return userEntityPage;
-	}
-
-	@Override
-	public Optional<UserEntity> findStaffById(int staffId) {
-		Optional<UserEntity> userEntity = userRepository.findById(staffId);
-		return userEntity;
-	}
-	
-	@Transactional
-	@Override
-	public void deleteStaffById(Integer id) {
-		Optional<UserEntity> userEntity = userRepository.findById(id);
-		userEntity.get().setActive(false);
 	}
 
 

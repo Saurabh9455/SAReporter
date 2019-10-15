@@ -1,9 +1,6 @@
 package com.SuperemeAppealReporter.api.io.dao.impl;
 
 import java.util.List;
-import java.util.Optional;
-
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

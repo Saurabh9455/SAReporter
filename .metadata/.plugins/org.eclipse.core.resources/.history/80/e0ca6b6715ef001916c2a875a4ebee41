@@ -5,7 +5,6 @@ import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
-import com.SuperemeAppealReporter.api.ui.model.response.DeleteStaffResponse;
 
 public interface AdminService {
 

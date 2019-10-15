@@ -45,11 +45,6 @@ public class AdminServiceImpl implements AdminService {
 	private AdminDao adminDao;
 	@Autowired
 	private RoleService roleService;
-	@Autowired
-	private MasterService masterService;
-	
-	@Autowired
-	private NotificationService notificationService;
 	@Override
 	public CommonPaginationResponse getClientListResponseService(int pageNumber, int perPage, String userType, GetClientListBo getClientListBo) {
 
