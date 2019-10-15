@@ -16,6 +16,7 @@ import com.SuperemeAppealReporter.api.bo.DeleteClientBo;
 import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
+import com.SuperemeAppealReporter.api.bo.UpdateClientBo;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 import com.SuperemeAppealReporter.api.bo.UserSignupBo;
 import com.SuperemeAppealReporter.api.constant.AppConstant;
@@ -30,12 +31,13 @@ import com.SuperemeAppealReporter.api.ui.model.request.DeleteClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.DeleteStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetClientListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetStaffListRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.UpdateClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UpdateStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.AddStaffResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CustomSignupResponse;
-import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.ResponseBuilder;
 
 @RestController
@@ -185,6 +187,22 @@ public class AdminController {
 
 		/** Generating Response **/
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(deleteClientResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	}
+	
+	/***********************************Update Staff*********************** */
+	@PostMapping(path =RestMappingConstant.Admin.UPDATE_CLIENT_URI)
+	public ResponseEntity<BaseApiResponse> updateClient(@Valid @RequestBody UpdateClientRequest updateClientRequest){
+		
+		/** Converting request to bo **/
+		UpdateClientBo updateClientBo = AdminConverter
+				.convertUpdateClientRequestToUpdateClientBo(updateClientRequest);
+		
+		/** Calling service **/
+		CommonMessageResponse successResponse =  adminService.updateClient(updateClientBo);
+
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(successResponse);
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
 	}
 }

@@ -39,7 +39,7 @@ public class NotificationServiceImpl implements NotificationService {
 	
 	@Async
 	@Override
-	public void sendEmailNotification(Mail mail) throws IOException, MessagingException {
+	public void sendEmailNotification(Mail mail, String updateFlag) throws IOException, MessagingException {
 		  MimeMessage message = javaMailSender.createMimeMessage();
 	       
 	        MimeMessageHelper helper = new MimeMessageHelper(message,
@@ -53,7 +53,7 @@ public class NotificationServiceImpl implements NotificationService {
 	        context.setVariables(mail.getModel());
 	        
 	        String html = "";
-	        
+	        if(updateFlag.equals("N")){
 	        if(mail.getBelongsTo().equals(UserType.USER) && mail.getSubject().equals(AppConstant.Mail.OnBoardingMail.SUBJECT))
 	             html = templateEngine.process("email-template-user-onboarding", context);
 	      
@@ -63,7 +63,11 @@ public class NotificationServiceImpl implements NotificationService {
 	        
 	        else  if(mail.getBelongsTo().equals(UserType.USER) && mail.getSubject().equals(AppConstant.Mail.ForgetPasswordMail.SUBJECT))
 	             html = templateEngine.process("email-template-user-forgetPassword", context);
-	        
+	        }
+	        else{
+	        	if(mail.getBelongsTo().equals(UserType.USER))
+		             html = templateEngine.process("email-template-update-user-onboarding", context);
+	        }
 	        helper.setFrom("system@aaorey.com");
 	        helper.setTo(mail.getTo());
 	        helper.setText(html, true);

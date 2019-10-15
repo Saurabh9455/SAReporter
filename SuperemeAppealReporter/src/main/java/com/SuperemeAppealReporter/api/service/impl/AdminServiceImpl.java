@@ -19,6 +19,7 @@ import com.SuperemeAppealReporter.api.bo.DeleteClientBo;
 import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
+import com.SuperemeAppealReporter.api.bo.UpdateClientBo;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 import com.SuperemeAppealReporter.api.constant.AppConstant;
 import com.SuperemeAppealReporter.api.constant.ErrorConstant;
@@ -32,6 +33,7 @@ import com.SuperemeAppealReporter.api.io.entity.CountryEntity;
 import com.SuperemeAppealReporter.api.io.entity.RoleEntity;
 import com.SuperemeAppealReporter.api.io.entity.StateEntity;
 import com.SuperemeAppealReporter.api.io.entity.UserEntity;
+import com.SuperemeAppealReporter.api.pojo.Mail;
 import com.SuperemeAppealReporter.api.pojo.StaffMail;
 import com.SuperemeAppealReporter.api.service.AdminService;
 import com.SuperemeAppealReporter.api.service.MasterService;
@@ -348,6 +350,80 @@ public class AdminServiceImpl implements AdminService {
 		}
 		deleteResponse.setMsg(ClientMessage.CLIENT_DELETED);
 		return deleteResponse;
+	}
+
+	@Override
+	public CommonMessageResponse updateClient(UpdateClientBo updateClientBo) {
+
+		
+		CommonMessageResponse updateResponse = new CommonMessageResponse();
+		int id = Integer.parseInt(updateClientBo.getClientId());
+		
+		try
+		{
+		UserEntity userEntity = adminDao.findStaffById(id).orElseThrow(() -> new AppException(ErrorConstant.InvalidClientIdError.ERROR_TYPE,
+				ErrorConstant.InvalidClientIdError.ERROR_CODE,
+				ErrorConstant.InvalidClientIdError.ERROR_MESSAGE));
+		
+		CountryEntity countryEntity = masterService.getCountryEntityByCountryId(updateClientBo.getCountryId());
+		StateEntity stateEntity = masterService.getStateEntityByStateId(updateClientBo.getStateId());
+		CityEntity cityEntity = masterService.getCityEntityByCityId(updateClientBo.getCityId());
+		RoleEntity roleEntity = roleService.findByRoleId(updateClientBo.getRoleId());
+		
+		userEntity.setName(updateClientBo.getName());
+		userEntity.setMobile(updateClientBo.getMobile());
+		userEntity.setPassword(updateClientBo.getPassword());
+		userEntity.setDesgination(updateClientBo.getDesgination());
+		userEntity.setUserType(roleEntity.getName());
+		userEntity.getAddressEntity().setCountryEntity(countryEntity);
+		userEntity.getAddressEntity().setStateEntity(stateEntity);
+		userEntity.getAddressEntity().setCityEntity(cityEntity);
+		userEntity.getAddressEntity().setZipcode(updateClientBo.getZipCode());
+		/** Assigning Role to User **/
+		ArrayList<RoleEntity> roleList = new ArrayList<RoleEntity>();
+		roleList.add(roleEntity);
+		
+		userEntity.setRoleEntityList(roleList);
+		
+		
+		/** Creating OnBoardingMail object **/
+		Mail onBoardingMail = new Mail();
+		onBoardingMail.setBelongsTo(UserType.USER);
+		onBoardingMail.setTo(userEntity.getEmail());
+		onBoardingMail.setSubject(AppConstant.Mail.OnBoardingMail.CUSTOM_SUBJECT);
+		Map<String, Object> onBoardingModel = new HashMap<String, Object>();
+		onBoardingModel.put(AppConstant.Mail.EMAIL_KEY, userEntity.getEmail());
+		onBoardingModel.put(AppConstant.Mail.PASSWORD_KEY, userEntity.getPassword());
+		onBoardingModel.put(AppConstant.Mail.USERNAME_KEY, userEntity.getName());
+		onBoardingModel.put(AppConstant.Mail.ROLE_ASSIGNED, roleEntity.getName());
+		onBoardingMail.setModel(onBoardingModel);
+
+		/** Sending OnBoaringMail **/
+		String updateFlag = "Y";
+		try {
+			notificationService.sendEmailNotification(onBoardingMail,updateFlag);
+		} catch (MessagingException ex) {
+			throw new AppException(ErrorConstant.SendingEmailError.ERROR_TYPE,
+					ErrorConstant.SendingEmailError.ERROR_CODE, ErrorConstant.SendingEmailError.ERROR_MESSAGE);
+		}
+		
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in AdminServiceImpl --> updateStaff()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		updateResponse.setMsg(StaffMessage.STAFF_UPDATED);
+		return updateResponse;
+	
 	}
 
 }

@@ -47,6 +47,7 @@ public interface RestMappingConstant {
 		String FULL_ADD_CLIENT_URI = "/SuperemeAppealReporter/v1/api/admin/addClient";
 		
 		String DELETE_CLIENT_URI = "/deleteClient";
+		String UPDATE_CLIENT_URI = "/updateClient";
 	}
 	
 	public interface Master
@@ -69,8 +70,6 @@ public interface RestMappingConstant {
 	
 	public interface Staff
 	{
-		
-		
 		String GET_STAFF_LIST_URI = "/getStaffList";
 		String ADD_STAFF_URI = "/addStaff";
 		String DELETE_STAFF_URI = "/deleteStaff";

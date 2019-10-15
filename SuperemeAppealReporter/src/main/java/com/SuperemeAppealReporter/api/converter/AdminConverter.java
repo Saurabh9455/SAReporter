@@ -9,6 +9,7 @@ import com.SuperemeAppealReporter.api.bo.DeleteClientBo;
 import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
+import com.SuperemeAppealReporter.api.bo.UpdateClientBo;
 import com.SuperemeAppealReporter.api.bo.UserSignupBo;
 import com.SuperemeAppealReporter.api.ui.model.request.AddClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.AddStaffRequest;
@@ -17,6 +18,7 @@ import com.SuperemeAppealReporter.api.ui.model.request.DeleteStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UpdateStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetClientListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetStaffListRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.UpdateClientRequest;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 public class AdminConverter {
 
@@ -62,5 +64,11 @@ public class AdminConverter {
 		DeleteClientBo deleteClientBo = new DeleteClientBo();
 		BeanUtils.copyProperties(deleteClientRequest, deleteClientBo);
 		return deleteClientBo;
+	}
+
+	public static UpdateClientBo convertUpdateClientRequestToUpdateClientBo(UpdateClientRequest updateClientRequest) {
+		UpdateClientBo updateClientBo = new UpdateClientBo();
+		BeanUtils.copyProperties(updateClientRequest, updateClientBo);
+		return updateClientBo;
 	}
 }

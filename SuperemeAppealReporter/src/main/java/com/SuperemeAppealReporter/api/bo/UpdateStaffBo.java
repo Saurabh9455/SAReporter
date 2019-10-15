@@ -32,11 +32,4 @@ public class UpdateStaffBo {
 	private int cityId;
 	
 	private int countryId;
-	
-/*	*//**------------------------Mappings-------------------------**//*
-    private List<RoleEntity> roleEntityList; */
-	
-	
-
-
 }

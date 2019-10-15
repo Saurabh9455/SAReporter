@@ -11,7 +11,7 @@ import com.SuperemeAppealReporter.api.pojo.StaffMail;
 
 public interface NotificationService {
 
-	public void sendEmailNotification(Mail mail)  throws IOException, MessagingException;
+	public void sendEmailNotification(Mail mail, String updateFlag)  throws IOException, MessagingException;
 	
 	public void sendEmail(SimpleMailMessage simpleMailMessage);
 

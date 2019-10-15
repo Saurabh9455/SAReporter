@@ -1,0 +1,24 @@
+package com.SuperemeAppealReporter.api.bo;
+
+public class UpdateClientBo {
+
+	private String staffId;
+	
+	private String name;
+
+	private String password;
+
+	private String desgination;
+	
+	private String mobile;
+	
+	private int roleId;
+	
+	private int stateId;
+	
+	private String zipCode;
+	
+	private int cityId;
+	
+	private int countryId;
+}

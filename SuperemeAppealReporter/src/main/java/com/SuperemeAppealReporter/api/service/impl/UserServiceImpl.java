@@ -146,10 +146,10 @@ public class UserServiceImpl implements UserService {
 				+ verificationTokenEntity.getConfirmationToken();
 		onBoardingModel.put(AppConstant.Mail.OnBoardingMail.EMAIL_VERIFICATION_REDIRECT_URL_KEY, emailVerificationUrl);
 		onBoardingMail.setModel(onBoardingModel);
-
+		String updatedFlag = "N";
 		/** Sending OnBoaringMail **/
 		try {
-			notificationService.sendEmailNotification(onBoardingMail);
+			notificationService.sendEmailNotification(onBoardingMail, updatedFlag);
 		} catch (MessagingException | IOException ex) {
 			throw new AppException(ErrorConstant.SendingEmailError.ERROR_TYPE,
 					ErrorConstant.SendingEmailError.ERROR_CODE, ErrorConstant.SendingEmailError.ERROR_MESSAGE);
@@ -258,10 +258,10 @@ public class UserServiceImpl implements UserService {
 				+ verificationTokenEntityOuter.getConfirmationToken();
 		resetPasswordModel.put(AppConstant.Mail.ForgetPasswordMail.FORGET_PASSWORD_REDIRECT_URL_KEY, resetPasswordUrl);
 		resetPasswordMail.setModel(resetPasswordModel);
-
+		String updatedFlag = "N";
 		/** Sending OnBoaringMail **/
 		try {
-			notificationService.sendEmailNotification(resetPasswordMail);
+			notificationService.sendEmailNotification(resetPasswordMail,updatedFlag);
 		} catch (MessagingException | IOException ex) {
 			throw new AppException(ErrorConstant.SendingEmailError.ERROR_TYPE,
 					ErrorConstant.SendingEmailError.ERROR_CODE, ErrorConstant.SendingEmailError.ERROR_MESSAGE);
@@ -462,10 +462,10 @@ public class UserServiceImpl implements UserService {
 				+ verificationTokenEntity.getConfirmationToken();
 		onBoardingModel.put(AppConstant.Mail.OnBoardingMail.EMAIL_VERIFICATION_REDIRECT_URL_KEY, emailVerificationUrl);
 		onBoardingMail.setModel(onBoardingModel);
-
+		String updatedFlag = "N";
 		/** Sending OnBoaringMail **/
 		try {
-			notificationService.sendEmailNotification(onBoardingMail);
+			notificationService.sendEmailNotification(onBoardingMail,updatedFlag);
 		} catch (MessagingException | IOException ex) {
 			throw new AppException(ErrorConstant.SendingEmailError.ERROR_TYPE,
 					ErrorConstant.SendingEmailError.ERROR_CODE, ErrorConstant.SendingEmailError.ERROR_MESSAGE);

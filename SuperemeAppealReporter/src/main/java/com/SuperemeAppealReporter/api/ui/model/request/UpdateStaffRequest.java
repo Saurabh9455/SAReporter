@@ -28,7 +28,7 @@ public class UpdateStaffRequest {
 	@NotBlank(message = "Designation should not be blank")
 	private String desgination;
 	
-	@NotNull(message = "Enter Candidate's mobile")
+	@NotNull(message = "Please provide mobile no.")
 	@Pattern(regexp = "^[1-9]{1}[0-9]{9}$",message = "Mobile Number Should not start with 0 and should be of 10 digits.")
 	private String mobile;
 	
