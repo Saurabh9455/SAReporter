@@ -48,6 +48,11 @@ public class UserController {
 	 * sayHello() { System.out.println("Hello"); return "Hello"; }
 	 */
 	
+	@PostMapping(path = RestMappingConstant.User.SIGN_IN_URI)
+	public String login()
+	{
+		return "OK";
+	}
 	
 	/****************************************User signup handler method*****************************************/
 	

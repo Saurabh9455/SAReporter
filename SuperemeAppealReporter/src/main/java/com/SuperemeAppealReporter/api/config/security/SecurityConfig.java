@@ -18,7 +18,7 @@ import com.SuperemeAppealReporter.api.constant.RestMappingConstant;
 import com.SuperemeAppealReporter.api.service.UserService;
 
 @SuppressWarnings("deprecation")
-@Configuration
+
 @EnableWebSecurity /** This is a marker annotation. When used with @Configuration this annotation
 * switch off the default web security and lets us to write our own by
 * implementing WebSecurityConfigurerAdapter
@@ -43,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		protected void configure(HttpSecurity http) throws Exception {
 			http.cors().and().csrf().disable().authorizeRequests()
 			.antMatchers(HttpMethod.POST,RestMappingConstant.User.FULL_SIGN_UP_URI).permitAll()
+			
 			.anyRequest().authenticated()
 			.and()
 			.addFilter(getAuthenticaionFilter())
@@ -105,7 +106,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		 */
 		
 		
-	@Bean /* (name = "bCryptPasswordEncoder") */
+	 /* (name = "bCryptPasswordEncoder") */
 		public PasswordEncoder passwordEncoder()
 		{
 			return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();

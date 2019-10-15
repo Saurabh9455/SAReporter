@@ -142,6 +142,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import javax.management.RuntimeErrorException;
 import javax.security.sasl.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
@@ -154,6 +155,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.context.WebApplicationContext;
@@ -188,25 +190,32 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	 @Override
 	    public Authentication attemptAuthentication(HttpServletRequest req,
 	                                                HttpServletResponse res) {
-	        try {
+	      
 	       
-	        	  if(userService==null){
+	        	System.out.println("HERE");
+	        	 if(userService==null){
 	                  ServletContext servletContext = req.getServletContext();
 	                  WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
 	                  userService = webApplicationContext.getBean(UserService.class);
 	              }
 	        	
-	        	
+	        	try
+	        	{
 			LoginRequestModel creds = new ObjectMapper().readValue(req.getInputStream(), LoginRequestModel.class);
 			
 			
 				return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(creds.getUserEmail(),
 					creds.getUserPassword(), new ArrayList<>())
 	            );
-			 
-	        } catch (IOException e) {
-	            throw new RuntimeException(e);
-	        }
+			/*	
+				  SecurityContextHolder.getContext().setAuthentication(auth);*/
+				
+	        	}
+	        	catch(IOException ex)
+	        	{
+	        		throw new RuntimeException(ex);
+	        	}
+	        
 	    }
 	 
 	  public JWTAuthenticationFilter() {
@@ -216,24 +225,19 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 
 
-		// @Override
+		 @Override
 	    protected void successfulAuthentication(HttpServletRequest req,
-	                                            HttpServletResponse res,              
+	                                            HttpServletResponse res,  
+	                                            FilterChain chain,
 	                                            Authentication auth) throws IOException, ServletException {
 
+	    	System.out.println("HEREEE");
 		 User user =  (User) auth.getPrincipal();
 		 String authorities = user.getAuthorities().stream()
 	                .map(GrantedAuthority::getAuthority)
 	                .collect(Collectors.joining(","));
 		 Date now = new Date();
 	        Date expiryDate = new Date(now.getTime() + SecurityConstant.EXPIRATION_TIME);
-		/*
-		 * String token = Jwts.builder() .setSubject(user.getUsername())
-		 * .setIssuedAt(new Date())
-		 * .claim(SecurityConstant.JWT_AUTHORITIES_KEY,authorities)
-		 * .setExpiration(expiryDate) .signWith(SignatureAlgorithm.HS512,
-		 * SecurityConstant.SECRET) .compact();
-		 */
 	        String token = Jwts.builder()
 	                .setSubject(user.getUsername())
 	                .setIssuedAt(new Date())
@@ -242,7 +246,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	                .signWith(SignatureAlgorithm.HS512, SecurityConstant.SECRET)
 	                .compact();
 	   
-	        
+	      
 	        /**Checking if the email is verified. If it is verified then only the user will get token**/
 	        
 	      if(userService.checkEmailVerification(user.getUsername()))
@@ -255,23 +259,24 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	  
 		  BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse();
 		  byte[] responseToSend = restResponseBytes(baseApiResponse);
+    	  res.setHeader("Content-Type", "application/json");
+    	  res.setHeader("Access-Control-Allow-Headers",
+  				"Authorization, Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, "
+  						+ "Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+    	  res.setHeader("Access-Control-Expose-Headers", "Authorization");
 		  res.getOutputStream().write(responseToSend);
 		
 	      }
 	      else
 	      {
-	    	  res.setHeader("Content-Type", "application/json");
-	    	  res.setHeader("Access-Control-Allow-Headers",
-	  				"Authorization, Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, "
-	  						+ "Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
-	    	  res.setHeader("Access-Control-Expose-Headers", "Authorization");
+	
 			AppException appException = new AppException(ErrorConstant.EmailNotVerifiedError.ERROR_TYPE,
 					ErrorConstant.EmailNotVerifiedError.ERROR_CODE, ErrorConstant.EmailNotVerifiedError.ERROR_MESSAGE);
 			BaseApiResponse baseApiResponse = ResponseBuilder.getFailureResponse(appException);
 			byte[] responseToSend = restResponseBytes(baseApiResponse);
 			res.getOutputStream().write(responseToSend);
 	      }
-	     
+	    
 	 
 	      
 	    }

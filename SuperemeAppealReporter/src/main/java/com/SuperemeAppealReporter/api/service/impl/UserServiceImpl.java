@@ -330,9 +330,8 @@ public class UserServiceImpl implements UserService {
 		UserDto userDto = userDao.getUserDtoByEmail(username);
 
 		if (userDto == null) {
-			UsernameNotFoundException ex = new  UsernameNotFoundException(ErrorConstant.AuthenticationError.USER_NOT_FOUND_ERROR_MESSAGE);
-		    ex.addSuppressed(new AppException("h","1","2"));
-		    throw ex;
+			throw new  UsernameNotFoundException(ErrorConstant.AuthenticationError.USER_NOT_FOUND_ERROR_MESSAGE);
+		  
 		}
 
 		try {
@@ -342,6 +341,8 @@ public class UserServiceImpl implements UserService {
 			userDto.getRoleEntityList().forEach(role -> {
 				authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
 			});
+			System.out.println("EMAIL : "+userDto.getEmail());
+			System.out.println("PASSWORD : "+userDto.getPassword());
 			return new User(userDto.getEmail(), userDto.getPassword(), authorities);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -389,6 +390,7 @@ public class UserServiceImpl implements UserService {
 
 		try
 		{
+		
 		/** Checking if the user already exists **/
 		String userEmail = userSignupBo.getEmail();
 		UserDto userDto = userDao.getUserDtoByEmail(userEmail);

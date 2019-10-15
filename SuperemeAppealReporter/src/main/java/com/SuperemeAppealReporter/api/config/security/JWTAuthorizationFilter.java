@@ -48,44 +48,32 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest req,
                                     HttpServletResponse res,
                                     FilterChain chain) throws IOException, ServletException {
-    	 try
-         {
+    	 
 
-			
+			System.out.println("HEREsss");
 			/*
 			 * ArrayList<String> allowedUrls = new ArrayList<String>();
 			 * allowedUrls.add(RestMappingConstant.User.FULL_SIGN_IN_URI);
 			 */
 			 
-    		 System.out.println("REQUEST's ------------>>"+req.getRequestURI());
+    	//	 System.out.println("REQUEST's ------------>>"+req.getRequestURI());
         String header = req.getHeader(SecurityConstant.HEADER_STRING);
         
 			if ((header == null || !header.startsWith(SecurityConstant.TOKEN_PREFIX) )) {
 
 				
-				/*
-				 * if(allowedUrls.contains(req.getRequestURI())) {
-				 * System.out.println("Contains"); chain.doFilter(req, res); return; }
-				 */
-				
-				
-				
-				throw new AppException(ErrorConstant.JwtTokenNotPresentError.ERROR_TYPE,
-						ErrorConstant.JwtTokenNotPresentError.ERROR_CODE,
-						ErrorConstant.JwtTokenNotPresentError.ERROR_MESSAGE);
+			 chain.doFilter(req, res); 
+	         return;
 			}
 			
 			
        
         UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
-        if(authentication!=null)
-            {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(req, res);
-             }
-        
-        }
-    	catch (ExpiredJwtException ex) {
+    
+    }
+/*    	catch (ExpiredJwtException ex) {
     		
 			AppException appException = new AppException(ErrorConstant.ExpiredJwtTokenError.ERROR_TYPE,
 					ErrorConstant.ExpiredJwtTokenError.ERROR_CODE, ErrorConstant.ExpiredJwtTokenError.ERROR_MESSAGE);
@@ -158,14 +146,19 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
  		    byte [] responseToSend = restResponseBytes(baseApiResponse);
  		   
  		    res.getOutputStream().write(responseToSend);
-		}
-    }
+		}*/
+    
     
     
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
        
-		String token = request.getHeader(SecurityConstant.HEADER_STRING).substring(7);
+    	
+    	String token1 = request.getHeader(SecurityConstant.HEADER_STRING);
 
+		if(token1!=null)
+		{	
+		
+		String token = request.getHeader(SecurityConstant.HEADER_STRING).substring(7);	
 		final JwtParser jwtParser = Jwts.parser().setSigningKey(SecurityConstant.SECRET);
 
 		final Claims claimsJws = jwtParser.parseClaimsJws(token).getBody();
@@ -177,11 +170,17 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 				.stream(claimsJws.get(SecurityConstant.JWT_AUTHORITIES_KEY).toString().split(",")).map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toList());
 
-		
+		if(user!=null)
+		{
 		return new UsernamePasswordAuthenticationToken(user, "", authorities);
+		}
+		return null;
+    	}
+		return null;
+    
     	
-	
     }
+    
     
     
 
