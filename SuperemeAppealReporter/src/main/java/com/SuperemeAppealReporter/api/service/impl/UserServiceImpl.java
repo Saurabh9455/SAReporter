@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +19,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.SuperemeAppealReporter.api.bo.AddStaffBo;
 import com.SuperemeAppealReporter.api.bo.ForgetPasswordBo;
@@ -79,6 +76,9 @@ public class UserServiceImpl implements UserService {
 	private long resetPasswordExpirationTime;
 
 	public UserSignupResponse userSignupService(UserSignupBo userSignupBo) {
+		
+		try
+		{
 		/** Checking if the user already exists **/
 		String userEmail = userSignupBo.getEmail();
 		UserDto userDto = userDao.getUserDtoByEmail(userEmail);
@@ -160,20 +160,54 @@ public class UserServiceImpl implements UserService {
 		userSignupResponse.setMessage(SucessMessage.UserSignup.USER_SIGNUP_SUCCESS);
 
 		return userSignupResponse;
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in UserServiceImpl --> userSignupService()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
 
 	}
 
 	@Override
 	public boolean checkEmailVerification(String email) {
 
+		try
+		{
 		UserDto userDto = userDao.getUserDtoByEmail(email);
 		return userDto.isEmailVerified();
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in UserServiceImpl --> checkEmailVerification()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public ForgetPasswordResponse forgetPasswordService(ForgetPasswordBo forgetPasswordBo) {
 
+		try
+		{
+			
+		
 		/** Checking if the user exists **/
 		String userEmail = forgetPasswordBo.getUserEmail();
 		UserEntity userEntity = userDao.getUserEntityByEmail(userEmail);
@@ -237,12 +271,27 @@ public class UserServiceImpl implements UserService {
 		ForgetPasswordResponse forgetPasswordResponse = new ForgetPasswordResponse();
 		forgetPasswordResponse.setMessage(SucessMessage.ForgetPassword.FORGET_PASSWORD_SUCCESS);
 		return forgetPasswordResponse;
-
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in UserServiceImpl --> forgetPasswordService()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
 	}
 
 	@Override
 	public ResetPasswordResponse resetPasswordService(ResetPasswordBo resetPasswordBo) {
 
+		try
+		{
 		UserEntity userEntity = userDao.getUserEntityByEmail(resetPasswordBo.getUserEmail());
 		if (userEntity == null) {
 			throw new AppException(ErrorConstant.UserDoesNotExistError.ERROR_TYPE,
@@ -256,6 +305,20 @@ public class UserServiceImpl implements UserService {
 		ResetPasswordResponse resetPasswordResponse = new ResetPasswordResponse();
 		resetPasswordResponse.setMessage(SucessMessage.ResetPasswordSuccess.RESET_PASSWORD_SUCCESS);
 		return resetPasswordResponse;
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in UserServiceImpl --> resetPasswordService()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
 
 	}
 
@@ -263,10 +326,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
+	
 		UserDto userDto = userDao.getUserDtoByEmail(username);
 
 		if (userDto == null) {
-			throw new UsernameNotFoundException(ErrorConstant.AuthenticationError.USER_NOT_FOUND_ERROR_MESSAGE);
+			UsernameNotFoundException ex = new  UsernameNotFoundException(ErrorConstant.AuthenticationError.USER_NOT_FOUND_ERROR_MESSAGE);
+		    ex.addSuppressed(new AppException("h","1","2"));
+		    throw ex;
 		}
 
 		try {
@@ -281,11 +347,16 @@ public class UserServiceImpl implements UserService {
 			ex.printStackTrace();
 		}
 		return null;
+		
+	
+
 	}
 
 	@Override
 	public EmailVerificationResponse verifyEmailService(String emailVerificationToken) {
 
+		try
+		{
 		/** Calling verification token service **/
 		UserEntity userEntity = verificationTokenService.validateEmailVerificationLinkService(emailVerificationToken);
 
@@ -296,12 +367,28 @@ public class UserServiceImpl implements UserService {
 		EmailVerificationResponse emailVerificationResponse = new EmailVerificationResponse();
 		emailVerificationResponse.setMessage(SucessMessage.EmailVerify.EMAIL_VERIFY_SUCCESS);
 		return emailVerificationResponse;
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in UserServiceImpl --> verifyEmailService()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
 
 	}
 
 	@Override
 	public CustomSignupResponse customUserSignupService(UserSignupBo userSignupBo) {
 
+		try
+		{
 		/** Checking if the user already exists **/
 		String userEmail = userSignupBo.getEmail();
 		UserDto userDto = userDao.getUserDtoByEmail(userEmail);
@@ -390,11 +477,27 @@ public class UserServiceImpl implements UserService {
 		customSignupResponse.setUserId(userEmail);
 		customSignupResponse.setUserPassword(defaultPassword);
 		return customSignupResponse;
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in UserServiceImpl --> customUserSignupService()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
 	}
 
 	@Override
 	public AddStaffResponse addStaff(AddStaffBo addStaffBo) {
 
+		try
+		{
 		/** Checking if the user already exists **/
 		String userEmail = addStaffBo.getEmail();
 		UserDto userDto = userDao.getUserDtoByEmail(userEmail);
@@ -413,22 +516,7 @@ public class UserServiceImpl implements UserService {
 		userEntity.setPassword(defaultPassword);
 
 		RoleEntity roleEntity = null;
-		/*
-		 * if(addStaffBo.getRoleId()==2) {
-		 * 
-		 *//** Fetching role entity from role table **/
-		/*
-		 * roleEntity = roleService.findByRoleId(2);
-		 * userEntity.setUserType(roleEntity.getName());
-		 * 
-		 * } else {
-		 *//** Fetching role entity from role table **//*
-														 * roleEntity =
-														 * roleService.findByRoleId(addStaffBo.getRoleId());
-														 * userEntity.setUserType(roleEntity.getName());
-														 * 
-														 * }
-														 */
+
 		/** Fetching role entity from role table **/
 		roleEntity = roleService.findByRoleId(addStaffBo.getRoleId());
 		userEntity.setUserType(roleEntity.getName());
@@ -491,6 +579,20 @@ public class UserServiceImpl implements UserService {
 		customSignupResponse.setUserId(userEmail);
 		customSignupResponse.setUserPassword(defaultPassword);
 		return customSignupResponse;
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in UserServiceImpl --> addStaff()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
 
 	}
 

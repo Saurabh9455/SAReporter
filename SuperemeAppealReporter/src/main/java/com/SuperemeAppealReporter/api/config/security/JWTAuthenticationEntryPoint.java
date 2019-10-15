@@ -104,9 +104,8 @@ public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest httpServletRequest,
                          HttpServletResponse httpServletResponse,
                          AuthenticationException ex) throws IOException, ServletException {
- 
 
-       AppException   appException = new AppException(ErrorConstant.InvalidCredentialError.ERROR_TYPE,
+      AppException   appException = new AppException(ErrorConstant.InvalidCredentialError.ERROR_TYPE,
 				ErrorConstant.InvalidCredentialError.ERROR_CODE,
 				ErrorConstant.InvalidCredentialError.ERROR_MESSAGE);
   

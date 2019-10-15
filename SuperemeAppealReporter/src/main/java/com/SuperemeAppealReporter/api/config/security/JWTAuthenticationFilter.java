@@ -155,6 +155,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -171,7 +172,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-public class JWTAuthenticationFilter extends OncePerRequestFilter {
+public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	
 	 private AuthenticationManager authenticationManager;
@@ -184,9 +185,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
  
 	    
 	 
-/*	 @Override
+	 @Override
 	    public Authentication attemptAuthentication(HttpServletRequest req,
-	                                                HttpServletResponse res) throws AuthenticationException {
+	                                                HttpServletResponse res) {
 	        try {
 	       
 	        	  if(userService==null){
@@ -198,13 +199,15 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	        	
 			LoginRequestModel creds = new ObjectMapper().readValue(req.getInputStream(), LoginRequestModel.class);
 			
-			return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(creds.getUserEmail(),
+			
+				return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(creds.getUserEmail(),
 					creds.getUserPassword(), new ArrayList<>())
 	            );
+			 
 	        } catch (IOException e) {
 	            throw new RuntimeException(e);
 	        }
-	    }*/
+	    }
 	 
 	  public JWTAuthenticationFilter() {
 	super();
@@ -281,35 +284,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	}
 
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain arg2)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		  try {
-		       
-        	  if(userService==null){
-                  ServletContext servletContext = req.getServletContext();
-                  WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-                  userService = webApplicationContext.getBean(UserService.class);
-              }
-        	
-        	
-		LoginRequestModel creds = new ObjectMapper().readValue(req.getInputStream(), LoginRequestModel.class);
-		
-		Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(creds.getUserEmail(),
-				creds.getUserPassword(), new ArrayList<>())
-            );
-		
-		successfulAuthentication(req, res, auth);
-		return;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-		  catch(BadCredentialsException ex)
-		  {
-			  throw new AuthenticationException();
-		  }
-		
-	}
+	
 	 
 }

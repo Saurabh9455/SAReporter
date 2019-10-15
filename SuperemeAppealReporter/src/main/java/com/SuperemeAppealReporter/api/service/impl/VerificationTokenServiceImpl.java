@@ -31,6 +31,11 @@ public class VerificationTokenServiceImpl implements VerificationTokenService  {
 	public ValidateResetPasswordLinkResponse validateResetPasswordLinkService(String resetToken) {
 		
 		System.out.println("============"+resetToken);
+		ValidateResetPasswordLinkResponse validateResetPasswordLinkResponse = null;
+		try
+		{
+		
+		
 		/**Calling dao layer**/
 		VerificationTokenEntity verificationTokenEntity = verificationTokenDao.getVerificationTokenEntityByTokenTypeAndConfirmationToken(TokenType.RESET_PASSWORD.toString(),resetToken);
 		
@@ -56,15 +61,31 @@ public class VerificationTokenServiceImpl implements VerificationTokenService  {
 		}
 		
 		/**Returning validate password reset token response**/
-		ValidateResetPasswordLinkResponse validateResetPasswordLinkResponse = new ValidateResetPasswordLinkResponse();
+	    validateResetPasswordLinkResponse = new ValidateResetPasswordLinkResponse();
 		validateResetPasswordLinkResponse.setMessage(SucessMessage.ValidatePasswordResetLink.VALIDATE_PASSWORD_RESET_LINK_SUCCESS);
 	    validateResetPasswordLinkResponse.setUserEmail(verificationTokenEntity.getUserEntity().getEmail());
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in VerificationTokenServiceImpl --> validateResetPasswordLinkService()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
 	    return validateResetPasswordLinkResponse;
 	}
 
 	@Override
 	public UserEntity validateEmailVerificationLinkService(String emaiVerificationToken) {
 
+		try
+		{
 		/** Calling dao layer **/
 		VerificationTokenEntity verificationTokenEntity = verificationTokenDao
 				.getVerificationTokenEntityByTokenTypeAndConfirmationToken(TokenType.EMAIL_VERIFICATION.toString(), emaiVerificationToken);
@@ -91,6 +112,20 @@ public class VerificationTokenServiceImpl implements VerificationTokenService  {
 		}
 		
 		return verificationTokenEntity.getUserEntity();
+		} 
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in VerificationTokenServiceImpl --> validateEmailVerificationLinkService()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
 		
 	}
 

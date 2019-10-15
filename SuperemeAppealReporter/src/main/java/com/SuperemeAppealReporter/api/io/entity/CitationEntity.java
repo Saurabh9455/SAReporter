@@ -18,7 +18,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Entity
 @Table(name="citation")
-public class CitationEntity {
+public class CitationEntity extends BaseEntity {
 
 	
 	@Column(name = "page_number", nullable = true)

@@ -50,11 +50,14 @@ public class AdminServiceImpl implements AdminService {
 	
 	@Autowired
 	private NotificationService notificationService;
+	
+	
 	@Override
 	public CommonPaginationResponse getClientListResponseService(int pageNumber, int perPage, String userType, GetClientListBo getClientListBo) {
 
-		
-		
+		CommonPaginationResponse commonPaginationResponse = null;
+		try
+		{
 		String userCategory = getClientListBo.getClientCategory();
 		
 		/**This if block is executed if the user category is different**/
@@ -101,9 +104,26 @@ public class AdminServiceImpl implements AdminService {
 			clientDtoList.add(clientDto);
 		}
 		
-		CommonPaginationResponse commonPaginationResponse = new CommonPaginationResponse();
+		commonPaginationResponse = new CommonPaginationResponse();
 		commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(userEntityPage.getTotalPages());
 		commonPaginationResponse.setOjectList(clientDtoList);
+		
+		
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in AdminServiceImpl --> getClientListResponseService()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
 		
 		return commonPaginationResponse;
 	}
@@ -112,8 +132,11 @@ public class AdminServiceImpl implements AdminService {
 	public CommonPaginationResponse getStaffListResponseService(int pageNumber, int perPageLimit,
 			GetStaffListBo getStaffListBo) {
 		
+		CommonPaginationResponse commonPaginationResponse =  null;
 		
-				RoleEntity roleEntity = null;
+		try
+		{
+		RoleEntity roleEntity = null;
 				
 				
 		
@@ -157,9 +180,23 @@ public class AdminServiceImpl implements AdminService {
 			staffDtoList.add(staffDto);
 		}
 		
-		CommonPaginationResponse commonPaginationResponse = new CommonPaginationResponse();
+		commonPaginationResponse = new CommonPaginationResponse();
 		commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(userEntityPage.getTotalPages());
 		commonPaginationResponse.setOjectList(staffDtoList);
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in AdminServiceImpl --> getStaffListResponseService()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
 		
 		return commonPaginationResponse;
 	}
@@ -169,12 +206,29 @@ public class AdminServiceImpl implements AdminService {
 	public DeleteStaffResponse deleteStaff(DeleteStaffBo deleteStaffBo) {
 		
 		DeleteStaffResponse deleteResponse = new DeleteStaffResponse();
+		try
+		{
 		UserEntity userEntity = adminDao.findStaffById(deleteStaffBo.getStaffId()).orElseThrow(() -> new AppException(ErrorConstant.InvalidStaffIdError.ERROR_TYPE,
 					ErrorConstant.InvalidStaffIdError.ERROR_CODE,
 					ErrorConstant.InvalidStaffIdError.ERROR_MESSAGE));
 		
 		adminDao.deleteStaffById(userEntity.getId());
 		deleteResponse.setMsg("Staff deleted Successfully");
+		}
+		
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in AdminServiceImpl --> deleteStaff()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
 		return deleteResponse;
 	}
 
@@ -183,6 +237,8 @@ public class AdminServiceImpl implements AdminService {
 	public void updateStaff(UpdateStaffBo updateStaffBo) {
 		int id = Integer.parseInt(updateStaffBo.getStaffId());
 		
+		try
+		{
 		UserEntity userEntity = adminDao.findStaffById(id).orElseThrow(() -> new AppException(ErrorConstant.InvalidStaffIdError.ERROR_TYPE,
 				ErrorConstant.InvalidStaffIdError.ERROR_CODE,
 				ErrorConstant.InvalidStaffIdError.ERROR_MESSAGE));
@@ -228,6 +284,22 @@ public class AdminServiceImpl implements AdminService {
 			throw new AppException(ErrorConstant.SendingEmailError.ERROR_TYPE,
 					ErrorConstant.SendingEmailError.ERROR_CODE, ErrorConstant.SendingEmailError.ERROR_MESSAGE);
 		}
+		
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in AdminServiceImpl --> updateStaff()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
 		
 	}
 

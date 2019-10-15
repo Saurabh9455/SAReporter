@@ -69,15 +69,15 @@ public class CaseEntity extends BaseEntity {
 	@OneToOne
 	private CitationEntity citationEntity;
 	
-	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntiy")
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntity")
 	private Set<AdditionalAppellantRespondentEntity> additionalAppellantRespondentEntitySet;
 	
 	@OneToOne
 	private CaseHistoryEntity caseHistoryEntity;
 	
-	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntiy")
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntity")
 	private Set<CasesRefferedEntity> casesReferredEntitySet;
 	
-	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntiy")
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntity")
 	private Set<HeadnoteEntity> headNoteEntitySet;
 }

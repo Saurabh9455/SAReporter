@@ -45,18 +45,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.POST,RestMappingConstant.User.FULL_SIGN_UP_URI).permitAll()
 			.anyRequest().authenticated()
 			.and()
+			.addFilter(getAuthenticaionFilter())
+			.exceptionHandling()
+		    .authenticationEntryPoint(aunthenticationHandler)
+		    .and()
 		    .addFilter(new JWTAuthorizationFilter(authenticationManager()))
-		    .exceptionHandling()
-			.authenticationEntryPoint(aunthenticationHandler)
-			.and()
 			.exceptionHandling().accessDeniedHandler(accessDeniedHandler)
 			.and()
 		    .sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 			
-			http.addFilterBefore(getAuthenticaionFilter(),UsernamePasswordAuthenticationFilter.class);
-
-
+		
 		}
 
 		/*
@@ -115,7 +114,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		public JWTAuthenticationFilter getAuthenticaionFilter() throws Exception
 		{
 			final JWTAuthenticationFilter authenticationFilter  = new JWTAuthenticationFilter(authenticationManager());
-		   // authenticationFilter.setFilterProcessesUrl("/SuperemeAppealReporter/v1/api/user/signin");
+		   authenticationFilter.setFilterProcessesUrl("/SuperemeAppealReporter/v1/api/user/signin");
 		  //  System.out.println("MY ------------>>"+RestMappingConstant.User.USER_SIGN_IN_DEV_URL);
 		    return authenticationFilter;
 		}
