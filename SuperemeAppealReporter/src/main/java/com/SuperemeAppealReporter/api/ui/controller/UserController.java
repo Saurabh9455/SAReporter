@@ -91,21 +91,7 @@ public class UserController {
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse,HttpStatus.OK);
 	}
 	
-	
-	
-	
-	/****************************************User signin handler method*****************************************/
-	
-	/*
-	 * @PostMapping(path = RestMappingConstant.User.SIGN_IN_URI) public void
-	 * userSinginHandler(@RequestBody LoginRequestModel userSignRequest,
-	 * HttpServletResponse response) {
-	 * 
-	 * 
-	 * 
-	 * }
-	 */
-	
+
 	
 /****************************************User forget password handler method*****************************************/
 	

@@ -62,10 +62,10 @@ public class UserEntity extends BaseEntity {
 	
 	/**------------------------Mappings-------------------------**/
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
 	private AddressEntity addressEntity;
 
-	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST},fetch = FetchType.EAGER)
+	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST},fetch = FetchType.LAZY)
     private List<RoleEntity> roleEntityList; 
 	
 
