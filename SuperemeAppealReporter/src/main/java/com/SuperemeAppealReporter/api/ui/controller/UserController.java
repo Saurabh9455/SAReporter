@@ -19,6 +19,7 @@ import com.SuperemeAppealReporter.api.converter.UserConverter;
 import com.SuperemeAppealReporter.api.service.UserService;
 import com.SuperemeAppealReporter.api.service.VerificationTokenService;
 import com.SuperemeAppealReporter.api.ui.model.request.ForgetPasswordRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.LoginRequestModel;
 import com.SuperemeAppealReporter.api.ui.model.request.ResetPasswordRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UserSignupRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
@@ -47,11 +48,12 @@ public class UserController {
 	 * @RequestMapping(path = "/secured",method = RequestMethod.GET) public String
 	 * sayHello() { System.out.println("Hello"); return "Hello"; }
 	 */
+	/****************************************User login handler method[Just for swagger]*****************************************/
 	
 	@PostMapping(path = RestMappingConstant.User.SIGN_IN_URI)
-	public String login()
+	public void login(@RequestBody LoginRequestModel loginRequestModel)
 	{
-		return "OK";
+	
 	}
 	
 	/****************************************User signup handler method*****************************************/
