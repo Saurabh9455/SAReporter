@@ -138,5 +138,13 @@ public interface ErrorConstant {
 		String ERROR_CODE = "201";
 		String ERROR_TYPE = "Invalid staff id ERROR";
 		String ERROR_MESSAGE = "This staff user does not exist";
+		String INVALID_STAFF_ERROR_MESSAGE = "This user does not belongs to any staff user.";;
+	}
+	public interface InvalidClientIdError
+	{
+		String ERROR_CODE = "202";
+		String ERROR_TYPE = "Invalid client id ERROR";
+		String ERROR_MESSAGE = "This client user does not exist";
+		String INVALID_CLIENT_ERROR_MESSAGE = "This client does not belongs to user.";
 	}
 }

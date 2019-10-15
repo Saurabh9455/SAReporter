@@ -22,4 +22,6 @@ public interface AdminDao {
 
 	public void deleteStaffById(Integer id);
 
+	public void deleteClientById(Integer id);
+
 }

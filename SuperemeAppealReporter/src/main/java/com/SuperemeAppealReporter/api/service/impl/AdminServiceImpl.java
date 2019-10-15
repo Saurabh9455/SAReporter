@@ -15,12 +15,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.SuperemeAppealReporter.api.bo.DeleteClientBo;
 import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 import com.SuperemeAppealReporter.api.constant.AppConstant;
 import com.SuperemeAppealReporter.api.constant.ErrorConstant;
+import com.SuperemeAppealReporter.api.constant.SucessMessage.ClientMessage;
+import com.SuperemeAppealReporter.api.constant.SucessMessage.StaffMessage;
 import com.SuperemeAppealReporter.api.enums.UserType;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
 import com.SuperemeAppealReporter.api.io.dao.AdminDao;
@@ -37,7 +40,7 @@ import com.SuperemeAppealReporter.api.service.RoleService;
 import com.SuperemeAppealReporter.api.shared.dto.ClientDto;
 import com.SuperemeAppealReporter.api.shared.dto.StaffDto;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
-import com.SuperemeAppealReporter.api.ui.model.response.DeleteStaffResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 @Service
 public class AdminServiceImpl implements AdminService {
 
@@ -203,17 +206,22 @@ public class AdminServiceImpl implements AdminService {
 	
 	@Transactional
 	@Override
-	public DeleteStaffResponse deleteStaff(DeleteStaffBo deleteStaffBo) {
+	public CommonMessageResponse deleteStaff(DeleteStaffBo deleteStaffBo) {
 		
-		DeleteStaffResponse deleteResponse = new DeleteStaffResponse();
+		CommonMessageResponse deleteResponse = new CommonMessageResponse();
 		try
 		{
 		UserEntity userEntity = adminDao.findStaffById(deleteStaffBo.getStaffId()).orElseThrow(() -> new AppException(ErrorConstant.InvalidStaffIdError.ERROR_TYPE,
 					ErrorConstant.InvalidStaffIdError.ERROR_CODE,
 					ErrorConstant.InvalidStaffIdError.ERROR_MESSAGE));
-		
+		if(userEntity.getUserType().equals(UserType.USER))
+		{
+			throw new AppException(ErrorConstant.InvalidStaffIdError.ERROR_TYPE,
+					ErrorConstant.InvalidStaffIdError.ERROR_CODE,
+					ErrorConstant.InvalidStaffIdError.INVALID_STAFF_ERROR_MESSAGE);
+		}
 		adminDao.deleteStaffById(userEntity.getId());
-		deleteResponse.setMsg("Staff deleted Successfully");
+		
 		}
 		
 		catch(AppException appException)
@@ -229,12 +237,16 @@ public class AdminServiceImpl implements AdminService {
 			throw appException;
 			
 		}
+		
+		deleteResponse.setMsg(StaffMessage.STAFF_DELETED);
 		return deleteResponse;
 	}
 
 	@Transactional
 	@Override
-	public void updateStaff(UpdateStaffBo updateStaffBo) {
+	public CommonMessageResponse updateStaff(UpdateStaffBo updateStaffBo) {
+		
+		CommonMessageResponse updateResponse = new CommonMessageResponse();
 		int id = Integer.parseInt(updateStaffBo.getStaffId());
 		
 		try
@@ -299,8 +311,43 @@ public class AdminServiceImpl implements AdminService {
 			throw appException;
 			
 		}
+		updateResponse.setMsg(StaffMessage.STAFF_UPDATED);
+		return updateResponse;
+	}
+
+	@Override
+	public CommonMessageResponse deleteClient(DeleteClientBo deleteClientBo) {
+		CommonMessageResponse deleteResponse = new CommonMessageResponse();
+		try
+		{
+		UserEntity userEntity = adminDao.findStaffById(deleteClientBo.getClientId()).orElseThrow(() -> new AppException(ErrorConstant.InvalidClientIdError.ERROR_TYPE,
+					ErrorConstant.InvalidClientIdError.ERROR_CODE,
+					ErrorConstant.InvalidClientIdError.ERROR_MESSAGE));
+		if(!userEntity.getUserType().equals(UserType.USER))
+		{
+			throw new AppException(ErrorConstant.InvalidClientIdError.ERROR_TYPE,
+					ErrorConstant.InvalidClientIdError.ERROR_CODE,
+					ErrorConstant.InvalidClientIdError.INVALID_CLIENT_ERROR_MESSAGE);
+		}
+			adminDao.deleteClientById(userEntity.getId());
 		
+		}
 		
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in AdminServiceImpl --> deleteClient()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		deleteResponse.setMsg(ClientMessage.CLIENT_DELETED);
+		return deleteResponse;
 	}
 
 }

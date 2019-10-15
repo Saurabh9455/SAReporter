@@ -31,6 +31,14 @@ public interface SucessMessage {
 	{
 		String CUSTOM_USER_SIGNUP_SUCCESS = "User registered Successfully";
 	}
-	
-	
+	public interface ClientMessage
+	{
+		String CLIENT_UPDATED = "Client updated successfully.";
+		String CLIENT_DELETED = "Client deleted successfully.";
+	}
+	public interface StaffMessage
+	{
+		String STAFF_UPDATED = "Staff updated successfully.";
+		String STAFF_DELETED = "Staff deleted successfully.";
+	}
 }

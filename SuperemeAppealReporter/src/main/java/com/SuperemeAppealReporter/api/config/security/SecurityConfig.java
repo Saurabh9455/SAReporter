@@ -83,6 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/SuperemeAppealReporter/v1/api/admin/addStaff",
                 "/SuperemeAppealReporter/v1/api/admin/deleteStaff",
                 "/SuperemeAppealReporter/v1/api/admin/updateStaff",
+                "/SuperemeAppealReporter/v1/api/admin/deleteClient",
 				"/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**",
 				"/swagger-ui.html", "/webjars/**"); // skip security entirely
 	}

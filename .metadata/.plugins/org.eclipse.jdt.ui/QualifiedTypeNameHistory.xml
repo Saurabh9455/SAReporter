@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse"/>
+<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.ui.model.request.DeleteStaffRequest"/>
+<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.ui.model.request.UpdateStaffRequest"/>
+<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.ui.model.response.DeleteStaffResponse"/>
+<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.bo.DeleteStaffBo"/>
+</qualifiedTypeNameHistroy>

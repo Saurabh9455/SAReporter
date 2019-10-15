@@ -5,12 +5,14 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 
 import com.SuperemeAppealReporter.api.bo.AddStaffBo;
+import com.SuperemeAppealReporter.api.bo.DeleteClientBo;
 import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
 import com.SuperemeAppealReporter.api.bo.UserSignupBo;
 import com.SuperemeAppealReporter.api.ui.model.request.AddClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.AddStaffRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.DeleteClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.DeleteStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UpdateStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetClientListRequest;
@@ -55,4 +57,10 @@ public class AdminConverter {
 		BeanUtils.copyProperties(updateStaffRequest, updateStaffBo);
 		return updateStaffBo;
 }
+
+	public static DeleteClientBo convertDeleteClientRequestToDeleteClientBo(DeleteClientRequest deleteClientRequest) {
+		DeleteClientBo deleteClientBo = new DeleteClientBo();
+		BeanUtils.copyProperties(deleteClientRequest, deleteClientBo);
+		return deleteClientBo;
+	}
 }

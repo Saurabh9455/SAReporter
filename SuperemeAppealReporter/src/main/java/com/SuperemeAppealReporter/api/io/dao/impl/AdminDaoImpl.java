@@ -63,5 +63,12 @@ public class AdminDaoImpl implements AdminDao {
 		userEntity.get().setActive(false);
 	}
 
+	@Override
+	public void deleteClientById(Integer id) {
+		
+		Optional<UserEntity> userEntity = userRepository.findById(id);
+		userEntity.get().setActive(false);
+	}
+
 
 }

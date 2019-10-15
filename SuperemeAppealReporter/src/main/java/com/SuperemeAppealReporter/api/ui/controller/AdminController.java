@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.SuperemeAppealReporter.api.bo.AddStaffBo;
+import com.SuperemeAppealReporter.api.bo.DeleteClientBo;
 import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
@@ -25,6 +26,7 @@ import com.SuperemeAppealReporter.api.service.AdminService;
 import com.SuperemeAppealReporter.api.service.UserService;
 import com.SuperemeAppealReporter.api.ui.model.request.AddClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.AddStaffRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.DeleteClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.DeleteStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetClientListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetStaffListRequest;
@@ -33,7 +35,7 @@ import com.SuperemeAppealReporter.api.ui.model.response.AddStaffResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CustomSignupResponse;
-import com.SuperemeAppealReporter.api.ui.model.response.DeleteStaffResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.ResponseBuilder;
 
 @RestController
@@ -147,7 +149,7 @@ public class AdminController {
 				.convertDeleteStaffRequestToDeleteStaffBo(deleteStaffRequest);
 		
 		/** Calling service **/
-		DeleteStaffResponse deleteStaffResponse = adminService.deleteStaff(deleteStaffBo);
+		CommonMessageResponse deleteStaffResponse = adminService.deleteStaff(deleteStaffBo);
 
 		/** Generating Response **/
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(deleteStaffResponse);
@@ -163,10 +165,26 @@ public class AdminController {
 				.convertUpdateStaffRequestToUpdateStaffBo(updateStaffRequest);
 		
 		/** Calling service **/
-		 adminService.updateStaff(updateStaffBo);
+		CommonMessageResponse successResponse =  adminService.updateStaff(updateStaffBo);
 
 		/** Generating Response **/
-		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse("Your profile has been updated successfully.");
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(successResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	}
+	
+	/***********************************Delete CLient*********************** */
+	@PostMapping(path =RestMappingConstant.Admin.DELETE_CLIENT_URI)
+	public ResponseEntity<BaseApiResponse> deleteClient(@Valid @RequestBody DeleteClientRequest deleteClientRequest){
+		
+		/** Converting request to bo **/
+		DeleteClientBo deleteClientBo = AdminConverter
+				.convertDeleteClientRequestToDeleteClientBo(deleteClientRequest);
+		
+		/** Calling service **/
+		CommonMessageResponse deleteClientResponse = adminService.deleteClient(deleteClientBo);
+
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(deleteClientResponse);
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
 	}
 }
