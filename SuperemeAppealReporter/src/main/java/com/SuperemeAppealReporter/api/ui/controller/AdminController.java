@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.SuperemeAppealReporter.api.bo.AddStaffBo;
+import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
+import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 import com.SuperemeAppealReporter.api.bo.UserSignupBo;
 import com.SuperemeAppealReporter.api.constant.AppConstant;
 import com.SuperemeAppealReporter.api.constant.RestMappingConstant;
@@ -23,12 +25,15 @@ import com.SuperemeAppealReporter.api.service.AdminService;
 import com.SuperemeAppealReporter.api.service.UserService;
 import com.SuperemeAppealReporter.api.ui.model.request.AddClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.AddStaffRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.DeleteStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetClientListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetStaffListRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.UpdateStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.AddStaffResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CustomSignupResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.DeleteStaffResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.ResponseBuilder;
 
 @RestController
