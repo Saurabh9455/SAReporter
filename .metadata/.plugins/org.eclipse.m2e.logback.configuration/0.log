@@ -1,0 +1,41 @@
+2019-10-15 11:04:33,453 [Worker-4] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: com.SuperemeAppealReporter:SuperemeAppealReporter:0.0.1-SNAPSHOT @ C:\Users\saurabh.srivastava\Videos\SAR\SuperemeAppealReporter\pom.xml.
+2019-10-15 11:04:39,507 [Worker-4] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /SuperemeAppealReporter/src/main/java
+2019-10-15 11:04:39,508 [Worker-4] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /SuperemeAppealReporter/src/main/resources
+2019-10-15 11:04:39,520 [Worker-4] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /SuperemeAppealReporter/src/main/resources
+2019-10-15 11:04:39,533 [Worker-4] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /SuperemeAppealReporter/src/test/java
+2019-10-15 11:04:45,812 [Worker-4] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 16 sec
+2019-10-15 11:04:51,079 [Worker-7] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-10-15 11:04:51,083 [Worker-7] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2019-10-15 11:04:51,098 [Worker-7] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2019-10-15 11:04:51,137 [Worker-7] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-10-15 11:04:51,138 [Worker-7] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\saurabh.srivastava\Videos\SAR\SuperemeAppealReporter\src\test\resources
+2019-10-15 11:05:36,123 [Worker-7] INFO  o.e.m.i.launch.MavenLaunchDelegate - C:\Users\saurabh.srivastava\Videos\SAR\SuperemeAppealReporter
+2019-10-15 11:05:36,123 [Worker-7] INFO  o.e.m.i.launch.MavenLaunchDelegate -  mvn  -B clean
+2019-10-15 11:05:39,693 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-10-15 11:05:39,697 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2019-10-15 11:05:39,704 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2019-10-15 11:05:39,741 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-10-15 11:05:39,741 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\saurabh.srivastava\Videos\SAR\SuperemeAppealReporter\src\test\resources
+2019-10-15 11:05:39,742 [Worker-13] INFO  o.e.m.w.i.f.ResourceFilteringBuildParticipant - Changed resources require a complete clean of filtered resources of SuperemeAppealReporter
+2019-10-15 11:05:39,743 [Worker-13] INFO  o.e.m.w.i.f.ResourceFilteringBuildParticipant - Executing resource filtering for SuperemeAppealReporter
+2019-10-15 11:05:39,749 [Worker-13] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-10-15 11:05:52,384 [Worker-1] INFO  o.e.m.i.launch.MavenLaunchDelegate - C:\Users\saurabh.srivastava\Videos\SAR\SuperemeAppealReporter
+2019-10-15 11:05:52,384 [Worker-1] INFO  o.e.m.i.launch.MavenLaunchDelegate -  mvn  -B install
+2019-10-15 11:05:57,378 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-10-15 11:05:57,380 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2019-10-15 11:05:57,384 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2019-10-15 11:05:57,387 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-10-15 11:05:57,387 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\saurabh.srivastava\Videos\SAR\SuperemeAppealReporter\src\test\resources
+2019-10-15 11:16:56,959 [Worker-17] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-10-15 11:16:56,962 [Worker-17] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2019-10-15 11:16:56,967 [Worker-17] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2019-10-15 11:16:56,971 [Worker-17] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-10-15 11:16:56,971 [Worker-17] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\saurabh.srivastava\Videos\SAR\SuperemeAppealReporter\src\test\resources
+2019-10-15 11:26:49,822 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2019-10-15 11:26:49,825 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-10-15 11:26:49,825 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\saurabh.srivastava\Videos\SAR\SuperemeAppealReporter\src\test\resources
+2019-10-15 11:27:08,567 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-10-15 11:27:08,569 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2019-10-15 11:27:08,574 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2019-10-15 11:27:08,577 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-10-15 11:27:08,577 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\saurabh.srivastava\Videos\SAR\SuperemeAppealReporter\src\test\resources
