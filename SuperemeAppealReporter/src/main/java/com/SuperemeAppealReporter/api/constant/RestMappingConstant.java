@@ -66,6 +66,10 @@ public interface RestMappingConstant {
 	
 		String GET_CITY_MASTER_DATA_URI = "/getCityMasterData/{stateId}";
 		String FULL_CITY_MASTER_DATA_URI = "/SuperemeAppealReporter/v1/api/master/getCityMasterData/{stateId}";
+	
+	    String GET_NEXT_DOC_ID_URI = "/getNextDocId";
+	    String FULL_GET_NEXT_DOC_ID_URI = "/SuperemeAppealReporter/v1/api/master/getNextDocId";
+	
 	}
 	
 	public interface Staff

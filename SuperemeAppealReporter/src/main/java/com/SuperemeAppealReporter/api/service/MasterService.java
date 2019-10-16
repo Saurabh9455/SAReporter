@@ -3,6 +3,7 @@ package com.SuperemeAppealReporter.api.service;
 import com.SuperemeAppealReporter.api.io.entity.CityEntity;
 import com.SuperemeAppealReporter.api.io.entity.ClientIdGenerator;
 import com.SuperemeAppealReporter.api.io.entity.CountryEntity;
+import com.SuperemeAppealReporter.api.io.entity.DocIdGenerator;
 import com.SuperemeAppealReporter.api.io.entity.StateEntity;
 import com.SuperemeAppealReporter.api.ui.model.response.GetCommonMasterDataResponse;
 
@@ -24,6 +25,10 @@ public interface MasterService {
 	/**for generating clientId**/
 	public void save(ClientIdGenerator clientIdGenerator);
 	public int giveNextClientId();
+	
+	/**for generating docId**/
+	public void save(DocIdGenerator docIdGenerator);
+	public Integer getNextDocId();
 	
 	
 	/**Returning Entities**/

@@ -2,6 +2,7 @@ package com.SuperemeAppealReporter.api.service.impl;
 
 import java.util.List;
 
+import org.dom4j.dom.DOMAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +12,10 @@ import com.SuperemeAppealReporter.api.io.dao.MasterDao;
 import com.SuperemeAppealReporter.api.io.entity.CityEntity;
 import com.SuperemeAppealReporter.api.io.entity.ClientIdGenerator;
 import com.SuperemeAppealReporter.api.io.entity.CountryEntity;
+import com.SuperemeAppealReporter.api.io.entity.DocIdGenerator;
 import com.SuperemeAppealReporter.api.io.entity.StateEntity;
 import com.SuperemeAppealReporter.api.io.repository.ClientIdGeneratorRepository;
+import com.SuperemeAppealReporter.api.io.repository.DocIdGeneratorRepository;
 import com.SuperemeAppealReporter.api.service.MasterService;
 import com.SuperemeAppealReporter.api.shared.dto.CommonDto;
 import com.SuperemeAppealReporter.api.ui.model.response.GetCommonMasterDataResponse;
@@ -25,6 +28,9 @@ public class MasterServiceImpl implements MasterService {
 	
 	@Autowired
 	ClientIdGeneratorRepository clientIdGeneratorRepository;
+	
+	@Autowired
+	DocIdGeneratorRepository docIdGeneratorRepository;
 	
 	@Override
 	public GetCommonMasterDataResponse getRoleMasterData() {
@@ -236,6 +242,25 @@ public class MasterServiceImpl implements MasterService {
 			
 		}
 		return getCommonMasterDataResponse;
+	}
+
+
+
+	@Override
+	public void save(DocIdGenerator docIdGenerator) {
+		docIdGeneratorRepository.save(docIdGenerator);
+		
+	}
+
+
+
+	@Override
+	public Integer getNextDocId() {
+		// TODO Auto-generated method stub
+	
+		int lastDocId = docIdGeneratorRepository.giveLastDocId();
+		int nextDocId = lastDocId + 1;
+		return nextDocId;
 	}
 
 
