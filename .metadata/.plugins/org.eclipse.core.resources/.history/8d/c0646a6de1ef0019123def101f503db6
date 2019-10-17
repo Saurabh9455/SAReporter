@@ -1,0 +1,16 @@
+package com.SuperemeAppealReporter.api.service.impl;
+
+import com.SuperemeAppealReporter.api.bo.AddPlanBo;
+import com.SuperemeAppealReporter.api.service.SubscriptionPlanService;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
+
+@Service
+public class SubscriptionPlanServiceImpl implements SubscriptionPlanService{
+
+	@Override
+	public CommonMessageResponse addPlan(AddPlanBo addPlanBo) {
+		
+		return null;
+	}
+
+}

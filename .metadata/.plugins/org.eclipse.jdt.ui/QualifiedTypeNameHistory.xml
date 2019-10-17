@@ -5,4 +5,14 @@
 <fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.ui.model.request.UpdateStaffRequest"/>
 <fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.ui.model.response.DeleteStaffResponse"/>
 <fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.bo.DeleteStaffBo"/>
+<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.constant.SucessMessage.ClientMessage"/>
+<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.constant.SucessMessage.StaffMessage"/>
+<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.enums.UserType"/>
+<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.exception.type.AppException"/>
+<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse"/>
+<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.constant.AppConstant.Mail"/>
+<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.pojo.Mail"/>
+<fullyQualifiedTypeName name="javax.transaction.Transactional"/>
+<fullyQualifiedTypeName name="javax.validation.constraints.NotEmpty"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
 </qualifiedTypeNameHistroy>

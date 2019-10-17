@@ -1,0 +1,20 @@
+package com.SuperemeAppealReporter.api.io.dao.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.SuperemeAppealReporter.api.bo.AddPlanBo;
+import com.SuperemeAppealReporter.api.io.dao.SubscriptionPlanDao;
+import com.SuperemeAppealReporter.api.io.entity.SubscriptionPlanEntity;
+import com.SuperemeAppealReporter.api.io.repository.SubscriptionPlanRepository;
+
+@Component
+public class SubscriptionPlanDaoImpl implements SubscriptionPlanDao{
+
+	@Autowired SubscriptionPlanRepository subscriptionPlanRepo;
+	@Override
+	public void savePlan(SubscriptionPlanEntity planEntity) {
+		subscriptionPlanRepo.save(planEntity);
+	}
+
+}

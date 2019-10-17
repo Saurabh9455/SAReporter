@@ -1,0 +1,9 @@
+package com.SuperemeAppealReporter.api.io.dao;
+
+
+public interface SubscriptionPlanDao {
+
+	void savePlan();
+
+	
+}

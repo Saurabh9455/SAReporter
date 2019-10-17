@@ -1,0 +1,6 @@
+package com.SuperemeAppealReporter.api.ui.model.request;
+
+public class DeletePlanRequest {
+
+	private String subscriptionPlanId;
+}

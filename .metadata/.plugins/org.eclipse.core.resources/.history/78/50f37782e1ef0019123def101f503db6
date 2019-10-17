@@ -1,0 +1,7 @@
+package com.SuperemeAppealReporter.api.io.dao.impl;
+
+import com.SuperemeAppealReporter.api.io.dao.SubscriptionPlanDao;
+
+public class SubscriptionPlanDaoImpl implements SubscriptionPlanDao{
+
+}

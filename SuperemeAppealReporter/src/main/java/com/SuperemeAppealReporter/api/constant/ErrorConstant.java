@@ -149,11 +149,26 @@ public interface ErrorConstant {
 		String INVALID_CLIENT_ERROR_MESSAGE = "This client does not belongs to user.";
 		String CLIENT_DEACTIVATED_ERROR_MESSAGE = "Client already deactivated.";
 	}
+<<<<<<< HEAD
 	
 	public interface FileUploadError
 	{
 		String ERROR_CODE = "117";
 		String ERROR_TYPE = "File Upload ERROR";
 		String ERROR_MESSAGE = "Unable to upload case file.";
+=======
+	public interface InvalidPlanTypeError
+	{
+		String ERROR_CODE = "203";
+		String ERROR_TYPE = "Invalid plan type ERROR";
+		String ERROR_MESSAGE = "Please select a valid plan type.";
+	}
+	public interface InvalidPlanIdError
+	{
+		String ERROR_CODE = "204";
+		String ERROR_TYPE = "Invalid plan id ERROR";
+		String ERROR_MESSAGE = "Plan id does not exists.";
+		String PLAN_DEACTIVATED_ERROR_MESSAGE = "This plan already deactivated";
+>>>>>>> aca7745c85d73c16bf9499a4d5ac44a1eadad233
 	}
 }

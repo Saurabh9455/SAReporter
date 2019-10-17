@@ -1,0 +1,13 @@
+package com.SuperemeAppealReporter.api.service;
+
+import com.SuperemeAppealReporter.api.bo.AddPlanBo;
+import com.SuperemeAppealReporter.api.bo.DeletePlanBo;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
+
+public interface SubscriptionPlanService {
+
+	CommonMessageResponse addPlan(AddPlanBo addPlanBo);
+
+	CommonMessageResponse deletePlan(DeletePlanBo deletePlanBo);
+
+}

@@ -1,0 +1,13 @@
+package com.SuperemeAppealReporter.api.shared.dto;
+
+import com.SuperemeAppealReporter.api.enums.SubscriptionType;
+
+public class PlanListDto {
+
+	private int id;
+	private SubscriptionType subscriptionType;
+	private String subscriptionName;
+	private double subscriptionCost;
+	private String subscriptionDescription;
+	private String subscriptionParellelUserCount;
+}
