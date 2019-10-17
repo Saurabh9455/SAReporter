@@ -13,19 +13,19 @@ import com.SuperemeAppealReporter.api.io.entity.UserEntity;
 @Repository
 public interface UserRepository extends PagingAndSortingRepository<UserEntity, Integer>{
 
-	@Query(value = "select * from user where email = ?1",nativeQuery = true)
+	@Query(value = "select * from user where email = ?1 order by created_date desc",nativeQuery = true)
 	UserEntity getUserEntityByEmail(String email);
 	
-	@Query(value = "select * from user where type = ?1 and is_active = 1",nativeQuery = true)
+	@Query(value = "select * from user where type = ?1 and is_active = 1 order by created_date desc",nativeQuery = true)
 	Page<UserEntity> getUserEntityPageByUserType(String userType, Pageable pageable);
 	
-	@Query(value = "select * from user where type = ?1 and is_active = 1 and is_subscription_active=1",nativeQuery = true)
+	@Query(value = "select * from user where type = ?1 and is_active = 1 and is_subscription_active=1 order by created_date desc",nativeQuery = true)
 	Page<UserEntity> getActiveUserEntityPageByUserType(String userType,Pageable pageable);
 	
-	@Query(value = "select * from user where type = ?1 and is_active = 1 and is_subscription_active=0",nativeQuery = true)
+	@Query(value = "select * from user where type = ?1 and is_active = 1 and is_subscription_active=0 order by created_date desc",nativeQuery = true)
 	Page<UserEntity> getInActiveUserEntityPageByUserType(String userType,Pageable pageable);
 	
-	@Query(value = "select * from user where type in ?1 and is_active = 1",nativeQuery = true)
+	@Query(value = "select * from user where type in ?1 and is_active = 1 order by created_date desc",nativeQuery = true)
 	Page<UserEntity> getUserEntityPageForAllStaff(List<String> staffType,Pageable pageableRequest);
 
 	@Query(value = "select * from user where type = ?2 and is_active = 1 and name like '%?3%' or client_id like '%?3%' is_subscription_active in ?4 ",nativeQuery = true)

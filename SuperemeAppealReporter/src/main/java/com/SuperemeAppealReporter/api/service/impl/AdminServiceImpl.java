@@ -42,10 +42,13 @@ import com.SuperemeAppealReporter.api.service.AdminService;
 import com.SuperemeAppealReporter.api.service.MasterService;
 import com.SuperemeAppealReporter.api.service.NotificationService;
 import com.SuperemeAppealReporter.api.service.RoleService;
+import com.SuperemeAppealReporter.api.shared.dto.CityDto;
 import com.SuperemeAppealReporter.api.shared.dto.ClientDto;
+import com.SuperemeAppealReporter.api.shared.dto.CountryDto;
 import com.SuperemeAppealReporter.api.shared.dto.StaffDto;
-import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
+import com.SuperemeAppealReporter.api.shared.dto.StateDto;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
 @Service
 public class AdminServiceImpl implements AdminService {
 
@@ -106,9 +109,30 @@ public class AdminServiceImpl implements AdminService {
 		{
 			ClientDto clientDto = new ClientDto();
 			BeanUtils.copyProperties(userEntity, clientDto);
-			clientDto.setCountry(userEntity.getAddressEntity().getCountryEntity().getName());
-			clientDto.setState(userEntity.getAddressEntity().getStateEntity().getName());
-			clientDto.setCity(userEntity.getAddressEntity().getCityEntity().getName());
+			
+			
+			CountryDto country = new CountryDto();
+			country.setId(userEntity.getAddressEntity().getCountryEntity().getId());
+			country.setLabel(userEntity.getAddressEntity().getCountryEntity().getName());
+			country.setValue(userEntity.getAddressEntity().getCountryEntity().getName());
+			
+			StateDto state = new StateDto();
+			state.setId(userEntity.getAddressEntity().getStateEntity().getId());
+			state.setLabel(userEntity.getAddressEntity().getStateEntity().getName());
+			state.setValue(userEntity.getAddressEntity().getStateEntity().getName());
+		
+			
+			CityDto city = new CityDto();
+			city.setId(userEntity.getAddressEntity().getCityEntity().getId());
+			city.setLabel(userEntity.getAddressEntity().getCityEntity().getName());
+			city.setValue(userEntity.getAddressEntity().getCityEntity().getName());
+			
+			clientDto.setCountry(country);
+			clientDto.setState(state);
+			clientDto.setCity(city);
+			clientDto.setPassword(userEntity.getPassword());
+			clientDto.setZipCode(userEntity.getAddressEntity().getZipcode());
+		
 			clientDtoList.add(clientDto);
 		}
 		
@@ -179,9 +203,28 @@ public class AdminServiceImpl implements AdminService {
 			BeanUtils.copyProperties(userEntity, staffDto);
 			staffDto.setStaffId(userEntity.getClientId());
 			staffDto.setStaffCategory(userEntity.getUserType());
-			staffDto.setCountry(userEntity.getAddressEntity().getCountryEntity().getName());
-			staffDto.setState(userEntity.getAddressEntity().getStateEntity().getName());
-			staffDto.setCity(userEntity.getAddressEntity().getCityEntity().getName());
+		
+			CountryDto country = new CountryDto();
+			country.setId(userEntity.getAddressEntity().getCountryEntity().getId());
+			country.setLabel(userEntity.getAddressEntity().getCountryEntity().getName());
+			country.setValue(userEntity.getAddressEntity().getCountryEntity().getName());
+			
+			StateDto state = new StateDto();
+			state.setId(userEntity.getAddressEntity().getStateEntity().getId());
+			state.setLabel(userEntity.getAddressEntity().getStateEntity().getName());
+			state.setValue(userEntity.getAddressEntity().getStateEntity().getName());
+		
+			
+			CityDto city = new CityDto();
+			city.setId(userEntity.getAddressEntity().getCityEntity().getId());
+			city.setLabel(userEntity.getAddressEntity().getCityEntity().getName());
+			city.setValue(userEntity.getAddressEntity().getCityEntity().getName());
+			
+			staffDto.setCountry(country);
+			staffDto.setState(state);
+			staffDto.setCity(city);
+		    
+			staffDto.setPassword(userEntity.getPassword());
 			staffDtoList.add(staffDto);
 		}
 		
@@ -443,7 +486,7 @@ public class AdminServiceImpl implements AdminService {
 		}
 		catch(Exception ex)
 		{
-			String errorMessage = "Error in AdminServiceImpl --> updateStaff()";
+			String errorMessage = "Error in AdminServiceImpl --> updateClient()";
 			AppException appException = new AppException("Type : " + ex.getClass()
 			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
 					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);

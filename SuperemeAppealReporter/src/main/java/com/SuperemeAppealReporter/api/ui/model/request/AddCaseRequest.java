@@ -2,6 +2,8 @@ package com.SuperemeAppealReporter.api.ui.model.request;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import groovy.transform.ToString;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,6 +45,6 @@ public class AddCaseRequest {
 	
 	private List<HeadnoteRequest> headNoteRequestList;
 
-	
+	private MultipartFile file;
 	
 }
