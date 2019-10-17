@@ -1,7 +1,0 @@
-package com.SuperemeAppealReporter.api.service.impl;
-
-import com.SuperemeAppealReporter.api.service.SubscriptionPlanService;
-
-public class SubscriptionPlanServiceImpl implements SubscriptionPlanService{
-
-}

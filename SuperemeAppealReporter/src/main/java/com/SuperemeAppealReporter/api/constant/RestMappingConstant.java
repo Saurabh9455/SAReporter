@@ -48,6 +48,8 @@ public interface RestMappingConstant {
 		
 		String DELETE_CLIENT_URI = "/deleteClient";
 		String UPDATE_CLIENT_URI = "/updateClient";
+
+		String SEARCH_CLIENT_URI = "/searchClient";
 	}
 	
 	public interface Master

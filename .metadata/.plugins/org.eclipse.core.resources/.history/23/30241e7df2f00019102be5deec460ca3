@@ -1,0 +1,10 @@
+package com.SuperemeAppealReporter.api.bo;
+
+import java.util.Set;
+
+public class SearchClientBo {
+
+	private Set<String> clientName;
+	private Set<Integer> clientId;
+	private String clientFilter;
+}

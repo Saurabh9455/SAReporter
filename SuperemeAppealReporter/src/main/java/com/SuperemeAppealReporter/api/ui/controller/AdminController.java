@@ -16,6 +16,7 @@ import com.SuperemeAppealReporter.api.bo.DeleteClientBo;
 import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
+import com.SuperemeAppealReporter.api.bo.SearchClientBo;
 import com.SuperemeAppealReporter.api.bo.UpdateClientBo;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 import com.SuperemeAppealReporter.api.bo.UserSignupBo;
@@ -31,6 +32,7 @@ import com.SuperemeAppealReporter.api.ui.model.request.DeleteClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.DeleteStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetClientListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetStaffListRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.SearhClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UpdateClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UpdateStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.AddStaffResponse;
@@ -203,6 +205,25 @@ public class AdminController {
 
 		/** Generating Response **/
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(successResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	}
+	
+	
+	/***********************************Update Staff*********************** */
+	@PostMapping(path =RestMappingConstant.Admin.SEARCH_CLIENT_URI)
+	public ResponseEntity<BaseApiResponse> searchClient(@Valid @RequestBody SearhClientRequest searchClientRequest,
+			@RequestParam(name = AppConstant.CommonConstant.PAGE_NUMBER, defaultValue = "1") int pageNumber,
+			@RequestParam(name = AppConstant.CommonConstant.PAGE_LIMIT, defaultValue = "8") int perPageLimit){
+		
+		/** Converting request to bo **/
+		SearchClientBo searchClientBo = AdminConverter
+				.convertSearchClientRequestToSearchClientBo(searchClientRequest);
+		
+		/** Calling service **/
+		CommonPaginationResponse commonPaginationResponse =  adminService.searchClient(searchClientBo, pageNumber, perPageLimit);
+
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonPaginationResponse);
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
 	}
 }

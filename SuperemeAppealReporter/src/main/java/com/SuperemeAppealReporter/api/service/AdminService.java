@@ -4,6 +4,7 @@ import com.SuperemeAppealReporter.api.bo.DeleteClientBo;
 import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
+import com.SuperemeAppealReporter.api.bo.SearchClientBo;
 import com.SuperemeAppealReporter.api.bo.UpdateClientBo;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
@@ -24,4 +25,6 @@ public interface AdminService {
 	public CommonMessageResponse deleteClient(DeleteClientBo deleteClientBo);
 
 	public CommonMessageResponse updateClient(UpdateClientBo updateClientBo);
+
+	public CommonPaginationResponse searchClient(SearchClientBo searchClientBo, int pageNumber, int perPageLimit);
 }

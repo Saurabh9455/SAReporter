@@ -2,8 +2,10 @@ package com.SuperemeAppealReporter.api.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
@@ -19,6 +21,7 @@ import com.SuperemeAppealReporter.api.bo.DeleteClientBo;
 import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
+import com.SuperemeAppealReporter.api.bo.SearchClientBo;
 import com.SuperemeAppealReporter.api.bo.UpdateClientBo;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 import com.SuperemeAppealReporter.api.constant.AppConstant;
@@ -450,6 +453,95 @@ public class AdminServiceImpl implements AdminService {
 		updateResponse.setMsg(ClientMessage.CLIENT_UPDATED);
 		return updateResponse;
 	
+	}
+
+	@Override
+	public CommonPaginationResponse searchClient(SearchClientBo searchClientBo, int pageNumber, int perPageLimit) {
+		
+		String clientNameOrId = searchClientBo.getClientNameOrId();	
+		String clientCategory = searchClientBo.getClientCategory();
+		
+
+
+		CommonPaginationResponse commonPaginationResponse = null;
+		try
+		{
+				
+		/**This if block is executed if the user category is different**/
+		if(! (clientCategory.equals("ACTIVE") || clientCategory.equals("INACTIVE") || clientCategory.equals("ALL")))
+        {
+			throw new AppException(ErrorConstant.InvalidClientCategoryForGetClientListError.ERROR_TYPE,
+					ErrorConstant.InvalidClientCategoryForGetClientListError.ERROR_CODE,
+					ErrorConstant.InvalidClientCategoryForGetClientListError.ERROR_MESSAGE);
+		}
+		
+		String userType = UserType.USER.toString();
+		
+
+		if (pageNumber > 0)
+			pageNumber = pageNumber - 1;
+		
+		Pageable pageableRequest = PageRequest.of(pageNumber, perPageLimit);
+		Page<UserEntity> userEntityPage = null;
+		List<String> subsriptionTypeList = new ArrayList<String>();
+		if(clientCategory.equals("ALL"))
+		{
+			subsriptionTypeList.add("0");
+			subsriptionTypeList.add("1");
+			
+		}
+		else if(clientCategory.equals("ACTIVE"))
+		{
+			subsriptionTypeList.add("1");
+			userEntityPage = adminDao.getActiveUserEntityPageByUserType(pageableRequest, userType);
+		}
+		else if(clientCategory.equals("INACTIVE"))
+		{
+			subsriptionTypeList.add("0");
+			userEntityPage = adminDao.getInActiveUserEntityPageByUserType(pageableRequest, userType);
+		}
+		
+		userEntityPage = adminDao.getUserEntityPageByUserTypeAndSubscriptionTypeAndByClientNameOrId(pageableRequest, userType,clientNameOrId,subsriptionTypeList);
+		List<UserEntity> userEntityList = userEntityPage.getContent();
+		
+		/**converting user entity list to client entity dto**/
+		List<ClientDto> clientDtoList = new ArrayList<ClientDto> ();
+		for(UserEntity userEntity : userEntityList)
+		{
+			ClientDto clientDto = new ClientDto();
+			BeanUtils.copyProperties(userEntity, clientDto);
+			clientDto.setCountry(userEntity.getAddressEntity().getCountryEntity().getName());
+			clientDto.setState(userEntity.getAddressEntity().getStateEntity().getName());
+			clientDto.setCity(userEntity.getAddressEntity().getCityEntity().getName());
+			clientDtoList.add(clientDto);
+		}
+		
+		commonPaginationResponse = new CommonPaginationResponse();
+		commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(userEntityPage.getTotalPages());
+		commonPaginationResponse.setOjectList(clientDtoList);
+		
+		
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in AdminServiceImpl --> searchClient()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
+		
+		return commonPaginationResponse;
+	
+		
+		
+		
 	}
 
 }

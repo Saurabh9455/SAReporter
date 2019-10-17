@@ -24,4 +24,7 @@ public interface AdminDao {
 
 	public void deleteClientById(Integer id);
 
+	public Page<UserEntity> getUserEntityPageByUserTypeAndSubscriptionTypeAndByClientNameOrId(Pageable pageableRequest,
+			String userType, String clientNameOrId, List<String> subsriptionTypeList);
+
 }

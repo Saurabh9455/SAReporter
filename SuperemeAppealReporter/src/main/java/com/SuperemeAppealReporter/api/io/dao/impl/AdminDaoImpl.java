@@ -71,5 +71,13 @@ public class AdminDaoImpl implements AdminDao {
 		userEntity.get().setActive(false);
 	}
 
+	@Override
+	public Page<UserEntity> getUserEntityPageByUserTypeAndSubscriptionTypeAndByClientNameOrId(Pageable pageableRequest,
+			String userType, String clientNameOrId, List<String> subsriptionTypeList) {
+		Page<UserEntity> userEntityPage = userRepository.getUserEntityPageForAllStaff(pageableRequest, userType,clientNameOrId,subsriptionTypeList);
+		
+		return userEntityPage;
+	}
+
 
 }

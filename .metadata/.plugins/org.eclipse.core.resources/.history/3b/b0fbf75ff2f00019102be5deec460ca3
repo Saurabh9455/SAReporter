@@ -1,0 +1,10 @@
+package com.SuperemeAppealReporter.api.ui.model.request;
+
+import java.util.Set;
+
+public class SearhClientRequest {
+
+	private Set<String> clientName;
+	private Set<Integer> clientId;
+	private String clientFilter;
+}
