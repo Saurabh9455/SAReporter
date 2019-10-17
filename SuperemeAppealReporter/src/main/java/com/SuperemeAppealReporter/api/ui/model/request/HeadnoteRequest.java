@@ -31,5 +31,6 @@ public class HeadnoteRequest {
 	
 	private String headnote;
 	
+	private int paragraph;
 	
 }

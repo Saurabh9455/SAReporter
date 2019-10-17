@@ -2,6 +2,10 @@ package com.SuperemeAppealReporter.api.bo;
 
 import java.util.List;
 
+import javax.mail.Multipart;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.SuperemeAppealReporter.api.ui.model.request.AdditionalAppellantRespondentRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.CaseHistoryRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.CasesRefferedRequest;
@@ -51,4 +55,6 @@ public class AddCaseBo {
 	private List<CasesRefferedRequest> casesReferredRequestList;
 	
 	private List<HeadnoteRequest> headNoteRequestList;
+	
+	private MultipartFile file;
 }

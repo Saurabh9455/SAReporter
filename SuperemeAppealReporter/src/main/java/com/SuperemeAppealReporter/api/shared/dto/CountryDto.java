@@ -1,4 +1,4 @@
-package com.SuperemeAppealReporter.api.ui.model.request;
+package com.SuperemeAppealReporter.api.shared.dto;
 
 import groovy.transform.ToString;
 import lombok.AllArgsConstructor;
@@ -6,15 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CourtDetailRequest {
+public class CountryDto {
 
-	private String allJudges;
-	private int courtBenchId;
-	private int courtBranchId;
-	private int courtId;
+	private int id;
+	private String label;
+	private String value;
 }

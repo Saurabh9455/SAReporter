@@ -41,4 +41,9 @@ public interface SucessMessage {
 		String STAFF_UPDATED = "Staff updated successfully.";
 		String STAFF_DELETED = "Staff deleted successfully.";
 	}
+	
+	public  interface CaseMessage
+	{
+		String CASE_CREATED_SUCESS = "Case successfully created.";
+	}
 }

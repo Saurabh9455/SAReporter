@@ -48,6 +48,9 @@ public class HeadnoteEntity extends BaseEntity{
 	@Column(name = "headnote", nullable = true)
 	private String headnote;
 	
+	@Column(name = "paragrap", nullable = true)
+	private int paragraph;
+	
 	
 	
 	

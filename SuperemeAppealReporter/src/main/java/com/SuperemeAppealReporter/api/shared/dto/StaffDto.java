@@ -20,8 +20,13 @@ public class StaffDto {
 	private String desgination;
 	private String staffCategory;
 	private String mobile;
-	private String city;
+/*	private String city;
 	private String state;
-	private String country;
+	private String country;*/
+	private String password;
+	private StateDto state;
+	private CountryDto country;
+	private CityDto city;
+	
 	private boolean isSubscriptionActive;
 }

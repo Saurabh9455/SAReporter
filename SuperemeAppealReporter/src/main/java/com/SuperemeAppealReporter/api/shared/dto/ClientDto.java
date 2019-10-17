@@ -19,9 +19,14 @@ public class ClientDto {
 	private int clientId;
 	private String desgination;
 	private String mobile;
-	private String city;
+/*	private String city;
 	private String state;
-	private String country;
+	private String country;*/
+	private StateDto state;
+	private CountryDto country;
+	private CityDto city;
+	private String password;
 	private boolean isSubscriptionActive;
+	private String zipCode;
 	
 }

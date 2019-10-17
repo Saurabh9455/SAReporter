@@ -149,4 +149,11 @@ public interface ErrorConstant {
 		String INVALID_CLIENT_ERROR_MESSAGE = "This client does not belongs to user.";
 		String CLIENT_DEACTIVATED_ERROR_MESSAGE = "Client already deactivated.";
 	}
+	
+	public interface FileUploadError
+	{
+		String ERROR_CODE = "117";
+		String ERROR_TYPE = "File Upload ERROR";
+		String ERROR_MESSAGE = "Unable to upload case file.";
+	}
 }
