@@ -42,16 +42,16 @@ public interface SucessMessage {
 		String STAFF_DELETED = "Staff deleted successfully.";
 	}
 	
-
+<<<<<<< HEAD
 	public  interface CaseMessage
 	{
 		String CASE_CREATED_SUCESS = "Case successfully created.";
-	}
+=======
 	public interface SubscriptionMessage
 	{
 		String PLAN_ADDED = "Subscription plan added successfully.";
 		String PLAN_DELETED = "Subscription plan deleted successfully.";
 		
-
+>>>>>>> aca7745c85d73c16bf9499a4d5ac44a1eadad233
 	}
 }

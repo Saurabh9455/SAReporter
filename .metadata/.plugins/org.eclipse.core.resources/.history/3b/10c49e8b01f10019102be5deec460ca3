@@ -28,8 +28,8 @@ public interface UserRepository extends PagingAndSortingRepository<UserEntity, I
 	@Query(value = "select * from user where type in ?1 and is_active = 1 order by created_date desc",nativeQuery = true)
 	Page<UserEntity> getUserEntityPageForAllStaff(List<String> staffType,Pageable pageableRequest);
 
-	@Query(value = "select * from user where type = ?1 and is_active = 1 and (name like %?2% or client_id like %?2%) and is_subscription_active in ?3 ",nativeQuery = true)
+	@Query(value = "select * from user where type = ?1 and is_active = 1 and (name like '%MANISH%' or client_id like '%MANISH%') and is_subscription_active in ?3 ",nativeQuery = true)
 	Page<UserEntity> getUserEntityPageByUserTypeAndSubscriptionTypeAndByClientNameOrId( String userType, String clientNameOrId,
-			List<Integer> subsriptionTypeList,Pageable pageableRequest);
+			List<String> subsriptionTypeList,Pageable pageableRequest);
 
 }

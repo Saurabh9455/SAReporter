@@ -527,17 +527,17 @@ public class AdminServiceImpl implements AdminService {
 		List<Integer> subsriptionTypeList = new ArrayList<Integer>();
 		if(clientCategory.equals("ALL"))
 		{
-			subsriptionTypeList.add(0);
-			subsriptionTypeList.add(1);
+			subsriptionTypeList.add("0");
+			subsriptionTypeList.add("1");
 			
 		}
 		else if(clientCategory.equals("ACTIVE"))
 		{
-			subsriptionTypeList.add(1);
+			subsriptionTypeList.add("1");
 		}
 		else if(clientCategory.equals("INACTIVE"))
 		{
-			subsriptionTypeList.add(0);
+			subsriptionTypeList.add("0");
 		}
 		
 		userEntityPage = adminDao.getUserEntityPageByUserTypeAndSubscriptionTypeAndByClientNameOrId(pageableRequest, userType,clientNameOrId,subsriptionTypeList);

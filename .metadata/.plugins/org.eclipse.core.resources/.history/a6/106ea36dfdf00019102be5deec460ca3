@@ -156,7 +156,6 @@ public interface ErrorConstant {
 		String ERROR_TYPE = "File Upload ERROR";
 		String ERROR_MESSAGE = "Unable to upload case file.";
 
-	}
 	public interface InvalidPlanTypeError
 	{
 		String ERROR_CODE = "203";
@@ -168,8 +167,7 @@ public interface ErrorConstant {
 		String ERROR_CODE = "204";
 		String ERROR_TYPE = "Invalid plan id ERROR";
 		String ERROR_MESSAGE = "Plan id does not exists.";
-		String PLAN_DEACTIVATED_ERROR_MESSAGE = "This plan is already deactivated";
+		String PLAN_DEACTIVATED_ERROR_MESSAGE = "This plan already deactivated";
 
 	}
-	
 }

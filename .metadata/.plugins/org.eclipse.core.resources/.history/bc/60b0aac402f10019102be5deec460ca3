@@ -537,7 +537,7 @@ public class AdminServiceImpl implements AdminService {
 		}
 		else if(clientCategory.equals("INACTIVE"))
 		{
-			subsriptionTypeList.add(0);
+			subsriptionTypeList.add("0");
 		}
 		
 		userEntityPage = adminDao.getUserEntityPageByUserTypeAndSubscriptionTypeAndByClientNameOrId(pageableRequest, userType,clientNameOrId,subsriptionTypeList);

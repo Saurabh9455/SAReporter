@@ -2,8 +2,10 @@ package com.SuperemeAppealReporter.api.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
@@ -524,20 +526,22 @@ public class AdminServiceImpl implements AdminService {
 		
 		Pageable pageableRequest = PageRequest.of(pageNumber, perPageLimit);
 		Page<UserEntity> userEntityPage = null;
-		List<Integer> subsriptionTypeList = new ArrayList<Integer>();
+		List<String> subsriptionTypeList = new ArrayList<String>();
 		if(clientCategory.equals("ALL"))
 		{
-			subsriptionTypeList.add(0);
-			subsriptionTypeList.add(1);
+			subsriptionTypeList.add("0");
+			subsriptionTypeList.add("1");
 			
 		}
 		else if(clientCategory.equals("ACTIVE"))
 		{
-			subsriptionTypeList.add(1);
+			subsriptionTypeList.add("1");
+			userEntityPage = adminDao.getActiveUserEntityPageByUserType(pageableRequest, userType);
 		}
 		else if(clientCategory.equals("INACTIVE"))
 		{
-			subsriptionTypeList.add(0);
+			subsriptionTypeList.add("0");
+			userEntityPage = adminDao.getInActiveUserEntityPageByUserType(pageableRequest, userType);
 		}
 		
 		userEntityPage = adminDao.getUserEntityPageByUserTypeAndSubscriptionTypeAndByClientNameOrId(pageableRequest, userType,clientNameOrId,subsriptionTypeList);
@@ -549,30 +553,9 @@ public class AdminServiceImpl implements AdminService {
 		{
 			ClientDto clientDto = new ClientDto();
 			BeanUtils.copyProperties(userEntity, clientDto);
-			
-			
-			CountryDto country = new CountryDto();
-			country.setId(userEntity.getAddressEntity().getCountryEntity().getId());
-			country.setLabel(userEntity.getAddressEntity().getCountryEntity().getName());
-			country.setValue(userEntity.getAddressEntity().getCountryEntity().getName());
-			
-			StateDto state = new StateDto();
-			state.setId(userEntity.getAddressEntity().getStateEntity().getId());
-			state.setLabel(userEntity.getAddressEntity().getStateEntity().getName());
-			state.setValue(userEntity.getAddressEntity().getStateEntity().getName());
-		
-			
-			CityDto city = new CityDto();
-			city.setId(userEntity.getAddressEntity().getCityEntity().getId());
-			city.setLabel(userEntity.getAddressEntity().getCityEntity().getName());
-			city.setValue(userEntity.getAddressEntity().getCityEntity().getName());
-			
-			clientDto.setCountry(country);
-			clientDto.setState(state);
-			clientDto.setCity(city);
-			clientDto.setPassword(userEntity.getPassword());
-			clientDto.setZipCode(userEntity.getAddressEntity().getZipcode());
-		
+			clientDto.setCountry(userEntity.getAddressEntity().getCountryEntity().getName());
+			clientDto.setState(userEntity.getAddressEntity().getStateEntity().getName());
+			clientDto.setCity(userEntity.getAddressEntity().getCityEntity().getName());
 			clientDtoList.add(clientDto);
 		}
 		
@@ -588,7 +571,6 @@ public class AdminServiceImpl implements AdminService {
 		}
 		catch(Exception ex)
 		{
-			ex.printStackTrace();
 			String errorMessage = "Error in AdminServiceImpl --> searchClient()";
 			AppException appException = new AppException("Type : " + ex.getClass()
 			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,

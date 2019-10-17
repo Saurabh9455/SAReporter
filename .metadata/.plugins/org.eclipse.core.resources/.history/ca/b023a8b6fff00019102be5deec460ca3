@@ -2,8 +2,10 @@ package com.SuperemeAppealReporter.api.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
@@ -524,20 +526,22 @@ public class AdminServiceImpl implements AdminService {
 		
 		Pageable pageableRequest = PageRequest.of(pageNumber, perPageLimit);
 		Page<UserEntity> userEntityPage = null;
-		List<Integer> subsriptionTypeList = new ArrayList<Integer>();
+		List<String> subsriptionTypeList = new ArrayList<String>();
 		if(clientCategory.equals("ALL"))
 		{
-			subsriptionTypeList.add(0);
-			subsriptionTypeList.add(1);
+			subsriptionTypeList.add("0");
+			subsriptionTypeList.add("1");
 			
 		}
 		else if(clientCategory.equals("ACTIVE"))
 		{
-			subsriptionTypeList.add(1);
+			subsriptionTypeList.add("1");
+			userEntityPage = adminDao.getActiveUserEntityPageByUserType(pageableRequest, userType);
 		}
 		else if(clientCategory.equals("INACTIVE"))
 		{
-			subsriptionTypeList.add(0);
+			subsriptionTypeList.add("0");
+			userEntityPage = adminDao.getInActiveUserEntityPageByUserType(pageableRequest, userType);
 		}
 		
 		userEntityPage = adminDao.getUserEntityPageByUserTypeAndSubscriptionTypeAndByClientNameOrId(pageableRequest, userType,clientNameOrId,subsriptionTypeList);
