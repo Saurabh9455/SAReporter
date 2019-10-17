@@ -1,0 +1,57 @@
+package com.SuperemeAppealReporter.api.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.SuperemeAppealReporter.api.bo.AddPlanBo;
+import com.SuperemeAppealReporter.api.constant.ErrorConstant;
+import com.SuperemeAppealReporter.api.constant.SucessMessage.SubscriptionMessage;
+import com.SuperemeAppealReporter.api.converter.AdminConverter;
+import com.SuperemeAppealReporter.api.enums.SubscriptionType;
+import com.SuperemeAppealReporter.api.exception.type.AppException;
+import com.SuperemeAppealReporter.api.io.dao.SubscriptionPlanDao;
+import com.SuperemeAppealReporter.api.io.entity.SubscriptionPlanEntity;
+import com.SuperemeAppealReporter.api.service.SubscriptionPlanService;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
+
+@Service
+public class SubscriptionPlanServiceImpl implements SubscriptionPlanService{
+
+	@Autowired SubscriptionPlanDao subscriptionPlanDao;
+	
+	@Override
+	public CommonMessageResponse addPlan(AddPlanBo addPlanBo) {
+		
+		CommonMessageResponse response = new CommonMessageResponse();
+	
+		/******************Checking validation for plan duration********************/
+		try{
+		String plantype = addPlanBo.getSubscriptionType();
+		if(!(plantype.equals(SubscriptionType.DAILY.toString()) || plantype.equals(SubscriptionType.MONTHLY.toString()) || plantype.equals(SubscriptionType.WEEKLY.toString()) || plantype.equals(SubscriptionType.YEARLY.toString())))
+		{
+			throw new AppException(ErrorConstant.InvalidPlanTypeError.ERROR_TYPE,
+					ErrorConstant.InvalidPlanTypeError.ERROR_CODE,
+					ErrorConstant.InvalidPlanTypeError.ERROR_MESSAGE);
+		}
+		/************************Converting Bo into Entity***************************/
+		SubscriptionPlanEntity planEntity = AdminConverter.convertAddPlanBoToPlanEntity(addPlanBo);
+		
+		
+		subscriptionPlanDao.savePlan(planEntity);
+		}
+		catch(AppException ae){
+			throw ae;
+		}
+		catch(Exception e)
+		{
+			String errorMessage = "Error in SubscriptionPlanServiceImpl --> addPlan()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+		}
+		response.setMsg(SubscriptionMessage.PLAN_ADDED);
+		return response;
+	}
+
+}

@@ -1,0 +1,6 @@
+package com.SuperemeAppealReporter.api.ui.model.request;
+
+public class GetPlanListRequest {
+
+	private String planId;
+}

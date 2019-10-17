@@ -75,4 +75,11 @@ public interface RestMappingConstant {
 		String DELETE_STAFF_URI = "/deleteStaff";
 		String UPDATE_STAFF_URI = "updateStaff";
 	}
+	
+	public interface SubscriptionPlan
+	{
+		String ADD_PLAN_URI = "/addPlan";
+		String DELETE_PLAN_URI = "/deletePlan";
+		String GET_PLAN_URI = "/getPlanList";	
+	}
 }

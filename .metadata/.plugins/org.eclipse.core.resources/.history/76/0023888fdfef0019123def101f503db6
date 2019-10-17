@@ -1,0 +1,17 @@
+package com.SuperemeAppealReporter.api.ui.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.SuperemeAppealReporter.api.constant.RestMappingConstant;
+import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
+
+public class SubscriptionPlanController {
+
+	
+	@PostMapping(path = RestMappingConstant.SubscriptionPlan.ADD_PLAN_URI)
+	public ResponseEntity<BaseApiResponse> addPlan(){
+		
+	}
+	
+}

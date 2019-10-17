@@ -4,19 +4,26 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 
+import com.SuperemeAppealReporter.api.bo.AddPlanBo;
 import com.SuperemeAppealReporter.api.bo.AddStaffBo;
 import com.SuperemeAppealReporter.api.bo.DeleteClientBo;
+import com.SuperemeAppealReporter.api.bo.DeletePlanBo;
 import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
+import com.SuperemeAppealReporter.api.bo.GetPlanListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
 import com.SuperemeAppealReporter.api.bo.UpdateClientBo;
 import com.SuperemeAppealReporter.api.bo.UserSignupBo;
+import com.SuperemeAppealReporter.api.io.entity.SubscriptionPlanEntity;
 import com.SuperemeAppealReporter.api.ui.model.request.AddClientRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.AddPlanRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.AddStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.DeleteClientRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.DeletePlanRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.DeleteStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UpdateStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetClientListRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.GetPlanListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetStaffListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UpdateClientRequest;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
@@ -70,5 +77,29 @@ public class AdminConverter {
 		UpdateClientBo updateClientBo = new UpdateClientBo();
 		BeanUtils.copyProperties(updateClientRequest, updateClientBo);
 		return updateClientBo;
+	}
+
+	public static AddPlanBo convertAddPlanRequestToAddPlanBo(AddPlanRequest addPlanRequest) {
+		AddPlanBo addPlanBo = new AddPlanBo();
+		BeanUtils.copyProperties(addPlanRequest, addPlanBo);
+		return addPlanBo;
+	}
+
+	public static SubscriptionPlanEntity convertAddPlanBoToPlanEntity(AddPlanBo addPlanBo) {
+		SubscriptionPlanEntity planEntity = new SubscriptionPlanEntity();
+		BeanUtils.copyProperties(addPlanBo, planEntity);
+		return planEntity;
+	}
+
+	public static DeletePlanBo convertDeletePlanRequestToDeletePlanBo(DeletePlanRequest deletePlanRequest) {
+		DeletePlanBo planBo = new DeletePlanBo();
+		BeanUtils.copyProperties(deletePlanRequest, planBo);
+		return planBo;
+	}
+
+	public static GetPlanListBo convertDeleteGetPlanListRequestToGetPlanListBo(GetPlanListRequest getPlanListRequest) {
+		GetPlanListBo planBo = new GetPlanListBo();
+		BeanUtils.copyProperties(getPlanListRequest, planBo);
+		return planBo;
 	}
 }

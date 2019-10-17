@@ -149,4 +149,17 @@ public interface ErrorConstant {
 		String INVALID_CLIENT_ERROR_MESSAGE = "This client does not belongs to user.";
 		String CLIENT_DEACTIVATED_ERROR_MESSAGE = "Client already deactivated.";
 	}
+	public interface InvalidPlanTypeError
+	{
+		String ERROR_CODE = "203";
+		String ERROR_TYPE = "Invalid plan type ERROR";
+		String ERROR_MESSAGE = "Please select a valid plan type.";
+	}
+	public interface InvalidPlanIdError
+	{
+		String ERROR_CODE = "204";
+		String ERROR_TYPE = "Invalid plan id ERROR";
+		String ERROR_MESSAGE = "Plan id does not exists.";
+		String PLAN_DEACTIVATED_ERROR_MESSAGE = "This plan already deactivated";
+	}
 }

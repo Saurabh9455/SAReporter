@@ -41,4 +41,11 @@ public interface SucessMessage {
 		String STAFF_UPDATED = "Staff updated successfully.";
 		String STAFF_DELETED = "Staff deleted successfully.";
 	}
+	
+	public interface SubscriptionMessage
+	{
+		String PLAN_ADDED = "Subscription plan added successfully.";
+		String PLAN_DELETED = "Subscription plan deleted successfully.";
+		
+	}
 }

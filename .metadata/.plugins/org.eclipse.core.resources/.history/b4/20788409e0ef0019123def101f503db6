@@ -1,0 +1,10 @@
+package com.SuperemeAppealReporter.api.bo;
+
+public class AddPlanBo {
+
+	private String subscriptionType;
+	private String subscriptionName;
+	private String subscriptionCost;
+	private String subscriptionDescription;
+	private String subscriptionParellelUserCount;
+}

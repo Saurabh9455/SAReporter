@@ -1,8 +1,6 @@
 package com.SuperemeAppealReporter.api.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.SuperemeAppealReporter.api.constant.RestMappingConstant;
 import com.SuperemeAppealReporter.api.service.UserService;
@@ -86,6 +83,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/SuperemeAppealReporter/v1/api/admin/updateStaff",
                 "/SuperemeAppealReporter/v1/api/admin/deleteClient",
                 "/SuperemeAppealReporter/v1/api/admin/updateClient",
+                "/SuperemeAppealReporter/v1/api/admin/addPlan",
+                "/SuperemeAppealReporter/v1/api/admin/deletePlan",
+                "/SuperemeAppealReporter/v1/api/admin/getPlanList",
 				"/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**",
 				"/swagger-ui.html", "/webjars/**"); // skip security entirely
 	}

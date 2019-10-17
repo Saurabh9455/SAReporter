@@ -142,9 +142,6 @@ public class AdminServiceImpl implements AdminService {
 		try
 		{
 		RoleEntity roleEntity = null;
-				
-				
-		
 				List<String> staffType = new ArrayList<String>();
 	
 		if (pageNumber > 0)
