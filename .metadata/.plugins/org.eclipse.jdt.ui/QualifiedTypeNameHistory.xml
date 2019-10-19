@@ -7,7 +7,6 @@
 <fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.bo.DeleteStaffBo"/>
 <fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.constant.SucessMessage.ClientMessage"/>
 <fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.constant.SucessMessage.StaffMessage"/>
-<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.enums.UserType"/>
 <fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.constant.AppConstant.Mail"/>
 <fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.pojo.Mail"/>
 <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.PostMapping"/>
@@ -30,13 +29,18 @@
 <fullyQualifiedTypeName name="java.lang.Exception"/>
 <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RestController"/>
 <fullyQualifiedTypeName name="javax.transaction.Transactional"/>
-<fullyQualifiedTypeName name="javax.validation.constraints.NotEmpty"/>
 <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.GetMapping"/>
 <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestParam"/>
 <fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.ui.model.request.GetPlanListRequest"/>
 <fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.bo.GetPlanListBo"/>
-<fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.io.entity.SubscriptionPlanEntity"/>
 <fullyQualifiedTypeName name="org.springframework.data.jpa.repository.Query"/>
 <fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.shared.dto.PlanListDto"/>
+<fullyQualifiedTypeName name="java.util.HashSet"/>
+<fullyQualifiedTypeName name="java.util.Set"/>
+<fullyQualifiedTypeName name="com.SuperemeAppealReporter.api.enums.UserType"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
+<fullyQualifiedTypeName name="javax.validation.constraints.NotBlank"/>
+<fullyQualifiedTypeName name="javax.validation.constraints.NotEmpty"/>
 </qualifiedTypeNameHistroy>

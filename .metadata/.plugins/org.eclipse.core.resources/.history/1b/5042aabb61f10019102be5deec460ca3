@@ -17,6 +17,5 @@ public class SearhClientRequest {
 
 	@NotEmpty(message = "Please provide either client name or client id.")
 	private String clientNameOrId;	
-	@NotEmpty(message = "Please provide client category.")
 	private String clientCategory;
 }
