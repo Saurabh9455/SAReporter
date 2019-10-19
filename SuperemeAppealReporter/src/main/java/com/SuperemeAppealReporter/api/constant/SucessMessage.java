@@ -54,4 +54,9 @@ public interface SucessMessage {
 		
 
 	}
+	
+	public interface FileUploadSuccess
+	{
+		String FILE_UPLOAD_SUCCESS = "PDF File Uploaded Successfully";
+	}
 }

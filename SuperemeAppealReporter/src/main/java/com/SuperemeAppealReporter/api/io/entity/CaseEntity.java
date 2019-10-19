@@ -25,7 +25,7 @@ public class CaseEntity extends BaseEntity {
 
 
 	@Column(name = "doc_id", nullable = false)
-	private long docId;
+	private int docId;
 	
 	
 	@Column(name = "appellant", nullable = true)
@@ -63,16 +63,16 @@ public class CaseEntity extends BaseEntity {
 	
 	/**------------------------Mappings-------------------------**/
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private CourtDetailEntity courtDetailEntity;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private CitationEntity citationEntity;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntity")
 	private List<AdditionalAppellantRespondentEntity> additionalAppellantRespondentEntitySet;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private CaseHistoryEntity caseHistoryEntity;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntity")

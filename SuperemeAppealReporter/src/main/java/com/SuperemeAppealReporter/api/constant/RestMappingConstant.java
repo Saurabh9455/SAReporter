@@ -50,6 +50,14 @@ public interface RestMappingConstant {
 		String UPDATE_CLIENT_URI = "/updateClient";
 
 		String SEARCH_CLIENT_URI = "/searchClient";
+		
+		String ADD_CASE_URI = "/addCase";
+		String FULL_ADD_CASE_URI = "/SuperemeAppealReporter/v1/api/admin/addCase";
+		
+		String UPLOAD_PDF_CASE_URI = "/uploadCasePf";
+		String FULL_UPLOAD_PDF_CASE_URI = "/SuperemeAppealReporter/v1/api/admin/uploadCasePf";
+		
+		
 	}
 	
 	public interface Master
@@ -88,4 +96,6 @@ public interface RestMappingConstant {
 		String DELETE_PLAN_URI = "/deletePlan";
 		String GET_PLAN_URI = "/getPlanList";	
 	}
+	
+	
 }

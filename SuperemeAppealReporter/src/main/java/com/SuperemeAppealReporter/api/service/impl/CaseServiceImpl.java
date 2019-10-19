@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.SuperemeAppealReporter.api.bo.AddCaseBo;
+import com.SuperemeAppealReporter.api.bo.UploadCasePdfBo;
 import com.SuperemeAppealReporter.api.constant.ErrorConstant;
 import com.SuperemeAppealReporter.api.constant.SucessMessage;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
@@ -117,7 +118,8 @@ public class CaseServiceImpl implements CaseService{
 		                      = new ArrayList<AdditionalAppellantRespondentEntity>();
 		List<AdditionalAppellantRespondentRequest> additionalAppellantRespondentRequestList
 		                  = addCaseBo.getAdditionalAppellantRespondentRequestList();
-		
+		if(additionalAppellantRespondentRequestList!=null)
+		{
 		for(AdditionalAppellantRespondentRequest req : additionalAppellantRespondentRequestList)
 		{
 			AdditionalAppellantRespondentEntity additionalAppellantRespondentEntity =
@@ -127,6 +129,7 @@ public class CaseServiceImpl implements CaseService{
 			additionalAppellantRespondentEntity.setRespondent(req.getRespondent());
 			additionalAppellantRespondentEntity.setAppellant(req.getAppellant());
 			additionalAppellantRespondentEntityList.add(additionalAppellantRespondentEntity);
+		}
 		}
 		
 		/**Creating Case History Entity**/
@@ -198,12 +201,16 @@ public class CaseServiceImpl implements CaseService{
 		String respondent = addCaseBo.getRespondent();
 		
 		/**Saving the case Pdf file**/
-		String originalPdfPath = saveCasePdfFile(addCaseBo.getFile(),docId);
+/*		
+		String originalPdfPath = saveCasePdfFile(addCaseBo.getFile(),docId);*/
         
 		
 		/**creating case entity**/
 		CaseEntity caseEntity = new CaseEntity();
+		
+		if(additionalAppellantRespondentEntityList.size()>0)
 		caseEntity.setAdditionalAppellantRespondentEntitySet(additionalAppellantRespondentEntityList);
+		
 		caseEntity.setAppellant(appellant);
 		caseEntity.setCaseHistoryEntity(caseHistoryEntity);
 		caseEntity.setCaseResult(caseResult);
@@ -215,9 +222,27 @@ public class CaseServiceImpl implements CaseService{
 		caseEntity.setJudgementOrder(judgementOrder);
 		caseEntity.setJudgementType(judgementType);
 		caseEntity.setJudgeName(judgeName);
-		caseEntity.setOriginalPdfPath(originalPdfPath);
+		caseEntity.setOriginalPdfPath(null);
 		caseEntity.setRemarkable(remarkable);
 		caseEntity.setRespondent(respondent);
+		
+		
+		for(HeadnoteEntity headnoteEntity : headnoteEntityList)
+		{
+			headnoteEntity.setCaseEntity(caseEntity);
+			
+		}
+		
+		for(CasesRefferedEntity casesReferredEntity : casesRefferedEntityList)
+		{
+			casesReferredEntity.setCaseEntity(caseEntity);
+		}
+		
+  for (AdditionalAppellantRespondentEntity additionalAppellantRespondentEntity : additionalAppellantRespondentEntityList) {
+
+	  additionalAppellantRespondentEntity.setCaseEntity(caseEntity);
+	  
+			}
 		
         /**saving case entity**/
 		caseRepository.save(caseEntity);
@@ -231,7 +256,9 @@ public class CaseServiceImpl implements CaseService{
 			throw appException;
 		}
 		catch(Exception ex)
+		
 		{
+			ex.printStackTrace();
 			String errorMessage = "Error in CaseServiceImpl --> addCaseService()";
 			AppException appException = new AppException("Type : " + ex.getClass()
 			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
@@ -252,7 +279,7 @@ public class CaseServiceImpl implements CaseService{
 		    InputStream inputStream = null;
 	        OutputStream outputStream = null;
 	        String fileName = "CASE_"+docId;
-	        File newFile = new File("/resources/assets/casepdfs" + fileName);
+	        File newFile = new File("src/main/resources/assets/casepdfs/" + fileName);
 	        inputStream = file.getInputStream();
 
             if (!newFile.exists()) {
@@ -272,6 +299,7 @@ public class CaseServiceImpl implements CaseService{
 		}
             catch (IOException e) {
             	
+            	e.printStackTrace();
 				AppException appException
 				 = new AppException(ErrorConstant.FileUploadError.ERROR_TYPE,
 						 ErrorConstant.FileUploadError.ERROR_CODE,
@@ -280,6 +308,51 @@ public class CaseServiceImpl implements CaseService{
 			}
 	
 	
+	}
+
+	@Override
+	public CommonMessageResponse uploadCasePdf(UploadCasePdfBo uploadCasePdfBo, int docId) {
+		
+		CommonMessageResponse commonMessageResponse = null;
+		
+		try
+		{
+		
+		String originalPdfPath = saveCasePdfFile(uploadCasePdfBo.getFile(),docId);
+		
+		/**updating the case pdf path in the case table**/
+		CaseEntity caseEntity = caseRepository.findByDocId(docId);
+		
+		if(caseEntity==null)
+		{
+			throw new AppException(ErrorConstant.FileUploadError.ERROR_TYPE,ErrorConstant.FileUploadError.ERROR_CODE,
+					ErrorConstant.FileUploadError.ERROR_MESSAGE_INVALID_DOCID);
+		}
+		
+		caseEntity.setOriginalPdfPath(originalPdfPath);
+		
+		/**creating and returning common message response**/
+		commonMessageResponse = new CommonMessageResponse(SucessMessage.FileUploadSuccess.FILE_UPLOAD_SUCCESS);
+	
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in CaseServiceImpl --> uploadCasePdf()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
+		
+		return commonMessageResponse;
 	}
 	
 	

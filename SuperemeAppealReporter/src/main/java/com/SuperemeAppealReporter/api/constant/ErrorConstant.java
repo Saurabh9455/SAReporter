@@ -155,6 +155,8 @@ public interface ErrorConstant {
 		String ERROR_CODE = "117";
 		String ERROR_TYPE = "File Upload ERROR";
 		String ERROR_MESSAGE = "Unable to upload case file.";
+		
+		String ERROR_MESSAGE_INVALID_DOCID = "No case registered with the DocId given to upload PDF file";
 
 	}
 	public interface InvalidPlanTypeError

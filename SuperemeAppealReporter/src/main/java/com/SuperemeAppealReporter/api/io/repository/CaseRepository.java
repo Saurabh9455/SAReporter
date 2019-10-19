@@ -7,5 +7,7 @@ import com.SuperemeAppealReporter.api.io.entity.CaseEntity;
 
 @Repository
 public interface CaseRepository extends PagingAndSortingRepository<CaseEntity, Integer>{
+	
+	public CaseEntity findByDocId(int docId);
 
 }

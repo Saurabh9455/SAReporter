@@ -24,9 +24,9 @@ import lombok.ToString;
 public class DocIdGenerator {
 
 	@Id
-    @GeneratedValue(generator = "sequence-generator")
+    @GeneratedValue(generator = "sequence-generator-doc")
     @GenericGenerator(
-      name = "sequence-generator",
+      name = "sequence-generator-doc",
       strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
       parameters = {
         @Parameter(name = "sequence_name", value = "user_sequence"),
