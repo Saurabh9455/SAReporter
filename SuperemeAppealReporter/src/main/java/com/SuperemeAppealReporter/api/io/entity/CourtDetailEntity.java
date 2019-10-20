@@ -7,6 +7,8 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,9 +34,11 @@ public class CourtDetailEntity extends BaseEntity{
 	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private CourtEntity courtEntity;
 	
+	//@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private CourtBranchEntity courtBranchEntity;
 	
+	//@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private CourtBenchEntity courtBenchEntity;
 	

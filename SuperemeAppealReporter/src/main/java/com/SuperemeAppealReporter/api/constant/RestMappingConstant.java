@@ -57,6 +57,9 @@ public interface RestMappingConstant {
 		String UPLOAD_PDF_CASE_URI = "/uploadCasePf";
 		String FULL_UPLOAD_PDF_CASE_URI = "/SuperemeAppealReporter/v1/api/admin/uploadCasePf";
 		
+		String GET_CASE_LIST_URI =  "/getCaseList";
+		String FULL_GET_CASE_LIST_URI  = "/SuperemeAppealReporter/v1/api/admin/getCaseList";
+		
 		
 	}
 	

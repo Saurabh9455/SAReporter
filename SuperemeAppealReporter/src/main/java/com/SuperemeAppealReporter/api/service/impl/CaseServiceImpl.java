@@ -6,17 +6,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.SuperemeAppealReporter.api.bo.AddCaseBo;
+import com.SuperemeAppealReporter.api.bo.GetCaseListBo;
 import com.SuperemeAppealReporter.api.bo.UploadCasePdfBo;
 import com.SuperemeAppealReporter.api.constant.ErrorConstant;
 import com.SuperemeAppealReporter.api.constant.SucessMessage;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
+import com.SuperemeAppealReporter.api.io.dao.CaseDao;
 import com.SuperemeAppealReporter.api.io.entity.AdditionalAppellantRespondentEntity;
 import com.SuperemeAppealReporter.api.io.entity.CaseEntity;
 import com.SuperemeAppealReporter.api.io.entity.CaseHistoryEntity;
@@ -44,7 +51,23 @@ import com.SuperemeAppealReporter.api.ui.model.request.CasesRefferedRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.CitationRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.CourtDetailRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.HeadnoteRequest;
+import com.SuperemeAppealReporter.api.ui.model.response.AdditionalAppellantRespondentResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CaseHistoryResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CasesReferredResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CitationCategoryResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CitationResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CourtBenchResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CourtBranchResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CourtDetailResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CourtResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.GetCaseListResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.HeadnoteResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.JournalResponse;
+
+import ch.qos.logback.core.joran.util.beans.BeanUtil;
+import net.minidev.json.writer.BeansMapper.Bean;
 
 @Service
 public class CaseServiceImpl implements CaseService{
@@ -69,6 +92,9 @@ public class CaseServiceImpl implements CaseService{
 	
 	@Autowired
 	private CaseRepository caseRepository; 
+	
+	@Autowired
+	private CaseDao caseDao;
 	
 	
 	@Override
@@ -353,6 +379,215 @@ public class CaseServiceImpl implements CaseService{
 		
 		
 		return commonMessageResponse;
+	}
+
+	@Override
+	public CommonPaginationResponse getCaseList(GetCaseListBo getCaseListBo,int pageNumber,int perPage) {
+		
+		CommonPaginationResponse commonPaginationResponse  = null;
+		try
+		{
+		if (pageNumber > 0)
+			pageNumber = pageNumber - 1;
+		
+		Pageable pageableRequest = PageRequest.of(pageNumber, perPage);
+	
+		String caseCategory = getCaseListBo.getCaseCategory();
+	    String courCategory = getCaseListBo.getCourCategory();
+		String overRuled    = getCaseListBo.getOverRuled();
+		String live         = getCaseListBo.getLive();
+		String searchValue = getCaseListBo.getSearchValue();
+		
+		List<String> caseCategoryList = new ArrayList<String>();
+		List<String> courtCategoryList = new ArrayList<String>();
+		List<Boolean> overRuledList = new ArrayList<Boolean>();
+		List<Boolean> liveList = new ArrayList<Boolean>();
+		
+		Page<CaseEntity> caseEntityPage  = null;
+		
+		if(caseCategory.equals("ALL"))
+		{
+			Iterable<CitationCategoryEntity> citationList = citationCategoryRepository.findAll();
+			
+			Iterator<CitationCategoryEntity> citationIterator = citationList.iterator();
+			
+			while(citationIterator.hasNext())
+			{
+				caseCategoryList.add(citationIterator.next().getCitationCategoryName());
+			}
+		}
+		
+		if(courCategory.equals("ALL"))
+		{
+	       Iterable<CourtEntity> courtList = courtRepository.findAll();
+			
+			Iterator<CourtEntity> citationIterator = courtList.iterator();
+			
+			while(citationIterator.hasNext())
+			{
+				courtCategoryList.add(citationIterator.next().getCourtType());
+			}
+		}
+		
+		if(overRuled.equals("ALL"))
+		{
+			overRuledList.add(true);
+			overRuledList.add(false);
+		}
+		if(live.equals("ALL"))
+		{
+			liveList.add(true);
+			liveList.add(false);
+		}
+		if(live.equals("YES"))
+		{
+		  liveList.add(true);
+		}
+		if(live.equals("NO"))
+		{
+			liveList.add(false);
+		}
+		if(overRuled.equals("YES"))
+		{
+			overRuledList.add(true);
+		}
+		if(overRuled.equals("NO"))
+		{
+			overRuledList.add(false);
+		}
+		
+		
+		if(caseCategoryList.size()==0)
+		{
+			caseCategoryList.add(caseCategory);
+		}
+		
+		if(courtCategoryList.size()==0)
+		{
+			courtCategoryList.add(courCategory);
+		}
+		
+		if(searchValue.equals(""))
+		{
+			
+			caseEntityPage = caseDao.getCasePage(pageableRequest,courtCategoryList,caseCategoryList,liveList
+					,overRuledList);
+		
+		}
+		
+		else if(!searchValue.equals(""))
+		{
+			
+			try{
+	       int searchValueInt = Integer.parseInt(searchValue);
+	       
+	   	caseEntityPage = caseDao.getCasePageInt(pageableRequest,courtCategoryList,caseCategoryList,liveList
+				,overRuledList,searchValueInt);
+			}
+			catch(NumberFormatException e)
+			{
+				caseEntityPage = caseDao.getCasePage(pageableRequest,courtCategoryList,caseCategoryList,liveList
+						,overRuledList,searchValue);
+			}
+			
+		}
+		
+		System.out.println("--------------------QUERY FINISHED-----------------------");
+		
+		List<CaseEntity> caseEntityList = caseEntityPage.getContent();
+		
+		List<GetCaseListResponse> getCaseResponseList = new ArrayList<GetCaseListResponse>();
+		
+		for(CaseEntity caseEntity : caseEntityList)
+		{
+			GetCaseListResponse getCaseListResponse = new GetCaseListResponse();
+			BeanUtils.copyProperties(caseEntity, getCaseListResponse);
+			
+			CourtDetailResponse courtDetailResponse = new CourtDetailResponse();
+			CourtResponse courtResponse = new CourtResponse();
+			CourtDetailEntity courtDetailEntity = caseEntity.getCourtDetailEntity();
+			CourtBranchEntity courBranchEntity = courtDetailEntity.getCourtBranchEntity();
+			CourtBenchEntity courtBenchEntity = courtDetailEntity.getCourtBenchEntity();
+			CourtEntity courtEntity = courtDetailEntity.getCourtEntity();
+			courtResponse.setCourtType(courtEntity.getCourtType());
+			CourtBranchResponse courtBranchResponse = new CourtBranchResponse();
+			courtBranchResponse.setBranchName(courBranchEntity.getBranchName());
+			CourtBenchResponse courtBenchResponse = new CourtBenchResponse();
+			courtBenchResponse.setBenchName(courtBenchEntity.getBenchName());
+			courtDetailResponse.setAllJudges(courtDetailEntity.getAllJudges());
+			courtDetailResponse.setCourtBenchResponse(courtBenchResponse);
+			courtDetailResponse.setCourtBranchResponse(courtBranchResponse);
+			courtDetailResponse.setCourtResponse(courtResponse);
+			getCaseListResponse.setCourtDetailResponse(courtDetailResponse);
+			
+			CitationEntity citationEntity = caseEntity.getCitationEntity();
+			CitationCategoryEntity citationCategoryEntity = citationEntity.getCitationCategoryEntity();
+			JournalEntity journalEntity = citationEntity.getJournalEntity();
+			CitationCategoryResponse citationCategoryResponse = new CitationCategoryResponse();
+			citationCategoryResponse.setCitationCategoryName(citationCategoryEntity.getCitationCategoryName());
+			JournalResponse journalResponse = new JournalResponse();
+			journalResponse.setJournalType(journalEntity.getJournalType());
+			CitationResponse citationResponse = new CitationResponse();
+			citationResponse.setCitationCategoryResponse(citationCategoryResponse);
+			citationResponse.setJournalResponse(journalResponse);
+			citationResponse.setOtherCitation(citationEntity.getOtherCitation());
+			citationResponse.setPageNumber(citationEntity.getPageNumber());
+			citationResponse.setYear(citationEntity.getYear());
+			getCaseListResponse.setCitationResponse(citationResponse);
+			
+			List<AdditionalAppellantRespondentResponse> additionalAppellantRespondentResponses = new ArrayList<AdditionalAppellantRespondentResponse>();
+			for(AdditionalAppellantRespondentEntity e : caseEntity.getAdditionalAppellantRespondentEntitySet())
+			{
+				AdditionalAppellantRespondentResponse additionalAppellantRespondentResponse = new AdditionalAppellantRespondentResponse();
+				BeanUtils.copyProperties(e, additionalAppellantRespondentResponse);
+			    additionalAppellantRespondentResponses.add(additionalAppellantRespondentResponse);
+			}
+			getCaseListResponse.setAdditionalAppellantRespondentResponseList(additionalAppellantRespondentResponses);
+			
+			CaseHistoryResponse caseHistoryResponse = new CaseHistoryResponse();
+			BeanUtils.copyProperties(caseEntity.getCaseHistoryEntity(),caseHistoryResponse);
+			getCaseListResponse.setCaseHistoryResponse(caseHistoryResponse);
+			
+			List<CasesReferredResponse> casesReferredResponses = new ArrayList<CasesReferredResponse>();
+			for(CasesRefferedEntity e : caseEntity.getCasesReferredEntitySet())
+			{
+				CasesReferredResponse casesReferredResponse = new CasesReferredResponse();
+				BeanUtils.copyProperties(e, casesReferredResponse);
+				casesReferredResponses.add(casesReferredResponse);
+			}
+			getCaseListResponse.setCasesReferredResponseList(casesReferredResponses);
+			
+			List<HeadnoteResponse> headnoteResponses = new ArrayList<HeadnoteResponse>();
+			for(HeadnoteEntity e : caseEntity.getHeadNoteEntitySet())
+			{
+				HeadnoteResponse headnoteResponse = new HeadnoteResponse();
+				BeanUtils.copyProperties(e,headnoteResponse );
+				headnoteResponses.add(headnoteResponse);
+			}
+			getCaseListResponse.setHeadnoteResponseList(headnoteResponses);
+	      
+			getCaseResponseList.add(getCaseListResponse);
+		}
+		
+	    commonPaginationResponse = new CommonPaginationResponse();
+	    commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(caseEntityPage.getTotalPages());
+	    commonPaginationResponse.setOjectList(getCaseResponseList);
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in CaseServiceImpl --> getCaseList()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
+		return commonPaginationResponse;
 	}
 	
 	

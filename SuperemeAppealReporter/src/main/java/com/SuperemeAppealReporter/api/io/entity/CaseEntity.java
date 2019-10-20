@@ -28,6 +28,14 @@ public class CaseEntity extends BaseEntity {
 	private int docId;
 	
 	
+	@Column(name = "isOverruled", nullable = true)
+	private boolean isOverruled = true;
+	
+	
+	@Column(name = "isLive", nullable = true)
+	private boolean isLive = false;
+	
+	
 	@Column(name = "appellant", nullable = true)
 	private String appellant;
 	

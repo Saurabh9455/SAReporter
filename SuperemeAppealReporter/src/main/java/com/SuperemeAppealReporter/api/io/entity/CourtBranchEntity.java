@@ -10,6 +10,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,9 +35,11 @@ public class CourtBranchEntity  extends BaseEntity{
 
 	/**------------------------Mappings-------------------------**/
 	
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@JsonIgnore
+	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private CourtEntity courtEntity;
     
+	@JsonIgnore
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "courtBranchEntity")
 	private Set<CourtDetailEntity> courtDetailSet;
 }

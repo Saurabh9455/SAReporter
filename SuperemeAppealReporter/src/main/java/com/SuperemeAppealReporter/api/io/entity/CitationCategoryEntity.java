@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,7 +35,6 @@ public class CitationCategoryEntity extends BaseEntity {
 	
 	
 	/**------------------------Mappings-------------------------**/
-	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "citationCategoryEntity")
 	private Set<CitationEntity> citationEntitySet;
 }
