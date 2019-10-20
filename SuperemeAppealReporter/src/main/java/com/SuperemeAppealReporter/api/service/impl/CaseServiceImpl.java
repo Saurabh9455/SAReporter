@@ -279,7 +279,7 @@ public class CaseServiceImpl implements CaseService{
 		    InputStream inputStream = null;
 	        OutputStream outputStream = null;
 	        String fileName = "CASE_"+docId;
-	        File newFile = new File("src/main/resources/assets/casepdfs/" + fileName);
+	        File newFile = new File("var/www/html/casepdfs/" + fileName);
 	        inputStream = file.getInputStream();
 
             if (!newFile.exists()) {
