@@ -66,9 +66,6 @@ import com.SuperemeAppealReporter.api.ui.model.response.GetCaseListResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.HeadnoteResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.JournalResponse;
 
-import ch.qos.logback.core.joran.util.beans.BeanUtil;
-import net.minidev.json.writer.BeansMapper.Bean;
-
 @Service
 public class CaseServiceImpl implements CaseService{
 
