@@ -27,6 +27,6 @@ public class StaffDto {
 	private StateDto state;
 	private CountryDto country;
 	private CityDto city;
-	
+	private String zipcode;
 	private boolean isSubscriptionActive;
 }

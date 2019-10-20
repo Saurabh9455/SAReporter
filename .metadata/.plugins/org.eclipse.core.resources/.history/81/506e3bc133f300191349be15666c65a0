@@ -1,0 +1,8 @@
+package com.SuperemeAppealReporter.api.bo;
+
+import javax.validation.constraints.NotEmpty;
+
+public class SearchStaffBo {
+	
+	private String clientNameOrId;	
+}

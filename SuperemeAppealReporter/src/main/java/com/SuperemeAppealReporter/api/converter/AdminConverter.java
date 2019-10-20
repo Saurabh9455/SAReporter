@@ -13,6 +13,7 @@ import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetPlanListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
 import com.SuperemeAppealReporter.api.bo.SearchClientBo;
+import com.SuperemeAppealReporter.api.bo.SearchStaffBo;
 import com.SuperemeAppealReporter.api.bo.UpdateClientBo;
 import com.SuperemeAppealReporter.api.bo.UserSignupBo;
 import com.SuperemeAppealReporter.api.io.entity.SubscriptionPlanEntity;
@@ -27,6 +28,7 @@ import com.SuperemeAppealReporter.api.ui.model.request.GetClientListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetPlanListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetStaffListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.SearhClientRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.SearhStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UpdateClientRequest;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 public class AdminConverter {
@@ -109,5 +111,11 @@ public class AdminConverter {
 		SearchClientBo searchClientBo = new SearchClientBo();
 		BeanUtils.copyProperties(searchClientRequest, searchClientBo);
 		return searchClientBo;
+	}
+
+	public static SearchStaffBo convertSearchStaffRequestToSearchStaffBo(SearhStaffRequest searchStaffRequest) {
+		SearchStaffBo searchStaffBo = new SearchStaffBo();
+		BeanUtils.copyProperties(searchStaffRequest, searchStaffBo);
+		return searchStaffBo;
 	}
 }
