@@ -87,7 +87,8 @@ public interface RestMappingConstant {
 		String GET_STAFF_LIST_URI = "/getStaffList";
 		String ADD_STAFF_URI = "/addStaff";
 		String DELETE_STAFF_URI = "/deleteStaff";
-		String UPDATE_STAFF_URI = "updateStaff";
+		String UPDATE_STAFF_URI = "/updateStaff";
+		String SEARCH_STAFF_URI = "/searchStaff";
 	}
 	
 	public interface SubscriptionPlan

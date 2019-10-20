@@ -17,6 +17,7 @@ import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
 import com.SuperemeAppealReporter.api.bo.SearchClientBo;
+import com.SuperemeAppealReporter.api.bo.SearchStaffBo;
 import com.SuperemeAppealReporter.api.bo.UpdateClientBo;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 import com.SuperemeAppealReporter.api.bo.UserSignupBo;
@@ -33,6 +34,7 @@ import com.SuperemeAppealReporter.api.ui.model.request.DeleteStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetClientListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetStaffListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.SearhClientRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.SearhStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UpdateClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UpdateStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.AddStaffResponse;
@@ -209,7 +211,7 @@ public class AdminController {
 	}
 	
 	
-	/***********************************Update Staff*********************** */
+	/***********************************Search client*************************** */
 	@PostMapping(path =RestMappingConstant.Admin.SEARCH_CLIENT_URI)
 	public ResponseEntity<BaseApiResponse> searchClient(@Valid @RequestBody SearhClientRequest searchClientRequest,
 			@RequestParam(name = AppConstant.CommonConstant.PAGE_NUMBER, defaultValue = "1") int pageNumber,
@@ -221,6 +223,24 @@ public class AdminController {
 		
 		/** Calling service **/
 		CommonPaginationResponse commonPaginationResponse =  adminService.searchClient(searchClientBo, pageNumber, perPageLimit);
+
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonPaginationResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	}
+	
+	/***********************************Search Staff*************************** */
+	@PostMapping(path =RestMappingConstant.Staff.SEARCH_STAFF_URI)
+	public ResponseEntity<BaseApiResponse> searchStaff(@Valid @RequestBody SearhStaffRequest searchStaffRequest,
+			@RequestParam(name = AppConstant.CommonConstant.PAGE_NUMBER, defaultValue = "1") int pageNumber,
+			@RequestParam(name = AppConstant.CommonConstant.PAGE_LIMIT, defaultValue = "8") int perPageLimit){
+		
+		/** Converting request to bo **/
+		SearchStaffBo searchStaffBo = AdminConverter
+				.convertSearchStaffRequestToSearchStaffBo(searchStaffRequest);
+		
+		/** Calling service **/
+		CommonPaginationResponse commonPaginationResponse =  adminService.searchStaff(searchStaffBo, pageNumber, perPageLimit);
 
 		/** Generating Response **/
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonPaginationResponse);

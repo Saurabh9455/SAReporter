@@ -27,4 +27,7 @@ public interface AdminDao {
 	public Page<UserEntity> getUserEntityPageByUserTypeAndSubscriptionTypeAndByClientNameOrId(Pageable pageableRequest,
 			String userType, String clientNameOrId, List<Integer> subsriptionTypeList);
 
+	public Page<UserEntity> getUserEntityPageByUserTypeAndByStaffNameOrId(Pageable pageableRequest,
+			String clientNameOrId, List<String> userTypeList);
+
 }

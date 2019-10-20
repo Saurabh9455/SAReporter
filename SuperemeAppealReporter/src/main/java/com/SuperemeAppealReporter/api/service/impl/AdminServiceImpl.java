@@ -20,6 +20,7 @@ import com.SuperemeAppealReporter.api.bo.DeleteStaffBo;
 import com.SuperemeAppealReporter.api.bo.GetClientListBo;
 import com.SuperemeAppealReporter.api.bo.GetStaffListBo;
 import com.SuperemeAppealReporter.api.bo.SearchClientBo;
+import com.SuperemeAppealReporter.api.bo.SearchStaffBo;
 import com.SuperemeAppealReporter.api.bo.UpdateClientBo;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 import com.SuperemeAppealReporter.api.constant.AppConstant;
@@ -217,11 +218,12 @@ public class AdminServiceImpl implements AdminService {
 			city.setId(userEntity.getAddressEntity().getCityEntity().getId());
 			city.setLabel(userEntity.getAddressEntity().getCityEntity().getName());
 			city.setValue(userEntity.getAddressEntity().getCityEntity().getName());
-			
+			staffDto.setStaffCategory(userEntity.getUserType());
+			staffDto.setStaffId(userEntity.getClientId());
 			staffDto.setCountry(country);
 			staffDto.setState(state);
 			staffDto.setCity(city);
-		    
+			staffDto.setZipcode(userEntity.getAddressEntity().getZipcode());
 			staffDto.setPassword(userEntity.getPassword());
 			staffDtoList.add(staffDto);
 		}
@@ -603,6 +605,106 @@ public class AdminServiceImpl implements AdminService {
 		
 		
 		
+	}
+
+	@Override
+	public CommonPaginationResponse searchStaff(SearchStaffBo searchStaffBo, int pageNumber, int perPageLimit) {
+
+		
+		String clientNameOrId = searchStaffBo.getClientNameOrId();	
+
+		CommonPaginationResponse commonPaginationResponse = null;
+		try
+		{
+				
+//		/**This if block is executed if the user category is different**/
+//		if(! (clientCategory.equals("ACTIVE") || clientCategory.equals("INACTIVE") || clientCategory.equals("ALL")))
+//        {
+//			throw new AppException(ErrorConstant.InvalidClientCategoryForGetClientListError.ERROR_TYPE,
+//					ErrorConstant.InvalidClientCategoryForGetClientListError.ERROR_CODE,
+//					ErrorConstant.InvalidClientCategoryForGetClientListError.ERROR_MESSAGE);
+//		}
+		
+			List<String> userTypeList = new ArrayList<String>();
+		String userTypeAdmin = UserType.ADMIN.toString();
+		String userTypeOperator = UserType.DATA_ENTRY_OPERATOR.toString();
+		String userTypeSuperAdmin = UserType.SUPER_ADMIN.toString();
+		userTypeList.add(userTypeSuperAdmin);
+		userTypeList.add(userTypeOperator);
+		userTypeList.add(userTypeAdmin);
+		if (pageNumber > 0)
+			pageNumber = pageNumber - 1;
+		
+		Pageable pageableRequest = PageRequest.of(pageNumber, perPageLimit);
+		Page<UserEntity> userEntityPage = null;
+		
+		
+		userEntityPage = adminDao.getUserEntityPageByUserTypeAndByStaffNameOrId(pageableRequest,clientNameOrId,userTypeList);
+		List<UserEntity> userEntityList = userEntityPage.getContent();
+		
+		/**converting user entity list to staff entity dto**/
+		List<StaffDto> staffDtoList = new ArrayList<StaffDto> ();
+		for(UserEntity userEntity : userEntityList)
+		{
+			StaffDto staffDto = new StaffDto();
+			BeanUtils.copyProperties(userEntity, staffDto);
+			
+			
+			CountryDto country = new CountryDto();
+			country.setId(userEntity.getAddressEntity().getCountryEntity().getId());
+			country.setLabel(userEntity.getAddressEntity().getCountryEntity().getName());
+			country.setValue(userEntity.getAddressEntity().getCountryEntity().getName());
+			
+			StateDto state = new StateDto();
+			state.setId(userEntity.getAddressEntity().getStateEntity().getId());
+			state.setLabel(userEntity.getAddressEntity().getStateEntity().getName());
+			state.setValue(userEntity.getAddressEntity().getStateEntity().getName());
+		
+			
+			CityDto city = new CityDto();
+			city.setId(userEntity.getAddressEntity().getCityEntity().getId());
+			city.setLabel(userEntity.getAddressEntity().getCityEntity().getName());
+			city.setValue(userEntity.getAddressEntity().getCityEntity().getName());
+			
+			staffDto.setStaffCategory(userEntity.getUserType());
+			staffDto.setStaffId(userEntity.getClientId());
+			staffDto.setCountry(country);
+			staffDto.setState(state);
+			staffDto.setCity(city);
+			staffDto.setPassword(userEntity.getPassword());
+			staffDto.setZipcode(userEntity.getAddressEntity().getZipcode());
+		
+			staffDtoList.add(staffDto);
+		}
+		
+		commonPaginationResponse = new CommonPaginationResponse();
+		commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(userEntityPage.getTotalPages());
+		commonPaginationResponse.setOjectList(staffDtoList);
+		
+		
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in AdminServiceImpl --> searchStaff()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
+		
+		return commonPaginationResponse;
+	
+		
+		
+		
+	
 	}
 
 }
