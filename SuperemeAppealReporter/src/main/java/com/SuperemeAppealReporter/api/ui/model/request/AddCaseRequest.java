@@ -45,6 +45,8 @@ public class AddCaseRequest {
 	
 	private List<HeadnoteRequest> headNoteRequestList;
 
-	private MultipartFile file;
+	private SingleCouncilDetailRequest singleCouncilDetailRequest;
+	
+	private DoubleCouncilDetailRequest doubleCouncilDetailRequest;
 	
 }

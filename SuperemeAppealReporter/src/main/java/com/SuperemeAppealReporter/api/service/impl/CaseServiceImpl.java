@@ -35,8 +35,10 @@ import com.SuperemeAppealReporter.api.io.entity.CourtBranchEntity;
 import com.SuperemeAppealReporter.api.io.entity.CourtDetailEntity;
 import com.SuperemeAppealReporter.api.io.entity.CourtEntity;
 import com.SuperemeAppealReporter.api.io.entity.DocIdGenerator;
+import com.SuperemeAppealReporter.api.io.entity.DoubleCouncilDetailEntity;
 import com.SuperemeAppealReporter.api.io.entity.HeadnoteEntity;
 import com.SuperemeAppealReporter.api.io.entity.JournalEntity;
+import com.SuperemeAppealReporter.api.io.entity.SingleCouncilDetailEntity;
 import com.SuperemeAppealReporter.api.io.repository.CaseRepository;
 import com.SuperemeAppealReporter.api.io.repository.CitationCategoryRepository;
 import com.SuperemeAppealReporter.api.io.repository.CourtBenchRepository;
@@ -50,7 +52,9 @@ import com.SuperemeAppealReporter.api.ui.model.request.CaseHistoryRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.CasesRefferedRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.CitationRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.CourtDetailRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.DoubleCouncilDetailRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.HeadnoteRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.SingleCouncilDetailRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.AdditionalAppellantRespondentResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CaseHistoryResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CasesReferredResponse;
@@ -205,6 +209,27 @@ public class CaseServiceImpl implements CaseService{
 			casesRefferedEntityList.add(casesRefferedEntity);
 		}
 		
+		SingleCouncilDetailRequest singleCouncilDetailRequest = null;
+		DoubleCouncilDetailRequest doubleCouncilDetailRequest = null;
+		DoubleCouncilDetailEntity detailEntity = null;
+		SingleCouncilDetailEntity singleCouncilDetailEntity = null; 
+		/**checking which one is present amoung single council detail or double council detail**/
+		if(addCaseBo.getSingleCouncilDetailRequest()!=null)
+		{
+			singleCouncilDetailRequest = addCaseBo.getSingleCouncilDetailRequest();
+			singleCouncilDetailEntity = new SingleCouncilDetailEntity();
+			singleCouncilDetailEntity.setPetionerName(singleCouncilDetailRequest.getPetitionerName());
+		
+		}
+		else if(addCaseBo.getDoubleCouncilDetailRequest()!=null)
+		{
+			 doubleCouncilDetailRequest = addCaseBo.getDoubleCouncilDetailRequest();
+			detailEntity = new DoubleCouncilDetailEntity();
+			detailEntity.setAdvocateForAppellant(doubleCouncilDetailRequest.getAdvocateForAppellant());
+			detailEntity.setAdvocateForRespondent(doubleCouncilDetailRequest.getAdvocateForRespondent());
+			detailEntity.setExtraCouncilDetails(doubleCouncilDetailRequest.getExtraCouncilDetails());
+		}
+		
 		/**fetching judge name**/
 		String judgeName = addCaseBo.getJudgeName();
 		
@@ -266,6 +291,15 @@ public class CaseServiceImpl implements CaseService{
 	  additionalAppellantRespondentEntity.setCaseEntity(caseEntity);
 	  
 			}
+  
+  if(singleCouncilDetailEntity!=null)
+  {
+	  singleCouncilDetailEntity.setCaseEntity(caseEntity);
+  }
+  else if(detailEntity!=null)
+  {
+	  detailEntity.setCaseEntity(caseEntity);
+  }
 		
         /**saving case entity**/
 		caseRepository.save(caseEntity);

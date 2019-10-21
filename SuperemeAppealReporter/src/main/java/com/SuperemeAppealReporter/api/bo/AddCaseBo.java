@@ -11,7 +11,9 @@ import com.SuperemeAppealReporter.api.ui.model.request.CaseHistoryRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.CasesRefferedRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.CitationRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.CourtDetailRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.DoubleCouncilDetailRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.HeadnoteRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.SingleCouncilDetailRequest;
 
 import groovy.transform.ToString;
 import lombok.AllArgsConstructor;
@@ -56,5 +58,7 @@ public class AddCaseBo {
 	
 	private List<HeadnoteRequest> headNoteRequestList;
 	
-	private MultipartFile file;
+	private SingleCouncilDetailRequest singleCouncilDetailRequest;
+	
+	private DoubleCouncilDetailRequest doubleCouncilDetailRequest;
 }
