@@ -70,6 +70,6 @@ public Page<CaseEntity> getCaseListInt(Pageable pageable,@Param("courtCategoryLi
 		@Param("caseCategoryList")  List <String> caseCategoryList,
 		@Param("liveList") List<Boolean> liveList,
 		@Param("overuledList") List<Boolean> overuledList,
-		@Param("searchValue") int searchValue);
+		@Param("searchValue") Long searchValue);
 
 }

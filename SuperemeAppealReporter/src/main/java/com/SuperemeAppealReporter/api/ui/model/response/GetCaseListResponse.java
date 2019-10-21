@@ -16,7 +16,7 @@ import lombok.Setter;
 @ToString
 public class GetCaseListResponse {
 
-	private int docId;
+	private long docId;
 
 	private boolean isOverruled ;
 

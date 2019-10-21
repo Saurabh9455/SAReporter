@@ -10,6 +10,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +27,7 @@ public class CaseEntity extends BaseEntity {
 
 
 	@Column(name = "doc_id", nullable = false)
-	private int docId;
+	private long docId;
 	
 	
 	@Column(name = "isOverruled", nullable = true)
@@ -55,7 +57,7 @@ public class CaseEntity extends BaseEntity {
 	@Column(name = "judgement_type", nullable = true)
 	private String judgementType;
 	
-		
+
 	@Column(name = "jdugement_order", nullable = true)
 	private String judgementOrder;
 	
@@ -88,4 +90,10 @@ public class CaseEntity extends BaseEntity {
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntity")
 	private List<HeadnoteEntity> headNoteEntitySet;
+	
+	@OneToOne(cascade = CascadeType.ALL,mappedBy = "caseEntity")
+	private DoubleCouncilDetailEntity doubleCouncilDetailEntity;
+	
+	@OneToOne(cascade = CascadeType.ALL,mappedBy = "caseEntity")
+	private SingleCouncilDetailEntity singleCouncilDetailEntity;
 }

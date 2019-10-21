@@ -16,5 +16,5 @@ public interface CaseDao {
 			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList,String searchValue );
 	
 	public Page<CaseEntity> getCasePageInt(Pageable pageable, List<String> courtCtegoryList,
-			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList,int searchValue );
+			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList,Long searchValue );
 }

@@ -295,12 +295,14 @@ public class CaseServiceImpl implements CaseService{
   if(singleCouncilDetailEntity!=null)
   {
 	  singleCouncilDetailEntity.setCaseEntity(caseEntity);
+	  caseEntity.setSingleCouncilDetailEntity(singleCouncilDetailEntity);
   }
   else if(detailEntity!=null)
   {
 	  detailEntity.setCaseEntity(caseEntity);
+	  caseEntity.setDoubleCouncilDetailEntity(detailEntity);
   }
-		
+ 
         /**saving case entity**/
 		caseRepository.save(caseEntity);
 		
@@ -510,13 +512,15 @@ public class CaseServiceImpl implements CaseService{
 		{
 			
 			try{
-	       int searchValueInt = Integer.parseInt(searchValue);
+	       Long searchValueInt = Long.parseLong(searchValue);
 	       
+	       System.out.println("--------------------SEARCH VALUE------------"+searchValueInt);
 	   	caseEntityPage = caseDao.getCasePageInt(pageableRequest,courtCategoryList,caseCategoryList,liveList
 				,overRuledList,searchValueInt);
 			}
 			catch(NumberFormatException e)
 			{
+				System.out.println("HERE");
 				caseEntityPage = caseDao.getCasePage(pageableRequest,courtCategoryList,caseCategoryList,liveList
 						,overRuledList,searchValue);
 			}

@@ -39,7 +39,7 @@ public class CaseDaoImpl implements CaseDao {
 
 	@Override
 	public Page<CaseEntity> getCasePageInt(Pageable pageable, List<String> courtCtegoryList,
-			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList, int searchValue) {
+			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList, Long searchValue) {
 		return caseRepository.getCaseListInt(pageable, courtCtegoryList, caseCategoryList, liveList, overRuledList,searchValue);
 	}
 	
