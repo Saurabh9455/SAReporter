@@ -19,11 +19,15 @@
 		<java.version>1.8</java.version>
 	</properties>
 
+
+
+
+
 	<dependencies>
-		<dependency>
+	 	<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>		
+		</dependency> 
 			<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
@@ -42,7 +46,11 @@
 			<version>2.6.1</version>
 			<scope>compile</scope>
 		</dependency>
-
+<dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>2.6</version>
+</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>

@@ -174,4 +174,11 @@ public interface ErrorConstant {
 
 	}
 	
+	public interface GetPdfFileError
+	{
+		String ERROR_CODE = "118";
+		String ERROR_TYPE = "Get PDF ERROR";
+		String ERROR_MESSAGE = "No pdf file is present for the given case.Please try with difference docId";
+	}
+	
 }

@@ -1,7 +1,14 @@
 package com.SuperemeAppealReporter.api.ui.controller;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,14 +65,14 @@ public class CaseController {
 	public ResponseEntity<BaseApiResponse> uploadCasePdf(@RequestParam("file")MultipartFile file, @RequestParam("docId") String docId)
 	{
 		UploadPdfRequest uploadPdfRequest = new UploadPdfRequest();
-		uploadPdfRequest.setDocId(Integer.parseInt(docId));
+		uploadPdfRequest.setDocId(Long.parseLong(docId));
 		uploadPdfRequest.setFile(file);
 		
 		/**converting request to bo**/
 		UploadCasePdfBo uploadCasePdfBo = CaseConverter.convertUploadPdfRequestToUploadCasePdfBo(uploadPdfRequest);
 		
 		/**calling service layer**/
-		CommonMessageResponse commonMessageResponse = caseService.uploadCasePdf(uploadCasePdfBo,Integer.parseInt(docId));
+		CommonMessageResponse commonMessageResponse = caseService.uploadCasePdf(uploadCasePdfBo,Long.parseLong(docId));
 		
 		/**returning get role master data response**/
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
@@ -87,9 +94,37 @@ public class CaseController {
 		/**calling service layer**/
 	   CommonPaginationResponse commonMessageResponse = caseService.getCaseList(getCaseListBo,pageNumber,perPage);
 		
-		/**returning get role master data response**/
+		/**returning get case list response**/
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse,HttpStatus.OK);
 
+	}
+	
+	@GetMapping(path=RestMappingConstant.Admin.GET_PDF_CASE_URI)
+	public ResponseEntity<Resource> getCasePdf(@RequestParam(name = AppConstant.CommonConstant.DOC_ID) long docId,HttpServletRequest request)
+	{
+		
+	  /**calling service layer**/
+	  Resource resource =	caseService.getCasePdf(docId);
+	  
+      // Try to determine file's content type
+      String contentType = null;
+      try {
+          contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+      } catch (IOException ex) {
+         System.out.println("=========IO=======");
+      }
+
+      // Fallback to the default content type if type could not be determined
+      if(contentType == null) {
+          contentType = "application/octet-stream";
+      }
+
+      return ResponseEntity.ok()
+              .contentType(MediaType.parseMediaType(contentType))
+              .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+              .body(resource);
+	  /**returning get case pdf response response**/
+	//  return fileArray;
 	}
 }

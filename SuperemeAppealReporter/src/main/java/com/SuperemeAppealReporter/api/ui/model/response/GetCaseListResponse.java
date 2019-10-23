@@ -3,6 +3,8 @@ package com.SuperemeAppealReporter.api.ui.model.response;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import groovy.transform.ToString;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,6 +47,8 @@ public class GetCaseListResponse {
 	private String caseResult;
 
 	private String originalPdfPath;
+	
+	private MultipartFile file;
 	
 	private CourtDetailResponse courtDetailResponse;
 	

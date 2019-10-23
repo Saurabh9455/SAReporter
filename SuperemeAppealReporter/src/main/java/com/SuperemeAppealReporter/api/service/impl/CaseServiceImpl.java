@@ -1,16 +1,25 @@
 package com.SuperemeAppealReporter.api.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -71,6 +80,7 @@ import com.SuperemeAppealReporter.api.ui.model.response.HeadnoteResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.JournalResponse;
 
 @Service
+@org.springframework.transaction.annotation.Transactional
 public class CaseServiceImpl implements CaseService{
 
 	@Autowired
@@ -97,6 +107,8 @@ public class CaseServiceImpl implements CaseService{
 	@Autowired
 	private CaseDao caseDao;
 	
+	@Value("${file.upload-dir}")
+	private String fileUploadDirectory;
 	
 	@Override
 	public CommonMessageResponse addCaseService(AddCaseBo addCaseBo) {
@@ -331,15 +343,34 @@ public class CaseServiceImpl implements CaseService{
 	/*
 	 * This method saves the case PDF file and returns the saved path
 	 */
-	private String saveCasePdfFile(MultipartFile file,int docId)
+	private String saveCasePdfFile(MultipartFile file,Long docId)
 	{
 		try
 		{
 		    InputStream inputStream = null;
 	        OutputStream outputStream = null;
-	        String fileName = "CASE_"+docId;
-	        File newFile = new File("var/www/html/casepdfs/" + fileName);
+	       
+	        /**to find the extension**/
+	        String name = file.getOriginalFilename();
+	        System.out.println("------ORIGINAL FILE NAME----"+name);
+	        String extension = null;
+	        int lastIndexOf = name.lastIndexOf(".");
+	        if (lastIndexOf == -1) {
+	        	extension= ""; // empty extension
+	        }
+	        else
+	        {
+	        extension =  name.substring(lastIndexOf);
+	        }
+	        String fileName = "CASE_"+docId+extension;
+	        
+	        System.out.println("---------EXTENSION--------"+extension);
+	       File newFile = new File(fileUploadDirectory+"/"+fileName);
+	       
+	       // File newFile = new File("C:/Users/manish.choudhary/Desktop/excel temp/" + fileName);
+	    
 	        inputStream = file.getInputStream();
+	        
 
             if (!newFile.exists()) {
                 newFile.createNewFile();
@@ -352,7 +383,8 @@ public class CaseServiceImpl implements CaseService{
                 outputStream.write(bytes, 0, read);
        }
             outputStream.close();
-        	 return newFile.getAbsolutePath();
+            String absolutePath  = newFile.getAbsolutePath();
+        	 return absolutePath;
 
       
 		}
@@ -369,8 +401,20 @@ public class CaseServiceImpl implements CaseService{
 	
 	}
 
+	
+/*	  public static File moveAndStoreFile(MultipartFile file, String name) throws IOException {
+		    String url = path+name;
+		    File fileToSave = new File(url);
+		    fileToSave.createNewFile();
+		    FileOutputStream fos = new FileOutputStream(fileToSave); 
+		    fos.write(file.getBytes());
+		    fos.close();
+		    return fileToSave;
+		  }*/
+	  
+	  
 	@Override
-	public CommonMessageResponse uploadCasePdf(UploadCasePdfBo uploadCasePdfBo, int docId) {
+	public CommonMessageResponse uploadCasePdf(UploadCasePdfBo uploadCasePdfBo, Long docId) {
 		
 		CommonMessageResponse commonMessageResponse = null;
 		
@@ -388,6 +432,7 @@ public class CaseServiceImpl implements CaseService{
 					ErrorConstant.FileUploadError.ERROR_MESSAGE_INVALID_DOCID);
 		}
 		
+		System.out.println("-------------ORIGINAL PDF PATH-----------"+originalPdfPath);
 		caseEntity.setOriginalPdfPath(originalPdfPath);
 		
 		/**creating and returning common message response**/
@@ -413,6 +458,9 @@ public class CaseServiceImpl implements CaseService{
 		
 		return commonMessageResponse;
 	}
+	
+	
+
 
 	@Override
 	public CommonPaginationResponse getCaseList(GetCaseListBo getCaseListBo,int pageNumber,int perPage) {
@@ -624,6 +672,59 @@ public class CaseServiceImpl implements CaseService{
 		
 		return commonPaginationResponse;
 	}
+
+	@Override
+	public Resource getCasePdf(long docId) {
+	
+		try
+		{
+		String pdf  = caseDao.getPdfPathByDocId(docId);
+		
+		if(pdf==null)
+		{
+			throw new AppException(ErrorConstant.GetPdfFileError.ERROR_CODE,
+					ErrorConstant.GetPdfFileError.ERROR_TYPE,
+					ErrorConstant.GetPdfFileError.ERROR_MESSAGE);
+			
+		}
+	
+		String fileArryaSplit[] = pdf.split("/");
+		String fileName = fileArryaSplit[fileArryaSplit.length-1];
+		System.out.println("-----------EXACT FILE NAME----------"+fileName);
+		Path fileStorageLocation = Paths.get(fileUploadDirectory).toAbsolutePath().normalize();
+		Path filePath = fileStorageLocation.resolve(fileName);
+		Resource resource = new UrlResource(filePath.toUri());
+		 /* File file = new File(pdf);
+		 byte[] bytesArray = new byte[(int) file.length()]; 
+
+		  FileInputStream fis = new FileInputStream(file);
+		  fis.read(bytesArray); //read file into bytes[]
+		  fis.close();
+		  return bytesArray;*/
+		if(resource.exists()) {
+            return resource;
+        } else {
+            throw new RuntimeException("File not found ");
+        }
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in CaseServiceImpl --> getCasePdf()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
+	}
+
+	
 	
 	
 

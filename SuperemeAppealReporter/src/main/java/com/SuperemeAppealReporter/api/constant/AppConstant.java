@@ -56,5 +56,6 @@ public interface AppConstant {
 		String PER_PAGE = "perPage";
 		String PAGE_NUMBER = "pageNumber";
 		String PAGE_LIMIT = "perPageLimit";
+		String DOC_ID = "docId";
 	}
 }
