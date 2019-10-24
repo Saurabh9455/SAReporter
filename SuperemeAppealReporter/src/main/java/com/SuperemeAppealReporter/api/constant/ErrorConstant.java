@@ -174,6 +174,7 @@ public interface ErrorConstant {
 
 	}
 	
+
 	public interface InvalidCourtIdError
 	{
 		String ERROR_CODE = "205";
@@ -188,6 +189,12 @@ public interface ErrorConstant {
 		String ERROR_TYPE = "Invalid court brnach id ERROR";
 		String ERROR_MESSAGE = "Court branch does not exists.";
 		String PLAN_DEACTIVATED_ERROR_MESSAGE = "This plan is already deactivated";
+
+	public interface GetPdfFileError
+	{
+		String ERROR_CODE = "118";
+		String ERROR_TYPE = "Get PDF ERROR";
+		String ERROR_MESSAGE = "No pdf file is present for the given case.Please try with difference docId";
 	}
 	
 }

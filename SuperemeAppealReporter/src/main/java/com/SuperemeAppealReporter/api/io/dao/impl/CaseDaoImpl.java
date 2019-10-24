@@ -42,6 +42,13 @@ public class CaseDaoImpl implements CaseDao {
 			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList, Long searchValue) {
 		return caseRepository.getCaseListInt(pageable, courtCtegoryList, caseCategoryList, liveList, overRuledList,searchValue);
 	}
+
+
+	@Override
+	public String getPdfPathByDocId(long docId) {
+		
+		return caseRepository.getPdfPathByDocId(docId);
+	}
 	
 	
 

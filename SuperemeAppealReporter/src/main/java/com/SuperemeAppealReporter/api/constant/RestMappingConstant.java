@@ -60,6 +60,9 @@ public interface RestMappingConstant {
 		String GET_CASE_LIST_URI =  "/getCaseList";
 		String FULL_GET_CASE_LIST_URI  = "/SuperemeAppealReporter/v1/api/admin/getCaseList";
 		
+		String GET_PDF_CASE_URI ="/getCasePdf";
+		String FULL_GET_CASE_PDF_URI = "/SuperemeAppealReporter/v1/api/admin/getCasePdf";
+		
 		
 	}
 	

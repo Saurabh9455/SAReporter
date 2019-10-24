@@ -17,4 +17,7 @@ public interface CaseDao {
 	
 	public Page<CaseEntity> getCasePageInt(Pageable pageable, List<String> courtCtegoryList,
 			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList,Long searchValue );
+
+	public String getPdfPathByDocId(long docId);
+
 }

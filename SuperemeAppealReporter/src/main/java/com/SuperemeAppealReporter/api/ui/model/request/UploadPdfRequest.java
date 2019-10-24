@@ -16,5 +16,5 @@ import lombok.Setter;
 public class UploadPdfRequest {
 
 	private MultipartFile file;
-	private int docId;
+	private long docId;
 }

@@ -16,7 +16,7 @@ import com.SuperemeAppealReporter.api.io.entity.CaseEntity;
 @Repository
 public interface CaseRepository extends PagingAndSortingRepository<CaseEntity, Integer>{
 	
-	public CaseEntity findByDocId(int docId);
+	public CaseEntity findByDocId(long docId);
 
 /*	@Query(value="select c from CaseEntity c inner join CitationEntity cc inner join CitationCategoryEntity cce inner join CourtDetailEntity cde inner join CourtEntity ce"+
 	             " where cce.citationCategoryName in (:caseCategoryList) and "+
@@ -71,5 +71,8 @@ public Page<CaseEntity> getCaseListInt(Pageable pageable,@Param("courtCategoryLi
 		@Param("liveList") List<Boolean> liveList,
 		@Param("overuledList") List<Boolean> overuledList,
 		@Param("searchValue") Long searchValue);
+	
+	@Query(value = "select original_pdf_path from case_entity where doc_id = ?1",nativeQuery=true)
+	public String getPdfPathByDocId(long docId);
 
 }
