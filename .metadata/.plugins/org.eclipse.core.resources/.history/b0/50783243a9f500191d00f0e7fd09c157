@@ -1,0 +1,10 @@
+package com.SuperemeAppealReporter.api.io.dao.impl;
+
+import org.springframework.stereotype.Component;
+
+import com.SuperemeAppealReporter.api.io.dao.CourtDao;
+
+@Component
+public class CourtDaoImpl implements CourtDao{
+
+}

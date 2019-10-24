@@ -1,0 +1,15 @@
+package com.SuperemeAppealReporter.api.io.dao;
+
+import java.util.Optional;
+
+import com.SuperemeAppealReporter.api.io.entity.CourtEntity;
+
+public interface CourtDao {
+
+	CourtEntity findCourtByName(String courtName);
+
+	public void saveCourtDetails(CourtEntity courtEntity);
+
+	Optional<CourtEntity> findCourtById(int courtId);
+
+}

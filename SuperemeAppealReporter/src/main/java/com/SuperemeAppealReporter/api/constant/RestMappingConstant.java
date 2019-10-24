@@ -101,5 +101,11 @@ public interface RestMappingConstant {
 		String GET_PLAN_URI = "/getPlanList";	
 	}
 	
-	
+	public interface Court
+	{
+		String ADD_COURT_URI = "/addCourt";
+		String DELETE_COURT_URI = "/deleteCourt";
+		String ADD_COURT_BRANCH_URI = "/addCourtBranch";
+		String DELETE_COURT_BRANCH_URI = "/deleteCourtBranch";
+	}
 }

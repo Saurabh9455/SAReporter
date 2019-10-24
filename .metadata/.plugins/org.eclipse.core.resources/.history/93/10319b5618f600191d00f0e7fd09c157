@@ -1,0 +1,22 @@
+package com.SuperemeAppealReporter.api.io.dao;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import com.SuperemeAppealReporter.api.io.entity.CourtBranchEntity;
+import com.SuperemeAppealReporter.api.io.entity.CourtEntity;
+
+public interface CourtDao {
+
+	CourtEntity findCourtByName(String courtName);
+
+	public void saveCourtDetails(CourtEntity courtEntity);
+
+	Optional<CourtEntity> findCourtById(int courtId);
+
+	List<CourtBranchEntity> findCourtBranchByName(Set<String> set, Integer id);
+
+	public void saveCourtBranchDetails(Set<CourtBranchEntity> courtBranchEntityList);
+
+}

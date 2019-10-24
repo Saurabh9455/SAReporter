@@ -1,0 +1,5 @@
+package com.SuperemeAppealReporter.api.io.dao.impl;
+
+public class CourtDaoImpl {
+
+}

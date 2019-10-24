@@ -1,0 +1,20 @@
+package com.SuperemeAppealReporter.api.io.dao.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.SuperemeAppealReporter.api.io.dao.CourtDao;
+import com.SuperemeAppealReporter.api.io.entity.CourtEntity;
+import com.SuperemeAppealReporter.api.io.repository.CourtRepository;
+
+@Component
+public class CourtDaoImpl implements CourtDao{
+
+	@Autowired CourtRepository courtRepo;
+	@Override
+	public CourtEntity findCourtByName(String courtName) {
+		CourtEntity courtEntity = 
+		return null;
+	}
+
+}

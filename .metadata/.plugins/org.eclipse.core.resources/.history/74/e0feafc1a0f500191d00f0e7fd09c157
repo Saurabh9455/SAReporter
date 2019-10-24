@@ -1,0 +1,5 @@
+package com.SuperemeAppealReporter.api.ui.controller;
+
+public class CourtController {
+
+}

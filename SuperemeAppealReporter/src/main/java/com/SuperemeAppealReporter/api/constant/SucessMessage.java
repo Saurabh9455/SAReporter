@@ -59,4 +59,12 @@ public interface SucessMessage {
 	{
 		String FILE_UPLOAD_SUCCESS = "PDF File Uploaded Successfully";
 	}
+	
+	public interface Court
+	{
+		String ADDED_SUCCESS = "Court added successfully";
+		String DELETE_SUCCESS = "Court deleted successfully";
+		String BRANCH_ADDED_SUCCESS = "Court branch added successfully";
+		String DELETE_BRANCH_SUCCESS = "Court branch deleted successfully";
+	}
 }

@@ -1,0 +1,15 @@
+package com.SuperemeAppealReporter.api.converter;
+
+import javax.validation.Valid;
+
+import com.SuperemeAppealReporter.api.bo.AddCourtBo;
+import com.SuperemeAppealReporter.api.ui.model.request.AddCourtRequest;
+
+public class CourtConverter {
+
+	public static AddCourtBo convertAddCourtRequestToAddCourtBo(\ AddCourtRequest addCourtRequest) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

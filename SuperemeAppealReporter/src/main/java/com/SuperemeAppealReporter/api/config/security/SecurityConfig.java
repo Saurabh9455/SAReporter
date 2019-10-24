@@ -92,6 +92,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/SuperemeAppealReporter/v1/api/admin/uploadCasePf",
                 "/SuperemeAppealReporter/v1/api/admin/searchStaff",
                 "/SuperemeAppealReporter/v1/api/admin/getCaseList",
+                "/SuperemeAppealReporter/v1/api/admin/addCourt",
+                "/SuperemeAppealReporter/v1/api/admin/deleteCourt",
+                "/SuperemeAppealReporter/v1/api/admin/addCourtBranch",
+                "/SuperemeAppealReporter/v1/api/admin/deleteCourtBranch",
 				"/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**",
 				"/swagger-ui.html", "/webjars/**"); // skip security entirely
 	}

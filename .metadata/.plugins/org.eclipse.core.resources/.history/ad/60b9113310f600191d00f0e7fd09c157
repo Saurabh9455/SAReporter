@@ -1,0 +1,24 @@
+package com.SuperemeAppealReporter.api.converter;
+
+import org.springframework.beans.BeanUtils;
+
+import com.SuperemeAppealReporter.api.bo.AddCourtBo;
+import com.SuperemeAppealReporter.api.bo.DeleteCourtBo;
+import com.SuperemeAppealReporter.api.ui.model.request.AddCourtRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.DeleteCourtRequest;
+
+public class CourtConverter {
+
+	public static AddCourtBo convertAddCourtRequestToAddCourtBo(AddCourtRequest addCourtRequest) {
+		AddCourtBo addCourtBo = new AddCourtBo();
+		BeanUtils.copyProperties(addCourtRequest, addCourtBo);
+		return addCourtBo;
+	}
+
+	public static DeleteCourtBo convertDeleteCourtRequestToDeleteCourtBo(DeleteCourtRequest deleteCourtRequest) {
+		DeleteCourtBo deleteCourtBo = new DeleteCourtBo();
+		BeanUtils.copyProperties(deleteCourtRequest, deleteCourtBo);
+		return deleteCourtBo;
+	}
+
+}

@@ -16,6 +16,8 @@ import lombok.ToString;
 public class SearhStaffRequest {
 
 	@NotEmpty(message = "Please provide either staff name or staff id.")
-	private String clientNameOrId;	
+	private String staffNameOrId;
+	@NotEmpty(message = "Please provide staff category.")
+	private String staffCategory;
 
 }

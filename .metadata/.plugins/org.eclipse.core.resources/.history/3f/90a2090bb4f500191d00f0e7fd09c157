@@ -1,0 +1,37 @@
+package com.SuperemeAppealReporter.api.io.dao.impl;
+
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.SuperemeAppealReporter.api.io.dao.CourtDao;
+import com.SuperemeAppealReporter.api.io.entity.CourtEntity;
+import com.SuperemeAppealReporter.api.io.repository.CourtBranchRepository;
+import com.SuperemeAppealReporter.api.io.repository.CourtRepository;
+
+@Component
+public class CourtDaoImpl implements CourtDao{
+
+	@Autowired CourtRepository courtRepo;
+	
+	@Autowired CourtBranchRepository branchRepo;
+	
+	@Override
+	public CourtEntity findCourtByName(String courtName) {
+		Optional<CourtEntity> courtEntity = courtRepo.findByName(courtName);
+		
+		return null;
+	}
+	@Transactional
+	@Override
+	public void saveCourtDetails(CourtEntity courtEntity) {
+		CourtEntity cEntity = courtRepo.save(courtEntity);
+		
+		Set<CourtBranchEntity> = cEntity.getCourtBranchSet();
+		
+	}
+
+}

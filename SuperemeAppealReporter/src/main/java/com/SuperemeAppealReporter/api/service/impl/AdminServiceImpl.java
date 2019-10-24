@@ -611,27 +611,31 @@ public class AdminServiceImpl implements AdminService {
 	public CommonPaginationResponse searchStaff(SearchStaffBo searchStaffBo, int pageNumber, int perPageLimit) {
 
 		
-		String clientNameOrId = searchStaffBo.getClientNameOrId();	
-
+		String clientNameOrId = searchStaffBo.getStaffNameOrId();	
+		String staffCategory = searchStaffBo.getStaffCategory();
 		CommonPaginationResponse commonPaginationResponse = null;
 		try
 		{
-				
-//		/**This if block is executed if the user category is different**/
-//		if(! (clientCategory.equals("ACTIVE") || clientCategory.equals("INACTIVE") || clientCategory.equals("ALL")))
-//        {
-//			throw new AppException(ErrorConstant.InvalidClientCategoryForGetClientListError.ERROR_TYPE,
-//					ErrorConstant.InvalidClientCategoryForGetClientListError.ERROR_CODE,
-//					ErrorConstant.InvalidClientCategoryForGetClientListError.ERROR_MESSAGE);
-//		}
-		
 			List<String> userTypeList = new ArrayList<String>();
 		String userTypeAdmin = UserType.ADMIN.toString();
 		String userTypeOperator = UserType.DATA_ENTRY_OPERATOR.toString();
 		String userTypeSuperAdmin = UserType.SUPER_ADMIN.toString();
-		userTypeList.add(userTypeSuperAdmin);
-		userTypeList.add(userTypeOperator);
-		userTypeList.add(userTypeAdmin);
+		
+		
+		if(staffCategory.equals("ALL"))
+		{
+			userTypeList.add(userTypeSuperAdmin);
+			userTypeList.add(userTypeOperator);
+			userTypeList.add(userTypeAdmin);
+			
+		}
+		else
+		{
+			userTypeList.add(staffCategory);
+		}
+		
+		
+		
 		if (pageNumber > 0)
 			pageNumber = pageNumber - 1;
 		

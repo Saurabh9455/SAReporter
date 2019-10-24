@@ -174,4 +174,20 @@ public interface ErrorConstant {
 
 	}
 	
+	public interface InvalidCourtIdError
+	{
+		String ERROR_CODE = "205";
+		String ERROR_TYPE = "Invalid court id ERROR";
+		String ERROR_MESSAGE = "Court id does not exists.";
+		String PLAN_DEACTIVATED_ERROR_MESSAGE = "This plan is already deactivated";
+	}
+
+	public interface InvalidCourtBranchIdError
+	{
+		String ERROR_CODE = "206";
+		String ERROR_TYPE = "Invalid court brnach id ERROR";
+		String ERROR_MESSAGE = "Court branch does not exists.";
+		String PLAN_DEACTIVATED_ERROR_MESSAGE = "This plan is already deactivated";
+	}
+	
 }

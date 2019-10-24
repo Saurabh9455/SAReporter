@@ -1,0 +1,5 @@
+package com.SuperemeAppealReporter.api.service.impl;
+
+public class CourtServiceImpl {
+
+}

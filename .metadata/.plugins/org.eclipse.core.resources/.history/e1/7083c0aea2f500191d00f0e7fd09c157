@@ -1,0 +1,7 @@
+package com.SuperemeAppealReporter.api.service.impl;
+
+import com.SuperemeAppealReporter.api.service.CourtService;
+
+public class CourtServiceImpl implements CourtService{
+
+}

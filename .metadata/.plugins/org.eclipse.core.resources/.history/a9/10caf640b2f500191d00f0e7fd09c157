@@ -1,0 +1,11 @@
+package com.SuperemeAppealReporter.api.io.dao;
+
+import com.SuperemeAppealReporter.api.io.entity.CourtEntity;
+
+public interface CourtDao {
+
+	CourtEntity findCourtByName(String courtName);
+
+	void saveCourtDetails(CourtEntity courtEntity);
+
+}
