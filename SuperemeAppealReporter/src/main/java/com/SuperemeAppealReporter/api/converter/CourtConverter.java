@@ -6,10 +6,12 @@ import com.SuperemeAppealReporter.api.bo.AddCourtBo;
 import com.SuperemeAppealReporter.api.bo.AddCourtBranchBo;
 import com.SuperemeAppealReporter.api.bo.DeleteCourtBo;
 import com.SuperemeAppealReporter.api.bo.DeleteCourtBranchBo;
+import com.SuperemeAppealReporter.api.bo.GetCourtBo;
 import com.SuperemeAppealReporter.api.ui.model.request.AddCourtBranchRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.AddCourtRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.DeleteCourtBranchRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.DeleteCourtRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.GetCourtRequest;
 
 public class CourtConverter {
 
@@ -35,5 +37,11 @@ public class CourtConverter {
 		DeleteCourtBranchBo deleteCourtBo = new DeleteCourtBranchBo();
 		BeanUtils.copyProperties(deleteCourtRequest, deleteCourtBo);
 		return deleteCourtBo;
+	}
+
+	public static GetCourtBo convertGetCourtRequestToGetCourtBo(GetCourtRequest getCourtRequest) {
+		GetCourtBo getCourtBo = new GetCourtBo();
+		BeanUtils.copyProperties(getCourtRequest, getCourtBo);
+		return getCourtBo;
 	}
 }

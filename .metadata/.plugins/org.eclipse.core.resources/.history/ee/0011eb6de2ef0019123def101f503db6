@@ -1,9 +1,0 @@
-package com.SuperemeAppealReporter.api.io.repository;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.SuperemeAppealReporter.api.io.entity.SubscriptionPlanEntity;
-
-public interface SubscriptionPlanRepository extends JpaRepository<SubscriptionPlanEntity, Integer>{
-
-}

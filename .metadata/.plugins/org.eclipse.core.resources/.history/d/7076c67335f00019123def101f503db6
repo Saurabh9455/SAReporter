@@ -1,5 +1,0 @@
-package com.SuperemeAppealReporter.api.shared.dto;
-
-public class PlanListDto {
-
-}

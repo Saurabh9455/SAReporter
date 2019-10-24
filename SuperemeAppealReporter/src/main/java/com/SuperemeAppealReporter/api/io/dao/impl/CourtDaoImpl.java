@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.SuperemeAppealReporter.api.io.dao.CourtDao;
@@ -62,6 +64,16 @@ public class CourtDaoImpl implements CourtDao{
 	public Optional<CourtBranchEntity> findCourtBranchById(int branchId) {
 		Optional<CourtBranchEntity> branchEntity = branchRepo.findById(branchId);
 		return branchEntity;
+	}
+	@Override
+	public Page<CourtEntity> getCourtEntityPage(int courtId, Pageable pageableRequest) {
+		Page<CourtEntity> courtEntityPage = courtRepo.findActiveCourtById(courtId,pageableRequest);
+		return courtEntityPage;
+	}
+	@Override
+	public Page<CourtEntity> getAllCourtEntityPage(Pageable pageableRequest) {
+		Page<CourtEntity> courtEntityPage = courtRepo.findAllActiveCourt(pageableRequest);
+		return courtEntityPage;
 	}
 
 }

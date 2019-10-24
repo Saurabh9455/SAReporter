@@ -1,9 +1,0 @@
-package com.SuperemeAppealReporter.api.io.dao;
-
-import com.SuperemeAppealReporter.api.bo.AddPlanBo;
-
-public interface SubscriptionPlanDao {
-
-	public void savePlan(AddPlanBo addPlanBo);
-	
-}

@@ -1,0 +1,9 @@
+package com.SuperemeAppealReporter.api.ui.model.request;
+
+import javax.validation.constraints.NotEmpty;
+
+public class GetCourtRequest {
+
+	@NotEmpty(message = "Please provide court id.")
+	private String courtId;
+}

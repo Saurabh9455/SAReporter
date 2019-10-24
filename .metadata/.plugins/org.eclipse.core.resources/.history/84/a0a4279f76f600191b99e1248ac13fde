@@ -1,0 +1,6 @@
+package com.SuperemeAppealReporter.api.bo;
+
+public class GetCourtBo {
+
+	private String courtId;
+}

@@ -1,5 +1,0 @@
-package com.SuperemeAppealReporter.api.io.repository;
-
-public interface SubscriptionPlanRepository {
-
-}

@@ -1,5 +1,0 @@
-package com.SuperemeAppealReporter.api.ui.model.response;
-
-public class DeleteClientResponse {
-
-}

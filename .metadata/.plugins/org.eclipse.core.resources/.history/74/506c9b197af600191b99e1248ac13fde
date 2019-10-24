@@ -1,0 +1,235 @@
+package com.SuperemeAppealReporter.api.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import com.SuperemeAppealReporter.api.bo.AddCourtBo;
+import com.SuperemeAppealReporter.api.bo.AddCourtBranchBo;
+import com.SuperemeAppealReporter.api.bo.DeleteCourtBo;
+import com.SuperemeAppealReporter.api.bo.DeleteCourtBranchBo;
+import com.SuperemeAppealReporter.api.bo.GetCourtBo;
+import com.SuperemeAppealReporter.api.constant.ErrorConstant;
+import com.SuperemeAppealReporter.api.constant.SucessMessage;
+import com.SuperemeAppealReporter.api.exception.type.AppException;
+import com.SuperemeAppealReporter.api.io.dao.CourtDao;
+import com.SuperemeAppealReporter.api.io.entity.CourtBranchEntity;
+import com.SuperemeAppealReporter.api.io.entity.CourtEntity;
+import com.SuperemeAppealReporter.api.service.CourtService;
+import com.SuperemeAppealReporter.api.shared.dto.CityDto;
+import com.SuperemeAppealReporter.api.shared.dto.CountryDto;
+import com.SuperemeAppealReporter.api.shared.dto.CourtBranchDto;
+import com.SuperemeAppealReporter.api.shared.dto.CourtDto;
+import com.SuperemeAppealReporter.api.shared.dto.StaffDto;
+import com.SuperemeAppealReporter.api.shared.dto.StateDto;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
+
+@Service
+public class CourtServiceImpl implements CourtService{
+
+	@Autowired CourtDao courtDao;
+	
+	@Transactional
+	@Override
+	public CommonMessageResponse addCourt(AddCourtBo addCourtBo) {
+		String courtName = addCourtBo.getCourtName();
+		
+		List<String> courtBranchList = new ArrayList<String>();
+		if(!addCourtBo.getCourtBranchName().isEmpty() || addCourtBo.getCourtBranchName()!=null)
+			courtBranchList.addAll(addCourtBo.getCourtBranchName());
+		
+		//CourtEntity courtEntity = courtDao.findCourtByName(courtName);
+		CourtEntity courtEntity = new CourtEntity();
+		courtEntity.setCourtType(courtName);
+		Set<CourtBranchEntity> courtBranchEntityList = new HashSet<CourtBranchEntity>();
+		for(String branchList: courtBranchList){
+			CourtBranchEntity branchEntity = new CourtBranchEntity();
+			branchEntity.setBranchName(branchList);
+			courtBranchEntityList.add(branchEntity);
+		}
+		courtEntity.setCourtBranchSet(courtBranchEntityList);
+		courtDao.saveCourtDetails(courtEntity);
+		CommonMessageResponse response  = new CommonMessageResponse();
+		response.setMsg(SucessMessage.Court.ADDED_SUCCESS);
+		return response;
+	}
+
+	@Transactional
+	@Override
+	public CommonMessageResponse deleteCourt(DeleteCourtBo deleteCourtBo) {
+		
+		int courtId = Integer.parseInt(deleteCourtBo.getCourtId());
+		
+		Optional<CourtEntity> courtEntity= courtDao.findCourtById(courtId);
+		courtEntity.get().setActive(false);
+		Set<CourtBranchEntity> courtBranchEntityList = new HashSet<CourtBranchEntity>();
+		courtBranchEntityList.addAll(courtEntity.get().getCourtBranchSet());
+		for(CourtBranchEntity branchEntity: courtBranchEntityList){
+			branchEntity.setActive(false);
+		}
+		CommonMessageResponse response  = new CommonMessageResponse();
+		response.setMsg(SucessMessage.Court.DELETE_SUCCESS);
+		return response;
+	}
+
+	@Override
+	public CommonMessageResponse addCourtBranch(AddCourtBranchBo addCourtBranchBo) {
+		int courtId = Integer.parseInt(addCourtBranchBo.getCourtId());
+		
+		HashMap<String, String> existingBrnaches = new HashMap<String, String>();
+		
+		/*************************Validating if court id already exists or not*************************/
+		CourtEntity courtEntity = courtDao.findCourtById(courtId).orElseThrow(() -> new AppException(ErrorConstant.InvalidCourtIdError.ERROR_TYPE,
+				ErrorConstant.InvalidCourtIdError.ERROR_CODE,
+				ErrorConstant.InvalidCourtIdError.ERROR_MESSAGE));
+		
+		/*************************Fetching all already mapped branches for this court*************************/
+		List<CourtBranchEntity> branchEntityList= courtDao.findCourtBranchByName(addCourtBranchBo.getCourtBranchName(),courtEntity.getId());
+		
+		/*************************Adding existing mapping into map*************************/
+		for(CourtBranchEntity existingBranchList : branchEntityList){
+			existingBrnaches.put(existingBranchList.getBranchName(), existingBranchList.getBranchName());
+		}
+		
+		List<String> courtBranchList = new ArrayList<String>();
+		
+		/*************************Adding all branch request into a List*************************/
+		if(!addCourtBranchBo.getCourtBranchName().isEmpty() || addCourtBranchBo.getCourtBranchName()!=null)
+			courtBranchList.addAll(addCourtBranchBo.getCourtBranchName());
+		
+		Set<CourtBranchEntity> courtBranchEntityList = new HashSet<CourtBranchEntity>();
+		
+		/*************************Adding Non existing branches into final list*************************/
+		for(String branchList: courtBranchList){
+			CourtBranchEntity branchEntity = new CourtBranchEntity();
+			if(!existingBrnaches.containsKey(branchList)){
+			branchEntity.setBranchName(branchList);
+			branchEntity.setCourtEntity(courtEntity);
+			courtBranchEntityList.add(branchEntity);
+			}
+		}
+		
+		/*************************Saving the record*************************/
+		courtDao.saveCourtBranchDetails(courtBranchEntityList);
+		CommonMessageResponse response  = new CommonMessageResponse();
+		response.setMsg(SucessMessage.Court.BRANCH_ADDED_SUCCESS);
+		return response;
+	}
+
+	
+	@Transactional
+	@Override
+	public CommonMessageResponse deleteCourtBranch(DeleteCourtBranchBo deleteCourtBranchBo) {
+		
+		int branchId = Integer.parseInt(deleteCourtBranchBo.getCourtBranchId());
+		
+		CourtBranchEntity courtBranchEntity= courtDao.findCourtBranchById(branchId).orElseThrow(() -> new AppException(ErrorConstant.InvalidCourtBranchIdError.ERROR_TYPE,
+				ErrorConstant.InvalidCourtBranchIdError.ERROR_CODE,
+				ErrorConstant.InvalidCourtBranchIdError.ERROR_MESSAGE));
+		
+		courtBranchEntity.setActive(false);
+		
+		CommonMessageResponse response  = new CommonMessageResponse();
+		response.setMsg(SucessMessage.Court.DELETE_BRANCH_SUCCESS);
+		return response;
+	}
+
+	@Override
+	public CommonPaginationResponse getCourtService(GetCourtBo getCourtBo, int pageNumber, int perPageLimit) {
+
+		
+		CommonPaginationResponse commonPaginationResponse =  null;
+		
+		try
+		{
+		
+			int courtId = Integer.parseInt(getCourtBo.getCourtId());
+	
+		if (pageNumber > 0)
+			pageNumber = pageNumber - 1;
+		
+		
+		
+		Pageable pageableRequest = PageRequest.of(pageNumber, perPageLimit);
+		Page<CourtEntity> courtEntityPage = null;
+		
+		courtEntityPage = courtDao.getCourtEntityPage (courtId, pageableRequest);
+		List<CourtEntity> courtEntityList = courtEntityPage.getContent();
+		
+		
+		List<CourtDto> courtDtoList = new ArrayList<CourtDto> ();
+		for(int i = 0; i < courtEntityList.size(); i++)
+		{
+			
+			List<CourtBranchDto> branchDtoList = new ArrayList<CourtBranchDto> ();
+			CourtDto courtDto = new CourtDto();
+			courtDto.setCourtType(courtEntityList.get(i).getCourtType());
+			courtDto.setCourtId(courtId);
+			List<CourtBranchEntity> branchEntityList = new ArrayList<>();
+			for(int j = 0; j< courtEntityList.get(i).getCourtBranchSet().size(); j++ )
+			{
+				CourtBranchDto brnachDto = new CourtBranchDto();
+				brnachDto.setCourtBranchId(courtEntityList.get(i).getCourtBranchSet().);
+			}
+			
+			
+			CountryDto country = new CountryDto();
+			country.setId(userEntity.getAddressEntity().getCountryEntity().getId());
+			country.setLabel(userEntity.getAddressEntity().getCountryEntity().getName());
+			country.setValue(userEntity.getAddressEntity().getCountryEntity().getName());
+			
+			StateDto state = new StateDto();
+			state.setId(userEntity.getAddressEntity().getStateEntity().getId());
+			state.setLabel(userEntity.getAddressEntity().getStateEntity().getName());
+			state.setValue(userEntity.getAddressEntity().getStateEntity().getName());
+		
+			
+			CityDto city = new CityDto();
+			city.setId(userEntity.getAddressEntity().getCityEntity().getId());
+			city.setLabel(userEntity.getAddressEntity().getCityEntity().getName());
+			city.setValue(userEntity.getAddressEntity().getCityEntity().getName());
+			staffDto.setStaffCategory(userEntity.getUserType());
+			staffDto.setStaffId(userEntity.getClientId());
+			staffDto.setCountry(country);
+			staffDto.setState(state);
+			staffDto.setCity(city);
+			staffDto.setZipcode(userEntity.getAddressEntity().getZipcode());
+			staffDto.setPassword(userEntity.getPassword());
+			staffDtoList.add(staffDto);
+		}
+		
+		commonPaginationResponse = new CommonPaginationResponse();
+		commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(userEntityPage.getTotalPages());
+		commonPaginationResponse.setOjectList(staffDtoList);
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			String errorMessage = "Error in AdminServiceImpl --> getStaffListResponseService()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
+		return commonPaginationResponse;
+	
+	}
+}

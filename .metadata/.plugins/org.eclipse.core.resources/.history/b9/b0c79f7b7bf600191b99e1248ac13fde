@@ -1,0 +1,141 @@
+package com.SuperemeAppealReporter.api.config.security;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.SuperemeAppealReporter.api.constant.RestMappingConstant;
+import com.SuperemeAppealReporter.api.service.UserService;
+
+@SuppressWarnings("deprecation")
+
+@EnableWebSecurity /** This is a marker annotation. When used with @Configuration this annotation
+* switch off the default web security and lets us to write our own by
+* implementing WebSecurityConfigurerAdapter
+**/
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
+
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+	
+
+		@Autowired
+		private  UserService userService;
+
+		@Autowired
+		private JWTAuthenticationEntryPoint aunthenticationHandler;
+		
+	
+	    @Autowired private JWTAcessDeniedHandler accessDeniedHandler;
+	 
+		
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http.cors().and().csrf().disable().authorizeRequests()
+			.antMatchers(HttpMethod.POST,RestMappingConstant.User.FULL_SIGN_UP_URI).permitAll()
+			
+			.anyRequest().authenticated()
+			.and()
+			.addFilter(getAuthenticaionFilter())
+			.exceptionHandling()
+		    .authenticationEntryPoint(aunthenticationHandler)
+		    .and()
+		    .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+			.exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+			.and()
+		    .sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+			
+		
+		}
+
+		/*
+		 * @Override public void configure(WebSecurity web) throws Exception {
+		 * web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui",
+		 * "/swagger-resources/**", "/configuration/**", "/swagger-ui.html",
+		 * "/webjars/**"); }
+		 */
+		
+		 @Override
+		    public void configure(WebSecurity webSecurity) throws Exception
+	{
+		webSecurity.ignoring().antMatchers("/SuperemeAppealReporter/v1/api/user/signup",
+				"/SuperemeAppealReporter/v1/api/user/forgetPassword",
+				"/SuperemeAppealReporter/v1/api/user/verifyEmail",
+				"/SuperemeAppealReporter/v1/api/admin/getClientList",
+				"/SuperemeAppealReporter/v1/api/user/validateResetPasswordLink",
+				"/SuperemeAppealReporter/v1/api/admin/getRoleMasterData",
+				"/SuperemeAppealReporter/v1/api/admin/getClientList/addClient",
+				"/SuperemeAppealReporter/v1/api/master/getCountryMasterData",
+                "/SuperemeAppealReporter/v1/api/master/getCityMasterData/{stateId}",
+                "/SuperemeAppealReporter/v1/api/master/getStateMasterData/{countryId}",
+                "/SuperemeAppealReporter/v1/api/admin/addClient",
+                "/SuperemeAppealReporter/v1/api/admin/getStaffList",
+                "/SuperemeAppealReporter/v1/api/admin/addStaff",
+                "/SuperemeAppealReporter/v1/api/admin/deleteStaff",
+                "/SuperemeAppealReporter/v1/api/admin/updateStaff",
+                "/SuperemeAppealReporter/v1/api/admin/deleteClient",
+                "/SuperemeAppealReporter/v1/api/admin/updateClient",
+                "/SuperemeAppealReporter/v1/api/admin/addPlan",
+                "/SuperemeAppealReporter/v1/api/admin/deletePlan",
+                "/SuperemeAppealReporter/v1/api/admin/getPlanList",
+                "/SuperemeAppealReporter/v1/api/master/getNextDocId",
+                "/SuperemeAppealReporter/v1/api/admin/searchClient",
+                "/SuperemeAppealReporter/v1/api/admin/addCase",
+                "/SuperemeAppealReporter/v1/api/admin/uploadCasePf",
+                "/SuperemeAppealReporter/v1/api/admin/searchStaff",
+                "/SuperemeAppealReporter/v1/api/admin/getCaseList",
+
+                "/SuperemeAppealReporter/v1/api/admin/addCourt",
+                "/SuperemeAppealReporter/v1/api/admin/deleteCourt",
+                "/SuperemeAppealReporter/v1/api/admin/addCourtBranch",
+                "/SuperemeAppealReporter/v1/api/admin/deleteCourtBranch",
+
+                "/SuperemeAppealReporter/v1/api/admin/getCasePdf",
+
+				"/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**",
+				"/swagger-ui.html", "/webjars/**"); // skip security entirely
+	}
+		
+		  @Override protected void configure(AuthenticationManagerBuilder auth) throws
+		  Exception {
+		  auth.userDetailsService(userService).passwordEncoder(passwordEncoder()); 
+		  }
+		 
+
+		/*
+		 * @Bean public AuthenticationProvider authProvider() {
+		 * DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		 * provider.setUserDetailsService(userService); provider.setPasswordEncoder(
+		 * (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance()); return provider;
+		 * 
+		 * }
+		 */
+		
+		
+	 /* (name = "bCryptPasswordEncoder") */
+		public PasswordEncoder passwordEncoder()
+		{
+			return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
+			//return new BCryptPasswordEncoder();
+		}
+		
+		
+		public JWTAuthenticationFilter getAuthenticaionFilter() throws Exception
+		{
+			final JWTAuthenticationFilter authenticationFilter  = new JWTAuthenticationFilter(authenticationManager());
+		   authenticationFilter.setFilterProcessesUrl("/SuperemeAppealReporter/v1/api/user/signin");
+		  //  System.out.println("MY ------------>>"+RestMappingConstant.User.USER_SIGN_IN_DEV_URL);
+		    return authenticationFilter;
+		}
+	}
+
+	
+

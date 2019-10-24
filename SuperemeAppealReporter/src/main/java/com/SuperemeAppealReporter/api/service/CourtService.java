@@ -4,7 +4,9 @@ import com.SuperemeAppealReporter.api.bo.AddCourtBo;
 import com.SuperemeAppealReporter.api.bo.AddCourtBranchBo;
 import com.SuperemeAppealReporter.api.bo.DeleteCourtBo;
 import com.SuperemeAppealReporter.api.bo.DeleteCourtBranchBo;
+import com.SuperemeAppealReporter.api.bo.GetCourtBo;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
 
 public interface CourtService {
 
@@ -15,5 +17,7 @@ public interface CourtService {
 	public CommonMessageResponse addCourtBranch(AddCourtBranchBo addCourtBranchBo);
 
 	public CommonMessageResponse deleteCourtBranch(DeleteCourtBranchBo deleteCourtBranchBo);
+
+	public CommonPaginationResponse getCourtService(GetCourtBo getCourtBo, int pageNumber, int perPage);
 
 }

@@ -110,5 +110,6 @@ public interface RestMappingConstant {
 		String DELETE_COURT_URI = "/deleteCourt";
 		String ADD_COURT_BRANCH_URI = "/addCourtBranch";
 		String DELETE_COURT_BRANCH_URI = "/deleteCourtBranch";
+		String GET_COURT_URI = "/getCourtList";
 	}
 }

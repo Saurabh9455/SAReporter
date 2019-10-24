@@ -10,12 +10,16 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.SuperemeAppealReporter.api.bo.AddCourtBo;
 import com.SuperemeAppealReporter.api.bo.AddCourtBranchBo;
 import com.SuperemeAppealReporter.api.bo.DeleteCourtBo;
 import com.SuperemeAppealReporter.api.bo.DeleteCourtBranchBo;
+import com.SuperemeAppealReporter.api.bo.GetCourtBo;
 import com.SuperemeAppealReporter.api.constant.ErrorConstant;
 import com.SuperemeAppealReporter.api.constant.SucessMessage;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
@@ -23,7 +27,10 @@ import com.SuperemeAppealReporter.api.io.dao.CourtDao;
 import com.SuperemeAppealReporter.api.io.entity.CourtBranchEntity;
 import com.SuperemeAppealReporter.api.io.entity.CourtEntity;
 import com.SuperemeAppealReporter.api.service.CourtService;
+import com.SuperemeAppealReporter.api.shared.dto.CourtBranchDto;
+import com.SuperemeAppealReporter.api.shared.dto.CourtDto;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
 
 @Service
 public class CourtServiceImpl implements CourtService{
@@ -133,5 +140,77 @@ public class CourtServiceImpl implements CourtService{
 		CommonMessageResponse response  = new CommonMessageResponse();
 		response.setMsg(SucessMessage.Court.DELETE_BRANCH_SUCCESS);
 		return response;
+	}
+
+	@Override
+	public CommonPaginationResponse getCourtService(GetCourtBo getCourtBo, int pageNumber, int perPageLimit) {
+
+		
+		CommonPaginationResponse commonPaginationResponse =  null;
+		
+		try
+		{
+		
+			int courtId = 0;
+			if(getCourtBo.getCourtId()!="" && getCourtBo.getCourtId()!=null)
+				courtId = Integer.parseInt(getCourtBo.getCourtId());
+	
+		if (pageNumber > 0)
+			pageNumber = pageNumber - 1;
+		
+		
+		
+		Pageable pageableRequest = PageRequest.of(pageNumber, perPageLimit);
+		Page<CourtEntity> courtEntityPage = null;
+		if(courtId != 0)
+			courtEntityPage = courtDao.getCourtEntityPage (courtId, pageableRequest);
+		else
+			courtEntityPage = courtDao.getAllCourtEntityPage (pageableRequest);
+		List<CourtEntity> courtEntityList = courtEntityPage.getContent();
+		
+		
+		List<CourtDto> courtDtoList = new ArrayList<CourtDto> ();
+		for(int i = 0; i < courtEntityList.size(); i++)
+		{
+			
+			List<CourtBranchDto> branchDtoList = new ArrayList<CourtBranchDto> ();
+			CourtDto courtDto = new CourtDto();
+			courtDto.setCourtType(courtEntityList.get(i).getCourtType());
+			courtDto.setCourtId(courtEntityList.get(i).getId());
+			List<CourtBranchEntity> branchEntityList = new ArrayList<>(courtEntityList.get(i).getCourtBranchSet());
+			for(int j = 0; j< branchEntityList.size(); j++ )
+			{
+				CourtBranchDto brnachDto = new CourtBranchDto();
+				brnachDto.setCourtBranchId(branchEntityList.get(j).getId());
+				brnachDto.setCourtBranchName(branchEntityList.get(j).getBranchName());
+				branchDtoList.add(brnachDto);
+				courtDto.setCourtBranchDto(branchDtoList);
+			}
+			
+			courtDtoList.add(courtDto);
+			
+		}
+		
+		commonPaginationResponse = new CommonPaginationResponse();
+		commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(courtEntityPage.getTotalPages());
+		commonPaginationResponse.setOjectList(courtDtoList);
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in CourtServiceImpl --> getCourtService()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
+		return commonPaginationResponse;
+	
 	}
 }

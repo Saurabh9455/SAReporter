@@ -1,0 +1,9 @@
+package com.SuperemeAppealReporter.api.shared.dto;
+
+import java.util.List;
+
+public class CourtDto {
+	private int courtId;
+	private String courtType;
+	private List<CourtBranchDto> courtBranchDto;
+}
