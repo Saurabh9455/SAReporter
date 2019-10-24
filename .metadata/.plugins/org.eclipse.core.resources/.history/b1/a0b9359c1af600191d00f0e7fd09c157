@@ -189,7 +189,7 @@ public interface ErrorConstant {
 		String ERROR_TYPE = "Invalid court brnach id ERROR";
 		String ERROR_MESSAGE = "Court branch does not exists.";
 		String PLAN_DEACTIVATED_ERROR_MESSAGE = "This plan is already deactivated";
-	}
+
 	public interface GetPdfFileError
 	{
 		String ERROR_CODE = "118";
