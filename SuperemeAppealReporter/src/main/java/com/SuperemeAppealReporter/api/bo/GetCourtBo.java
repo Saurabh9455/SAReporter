@@ -14,4 +14,5 @@ import lombok.Setter;
 public class GetCourtBo {
 
 	private String courtId;
+	private String searchValue;
 }

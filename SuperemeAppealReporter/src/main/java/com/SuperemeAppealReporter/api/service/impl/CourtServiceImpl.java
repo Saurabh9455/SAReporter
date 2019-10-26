@@ -26,16 +26,19 @@ import com.SuperemeAppealReporter.api.exception.type.AppException;
 import com.SuperemeAppealReporter.api.io.dao.CourtDao;
 import com.SuperemeAppealReporter.api.io.entity.CourtBranchEntity;
 import com.SuperemeAppealReporter.api.io.entity.CourtEntity;
+import com.SuperemeAppealReporter.api.io.repository.CourtRepository;
 import com.SuperemeAppealReporter.api.service.CourtService;
 import com.SuperemeAppealReporter.api.shared.dto.CourtBranchDto;
 import com.SuperemeAppealReporter.api.shared.dto.CourtDto;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.GetCourtResponse;
 
 @Service
 public class CourtServiceImpl implements CourtService{
 
 	@Autowired CourtDao courtDao;
+	@Autowired CourtRepository courtRepository;
 	
 	@Transactional
 	@Override
@@ -161,39 +164,36 @@ public class CourtServiceImpl implements CourtService{
 		
 		
 		Pageable pageableRequest = PageRequest.of(pageNumber, perPageLimit);
-		Page<CourtEntity> courtEntityPage = null;
-		if(courtId != 0)
-			courtEntityPage = courtDao.getCourtEntityPage (courtId, pageableRequest);
-		else
-			courtEntityPage = courtDao.getAllCourtEntityPage (pageableRequest);
-		List<CourtEntity> courtEntityList = courtEntityPage.getContent();
-		
-		
-		List<CourtDto> courtDtoList = new ArrayList<CourtDto> ();
-		for(int i = 0; i < courtEntityList.size(); i++)
-		{
-			
-			List<CourtBranchDto> branchDtoList = new ArrayList<CourtBranchDto> ();
-			CourtDto courtDto = new CourtDto();
-			courtDto.setCourtType(courtEntityList.get(i).getCourtType());
-			courtDto.setCourtId(courtEntityList.get(i).getId());
-			List<CourtBranchEntity> branchEntityList = new ArrayList<>(courtEntityList.get(i).getCourtBranchSet());
-			for(int j = 0; j< branchEntityList.size(); j++ )
-			{
-				CourtBranchDto brnachDto = new CourtBranchDto();
-				brnachDto.setCourtBranchId(branchEntityList.get(j).getId());
-				brnachDto.setCourtBranchName(branchEntityList.get(j).getBranchName());
-				branchDtoList.add(brnachDto);
-				courtDto.setCourtBranchDto(branchDtoList);
+		Page<CourtBranchEntity> courtEntityPage = null;
+			if (getCourtBo.getSearchValue() != "" && getCourtBo.getSearchValue() != null) {
+				/*
+				 * courtEntityPage = courtDao.getCourtEntityPage
+				 * (getCourtBo.getSearchValue(), pageableRequest);
+				 */
 			}
+
+			else
+				courtEntityPage = courtDao.getAllCourtEntityPage(pageableRequest);
 			
-			courtDtoList.add(courtDto);
+		List<CourtBranchEntity> courtEntityList = courtEntityPage.getContent();
+		
+		List<GetCourtResponse> getCourtResponseList = new ArrayList<GetCourtResponse>();
+		for(CourtBranchEntity courtBranchEntity : courtEntityList)
+		{
+			GetCourtResponse getCourtResponse = new GetCourtResponse();
+			getCourtResponse.setCourtBranch(courtBranchEntity.getBranchName());
+			getCourtResponse.setCourtBranchId(courtBranchEntity.getId());
+			getCourtResponse.setCourtId(courtBranchEntity.getCourtEntity().getId());
+			getCourtResponse.setCourtName(courtBranchEntity.getCourtEntity().getCourtType());
+			getCourtResponseList.add(getCourtResponse);
 			
 		}
 		
+		
+		
 		commonPaginationResponse = new CommonPaginationResponse();
 		commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(courtEntityPage.getTotalPages());
-		commonPaginationResponse.setOjectList(courtDtoList);
+		commonPaginationResponse.setOjectList(getCourtResponseList);
 		}
 		catch(AppException appException)
 		{
@@ -212,5 +212,66 @@ public class CourtServiceImpl implements CourtService{
 		
 		return commonPaginationResponse;
 	
+	}
+
+	@Override
+	public CommonPaginationResponse getCourtServiceV2(GetCourtBo getCourtBo, int pageNumber, int perPage) {
+	
+		if(pageNumber<=0)
+			pageNumber=1;
+		CommonPaginationResponse commonPaginationResponse = null;
+		int recordCountFinal = 0;
+		List<GetCourtResponse> getCourtResponseList = new ArrayList<GetCourtResponse>();
+		if(getCourtBo.getSearchValue()=="")
+		{
+		     Iterable<CourtEntity> courtEntityList = courtRepository.findAll();
+	/*	     int recordCount = 0;
+		     
+				recordCount++;
+				recordCountFinal = recordCount;
+				if (recordCount == perPage) {
+					pageCount++;
+				}
+				if (pageCount == pageNumber) {*/
+		 	 int recordCount = 0;
+		 	 int pageCount = 0;
+		     for (CourtEntity courtEntity : courtEntityList) {
+		    	
+					
+		    	 if(pageNumber==pageCount)
+		    	 {
+					for (CourtBranchEntity courtBranch : courtEntity.getCourtBranchSet()) {
+						
+						GetCourtResponse getCourtResponse = new GetCourtResponse();
+						getCourtResponse.setCourtName(courtEntity.getCourtType());
+						getCourtResponse.setCourtBranch(courtBranch.getBranchName());
+						getCourtResponse.setCourtBranchId(courtBranch.getId());
+						getCourtResponse.setCourtId(courtEntity.getId());
+						getCourtResponseList.add(getCourtResponse);
+						recordCount++;
+						if(recordCount==perPage)
+						{
+							break ;
+						}
+					}
+		    	 }
+					if(recordCount==perPage)
+					{
+						pageCount++;
+						break;
+					}
+						
+	
+			}
+		     
+		     
+
+		}
+	
+		
+	commonPaginationResponse = new CommonPaginationResponse();
+	commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(recordCountFinal);
+	commonPaginationResponse.setOjectList(getCourtResponseList);
+		return commonPaginationResponse;
 	}
 }

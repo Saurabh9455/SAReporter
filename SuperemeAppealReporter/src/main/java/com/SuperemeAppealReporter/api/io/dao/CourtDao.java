@@ -24,8 +24,12 @@ public interface CourtDao {
 
 	Optional<CourtBranchEntity> findCourtBranchById(int branchId);
 
-	Page<CourtEntity> getCourtEntityPage(int courtId, Pageable pageableRequest);
+	Page<CourtEntity> getCourtEntityPage(String searchValue, Pageable pageableRequest);
 
-	Page<CourtEntity> getAllCourtEntityPage(Pageable pageableRequest);
+	Page<CourtBranchEntity> getAllCourtEntityPage(Pageable pageableRequest);
+	
+	
+	
+	
 
 }

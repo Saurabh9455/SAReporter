@@ -13,4 +13,5 @@ import lombok.Setter;
 @ToString
 public class GetCourtRequest {
 	private String courtId;
+	private String searchValue;
 }

@@ -111,4 +111,21 @@ public class CourtController {
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(response);
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
 	}
+	
+	
+	/******************************Get Court Branch Request V2********************************/	
+	@PostMapping(path = RestMappingConstant.Court.GET_COURT_URI_V2)
+	public ResponseEntity<BaseApiResponse> deleteCourtBranchV2(@Valid @RequestBody GetCourtRequest getCourtRequest,
+			@RequestParam(name = AppConstant.CommonConstant.PAGE_NUMBER, defaultValue = "1") int pageNumber,
+			@RequestParam(name = AppConstant.CommonConstant.PAGE_LIMIT, defaultValue = "8") int perPage){
+		/******************************Converting Request into Bo********************************/
+		GetCourtBo getCourtBo = CourtConverter.convertGetCourtRequestToGetCourtBo(getCourtRequest);
+		
+		/******************************Calling Service********************************/
+		
+		CommonPaginationResponse response  = courtService.getCourtServiceV2(getCourtBo,pageNumber,perPage);
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(response);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	}
 }

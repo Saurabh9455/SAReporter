@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import com.SuperemeAppealReporter.api.io.entity.CourtBranchEntity;
 import com.SuperemeAppealReporter.api.io.entity.CourtEntity;
 
 @Repository
@@ -17,9 +18,12 @@ public interface CourtRepository extends PagingAndSortingRepository<CourtEntity,
 	Optional<CourtEntity> findByName(String courtName);
 
 	@Query(value = "SELECT * FROM court where is_active = 1 and id = ?1",nativeQuery = true)
-	Page<CourtEntity> findActiveCourtById(int courtId, Pageable pageableRequest);
+	Page<CourtEntity> findActiveCourtById(String searchValue, Pageable pageableRequest);
 	
-	@Query(value = "SELECT * FROM court where is_active = 1 ",nativeQuery = true)
-	Page<CourtEntity> findAllActiveCourt(Pageable pageableRequest);
+	
+	
+	@Query(value = "SELECT * FROM court_branch where is_active = 1 ",nativeQuery = true)
+	Page<CourtBranchEntity> findAllActiveCourtV2(Pageable pageableRequest);
+	
 
 }

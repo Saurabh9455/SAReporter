@@ -19,5 +19,7 @@ public interface CourtService {
 	public CommonMessageResponse deleteCourtBranch(DeleteCourtBranchBo deleteCourtBranchBo);
 
 	public CommonPaginationResponse getCourtService(GetCourtBo getCourtBo, int pageNumber, int perPage);
+	
+	public CommonPaginationResponse getCourtServiceV2(GetCourtBo getCourtBo, int pageNumber, int perPage);
 
 }

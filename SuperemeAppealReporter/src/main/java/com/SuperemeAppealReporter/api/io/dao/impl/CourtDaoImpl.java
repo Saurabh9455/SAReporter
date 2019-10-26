@@ -66,14 +66,16 @@ public class CourtDaoImpl implements CourtDao{
 		return branchEntity;
 	}
 	@Override
-	public Page<CourtEntity> getCourtEntityPage(int courtId, Pageable pageableRequest) {
-		Page<CourtEntity> courtEntityPage = courtRepo.findActiveCourtById(courtId,pageableRequest);
+	public Page<CourtEntity> getCourtEntityPage(String searchValue, Pageable pageableRequest) {
+		Page<CourtEntity> courtEntityPage = courtRepo.findActiveCourtById(searchValue,pageableRequest);
 		return courtEntityPage;
 	}
 	@Override
-	public Page<CourtEntity> getAllCourtEntityPage(Pageable pageableRequest) {
-		Page<CourtEntity> courtEntityPage = courtRepo.findAllActiveCourt(pageableRequest);
+	public Page<CourtBranchEntity> getAllCourtEntityPage(Pageable pageableRequest) {
+		Page<CourtBranchEntity> courtEntityPage = branchRepo.findAllActiveCourt(pageableRequest);
 		return courtEntityPage;
+		
+		
 	}
 
 }
