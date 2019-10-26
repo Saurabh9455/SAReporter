@@ -62,7 +62,10 @@ public class NotificationServiceImpl implements NotificationService {
   	
 	        
 	        else  if(mail.getBelongsTo().equals(UserType.USER) && mail.getSubject().equals(AppConstant.Mail.ForgetPasswordMail.SUBJECT))
-	             html = templateEngine.process("email-template-user-forgetPassword", context);
+	        {
+	        	System.out.println("---------------");
+	        	html = templateEngine.process("email-template-user-forgetPassword", context);
+	        }
 	        }
 	        else{
 	        	if(mail.getBelongsTo().equals(UserType.USER))

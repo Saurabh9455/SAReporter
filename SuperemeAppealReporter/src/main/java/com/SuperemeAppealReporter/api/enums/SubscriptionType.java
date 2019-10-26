@@ -4,3 +4,5 @@ public enum SubscriptionType {
 
 	DAILY,MONTHLY,WEEKLY,YEARLY;
 }
+
+
