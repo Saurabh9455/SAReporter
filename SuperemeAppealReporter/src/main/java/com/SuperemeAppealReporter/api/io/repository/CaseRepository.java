@@ -6,6 +6,7 @@ import javax.persistence.Column;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -27,7 +28,7 @@ public interface CaseRepository extends PagingAndSortingRepository<CaseEntity, I
             " where cce.citationCategoryName in (:caseCategoryList) and "+
 		     " ce.courtType in (:courtCategoryList) and "+
             " c.isLive in (:liveList) and "+
-            " c.isOverruled in (:overuledList)")
+            " c.isOverruled in (:overuledList) and c.active = 1 ")
 	public Page<CaseEntity> getCaseList(Pageable pageable,@Param("courtCategoryList")List<String> courtCategoryList,
 			@Param("caseCategoryList")  List <String> caseCategoryList,
 			@Param("liveList") List<Boolean> liveList,
@@ -52,7 +53,7 @@ public interface CaseRepository extends PagingAndSortingRepository<CaseEntity, I
 		     " c.courtDetailEntity.courtEntity.courtType in (:courtCategoryList) and "+
             " c.isLive in (:liveList) and "+
 			" c.isOverruled in (:overuledList) and"+
-            " c.createdBy =(:searchValue) ")
+            " c.createdBy =(:searchValue) and c.active = 1 ")
 public Page<CaseEntity> getCaseList(Pageable pageable,@Param("courtCategoryList")List<String> courtCategoryList,
 		@Param("caseCategoryList")  List <String> caseCategoryList,
 		@Param("liveList") List<Boolean> liveList,
@@ -65,7 +66,7 @@ public Page<CaseEntity> getCaseList(Pageable pageable,@Param("courtCategoryList"
 		     " c.courtDetailEntity.courtEntity.courtType in (:courtCategoryList) and "+
             " c.isLive in (:liveList) and "+
 			" c.isOverruled in (:overuledList) and"+
-            " c.docId =(:searchValue) ")
+            " c.docId =(:searchValue) and c.active = 1 ")
 public Page<CaseEntity> getCaseListInt(Pageable pageable,@Param("courtCategoryList")List<String> courtCategoryList,
 		@Param("caseCategoryList")  List <String> caseCategoryList,
 		@Param("liveList") List<Boolean> liveList,
@@ -74,5 +75,20 @@ public Page<CaseEntity> getCaseListInt(Pageable pageable,@Param("courtCategoryLi
 	
 	@Query(value = "select original_pdf_path from case_entity where doc_id = ?1",nativeQuery=true)
 	public String getPdfPathByDocId(long docId);
+	
+	@Query(value = "select count(*) from case_entity where is_active = 1",nativeQuery = true)
+	public int getTotalCases();
+	
+	@Query(value = "select count(*) from case_entity where is_overruled =1 and is_active = 1",nativeQuery = true)
+	public int getTotalOveruledCases();
+	
+
+	@Query(value = "select count(*) from case_entity where is_live =1 and is_active = 1",nativeQuery = true)
+	public int getTotalLiveCases();
+	
+	@Query(value = "select * from case_entity where is_active = 1 and doc_id =?1 ",nativeQuery = true)
+	public CaseEntity getCaseEntityByPrimaryKeyAndDocId(int docId);
+	
+	
 
 }

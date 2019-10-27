@@ -26,10 +26,9 @@ import com.SuperemeAppealReporter.api.exception.type.AppException;
 import com.SuperemeAppealReporter.api.io.dao.CourtDao;
 import com.SuperemeAppealReporter.api.io.entity.CourtBranchEntity;
 import com.SuperemeAppealReporter.api.io.entity.CourtEntity;
+import com.SuperemeAppealReporter.api.io.repository.CourtBranchRepository;
 import com.SuperemeAppealReporter.api.io.repository.CourtRepository;
 import com.SuperemeAppealReporter.api.service.CourtService;
-import com.SuperemeAppealReporter.api.shared.dto.CourtBranchDto;
-import com.SuperemeAppealReporter.api.shared.dto.CourtDto;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.GetCourtResponse;
@@ -39,6 +38,7 @@ public class CourtServiceImpl implements CourtService{
 
 	@Autowired CourtDao courtDao;
 	@Autowired CourtRepository courtRepository;
+	@Autowired CourtBranchRepository courtBranchRepository;
 	
 	@Transactional
 	@Override
@@ -154,9 +154,7 @@ public class CourtServiceImpl implements CourtService{
 		try
 		{
 		
-			int courtId = 0;
-			if(getCourtBo.getCourtId()!="" && getCourtBo.getCourtId()!=null)
-				courtId = Integer.parseInt(getCourtBo.getCourtId());
+		
 	
 		if (pageNumber > 0)
 			pageNumber = pageNumber - 1;
@@ -166,10 +164,9 @@ public class CourtServiceImpl implements CourtService{
 		Pageable pageableRequest = PageRequest.of(pageNumber, perPageLimit);
 		Page<CourtBranchEntity> courtEntityPage = null;
 			if (getCourtBo.getSearchValue() != "" && getCourtBo.getSearchValue() != null) {
-				/*
-				 * courtEntityPage = courtDao.getCourtEntityPage
-				 * (getCourtBo.getSearchValue(), pageableRequest);
-				 */
+			
+				courtEntityPage = courtBranchRepository.findAllActiveCourtBySearch(pageableRequest, getCourtBo.getSearchValue());
+				
 			}
 
 			else

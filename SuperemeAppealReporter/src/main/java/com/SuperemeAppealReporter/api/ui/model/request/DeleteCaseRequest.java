@@ -1,4 +1,4 @@
-package com.SuperemeAppealReporter.api.bo;
+package com.SuperemeAppealReporter.api.ui.model.request;
 
 import groovy.transform.ToString;
 import lombok.AllArgsConstructor;
@@ -11,8 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class GetCourtBo {
+public class DeleteCaseRequest {
 
+	private String docId;
 	
-	private String searchValue;
 }

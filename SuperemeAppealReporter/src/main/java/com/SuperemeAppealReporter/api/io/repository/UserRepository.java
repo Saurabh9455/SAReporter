@@ -35,5 +35,17 @@ public interface UserRepository extends PagingAndSortingRepository<UserEntity, I
 	@Query(value = "select * from user where is_active = 1 and (name like %?1% or client_id like %?1%) and type in ?2  ",nativeQuery = true)
 	Page<UserEntity> getUserEntityPageByUserTypeAndSubscriptionTypeAndByClientNameOrId(String staffNameOrId,
 			List<String> userTypeList, Pageable pageableRequest);
+	
+	@Query(value = "select count(*) from user where is_active = 1",nativeQuery = true)
+	public int getTotalCountForUsers();
+	
+	@Query(value = "select count(*) from user where type = ?1 and is_active = 1",nativeQuery = true)
+	public int getTotalCountForUsersByType(String type);
+	
+	@Query(value= "select count(*) from user where type <> ?1 and is_active =1 ",nativeQuery = true)
+	public int getTotalStaffUsers(String userType);
+	
+	@Query(value = "select count(*) from user where type = ?1 and is_subscription_active = ?2 and is_active = 1",nativeQuery = true)
+	public int getTotalCountForUsersByStatus(String type,boolean status);
 
 }

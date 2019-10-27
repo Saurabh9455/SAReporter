@@ -340,6 +340,345 @@ public class CaseServiceImpl implements CaseService{
 		return commonMessageResponse;
 	}
 	
+	@Override
+	public CommonMessageResponse editCaseService(AddCaseBo addCaseBo) {
+CommonMessageResponse commonMessageResponse = null;
+		
+		try
+		{
+		/**fetching doc id**/
+		int docId = (int)addCaseBo.getDocId();
+
+		/**fetching already existing case entity**/
+		CaseEntity caseEntity = caseRepository.findByDocId(docId);
+		
+		
+		if(caseEntity==null)
+		{
+			throw new AppException(ErrorConstant.EditCaseError.ERROR_TYPE, 
+					ErrorConstant.EditCaseError.ERROR_CODE,
+					ErrorConstant.EditCaseError.ERROR_MESSAGE);
+		}
+		
+		/**Creating CitationEntity**/
+		CitationRequest citationRequest = addCaseBo.getCitationRequest();
+		int citationYear = citationRequest.getYear();
+		int citationPageNumber = citationRequest.getPageNumber();
+		String otherCitation = citationRequest.getOtherCitation();
+		CitationCategoryEntity citationCategoryEntity = citationCategoryRepository
+				.findById(citationRequest.getCitationCategoryId()).get();
+        JournalEntity journalEntity = journalRepository.findById(citationRequest.getJournalId()).get();
+		CitationEntity citationEntity = caseEntity.getCitationEntity();
+		citationEntity.setYear(citationYear);
+		citationEntity.setPageNumber(citationPageNumber);
+		citationEntity.setOtherCitation(otherCitation);
+		citationEntity.setJournalEntity(journalEntity);
+		citationEntity.setCitationCategoryEntity(citationCategoryEntity);
+		
+		/**Creating Court Detail Entity*/
+		CourtDetailRequest courtDetailRequest = addCaseBo.getCourtDetailRequest();
+		String allJudges = courtDetailRequest.getAllJudges();
+		CourtBenchEntity courtBenchEntity = courtBenchRepository.findById(courtDetailRequest.getCourtBenchId()).get();
+		CourtBranchEntity courtBranchEntity = courtBranchRepository.findById(courtDetailRequest.getCourtBranchId()).get();
+		CourtEntity courtEntity = courtRepository.findById(courtDetailRequest.getCourtId()).get();
+		CourtDetailEntity courtDetailEntity = caseEntity.getCourtDetailEntity();
+		courtDetailEntity.setAllJudges(allJudges);
+		courtDetailEntity.setCourtBenchEntity(courtBenchEntity);
+		courtDetailEntity.setCourtBranchEntity(courtBranchEntity);
+		courtDetailEntity.setCourtEntity(courtEntity);
+		
+		/**Creating Additional Appellant and Respondent Entity List*/
+		List<AdditionalAppellantRespondentEntity> additionalAppellantRespondentEntityList = null;
+		if(caseEntity.getAdditionalAppellantRespondentEntitySet()!=null)
+		{
+			additionalAppellantRespondentEntityList = caseEntity.getAdditionalAppellantRespondentEntitySet();
+		
+		}
+		else
+		{
+		additionalAppellantRespondentEntityList
+		                      = new ArrayList<AdditionalAppellantRespondentEntity>();
+		}
+		
+		List<AdditionalAppellantRespondentRequest> additionalAppellantRespondentRequestList
+		                  = addCaseBo.getAdditionalAppellantRespondentRequestList();
+		
+		
+		
+		if(additionalAppellantRespondentRequestList!=null)
+		{
+			
+	int index = 0;
+		for(AdditionalAppellantRespondentRequest req : additionalAppellantRespondentRequestList)
+		{
+			
+			AdditionalAppellantRespondentEntity additionalAppellantRespondentEntity = null;
+			if(!additionalAppellantRespondentEntityList.isEmpty() && index<additionalAppellantRespondentEntityList.size())
+			{
+				additionalAppellantRespondentEntity = additionalAppellantRespondentEntityList.get(index);
+				additionalAppellantRespondentEntity.setCaseNumber(req.getCase_number()+"");
+				additionalAppellantRespondentEntity.setExtraCaseAndYear(req.getExtraCaseAndYear());
+				additionalAppellantRespondentEntity.setRespondent(req.getRespondent());
+				additionalAppellantRespondentEntity.setAppellant(req.getAppellant());
+				
+			}
+			else
+			{
+			additionalAppellantRespondentEntity = new AdditionalAppellantRespondentEntity();
+			additionalAppellantRespondentEntity.setCaseNumber(req.getCase_number()+"");
+			additionalAppellantRespondentEntity.setExtraCaseAndYear(req.getExtraCaseAndYear());
+			additionalAppellantRespondentEntity.setRespondent(req.getRespondent());
+			additionalAppellantRespondentEntity.setAppellant(req.getAppellant());
+			additionalAppellantRespondentEntityList.add(additionalAppellantRespondentEntity);
+			}
+			
+			index++;
+		}
+		}
+		else
+		{
+			caseEntity.setAdditionalAppellantRespondentEntitySet(null);
+		}
+		
+		/**Creating Case History Entity**/
+		CaseHistoryRequest caseHistoryRequest = addCaseBo.getCaseHistoryRequest();
+		int caseNumber = caseHistoryRequest.getCaseNumber();
+		int year = caseHistoryRequest.getYear();
+		int decidedDate = caseHistoryRequest.getDecidedDay();
+		int decidedMonth  = caseHistoryRequest.getDecidedMonth();
+		int decidedYear = caseHistoryRequest.getDecidedYear();
+		String caseHistoryNote = caseHistoryRequest.getNotes();
+		CaseHistoryEntity caseHistoryEntity = caseEntity.getCaseHistoryEntity();
+		caseHistoryEntity.setDecided_day(decidedDate);
+		caseHistoryEntity.setDecidedMonth(decidedMonth);
+		caseHistoryEntity.setYear(year);
+		caseHistoryEntity.setNotes(caseHistoryNote);
+		caseHistoryEntity.setCaseNumber(caseNumber);
+		caseHistoryEntity.setDecidedYear(decidedYear);
+		
+		/**Fetching Remarkable**/
+		String remarkable = addCaseBo.getRemarkable();
+		
+		/**Creating Head note Entity List**/
+		List<HeadnoteEntity> headnoteEntityList = null;
+			if(caseEntity.getHeadNoteEntitySet()!=null)
+			{
+				headnoteEntityList = caseEntity.getHeadNoteEntitySet();
+				//headnoteEntityList.clear();
+			}
+			else
+			{
+				headnoteEntityList = new ArrayList<HeadnoteEntity>();
+			}
+		
+		List<HeadnoteRequest> headnoteRequestList = addCaseBo.getHeadNoteRequestList();
+		int hindex =0;
+		for(HeadnoteRequest req : headnoteRequestList)
+		{
+			HeadnoteEntity headnoteEntity = null;
+			if(!headnoteEntityList.isEmpty() && hindex<headnoteEntityList.size() )
+			{
+				headnoteEntity = headnoteEntityList.get(hindex);
+				headnoteEntity.setActname1(req.getActname1());
+				headnoteEntity.setActname2(req.getActname2());
+				headnoteEntity.setActname3(req.getActname3());
+				headnoteEntity.setHeadnote(req.getHeadnote());
+				headnoteEntity.setPriority(req.getPriority());
+				headnoteEntity.setSection1(req.getSection1());
+				headnoteEntity.setSection2(req.getSection2());
+				headnoteEntity.setSection3(req.getActname3());
+				headnoteEntity.setTopic(req.getTopic());
+				headnoteEntity.setParagraph(req.getParagraph());
+			}
+			else
+			{
+			    headnoteEntity = new HeadnoteEntity();
+				headnoteEntity.setActname1(req.getActname1());
+				headnoteEntity.setActname2(req.getActname2());
+				headnoteEntity.setActname3(req.getActname3());
+				headnoteEntity.setHeadnote(req.getHeadnote());
+				headnoteEntity.setPriority(req.getPriority());
+				headnoteEntity.setSection1(req.getSection1());
+				headnoteEntity.setSection2(req.getSection2());
+				headnoteEntity.setSection3(req.getActname3());
+				headnoteEntity.setTopic(req.getTopic());
+				headnoteEntity.setParagraph(req.getParagraph());
+				headnoteEntityList.add(headnoteEntity);
+			}
+	
+			hindex++;
+		}
+		
+		
+		/**Creating cases reffered entity list**/
+		List<CasesRefferedEntity> casesRefferedEntityList = null;
+		if(caseEntity.getCasesReferredEntitySet()!=null)
+		{
+			casesRefferedEntityList = caseEntity.getCasesReferredEntitySet();	
+		}
+		else
+		{
+		 casesRefferedEntityList = new ArrayList<CasesRefferedEntity>();
+		}
+		 List<CasesRefferedRequest> casesRefferedRequestList = addCaseBo.getCasesReferredRequestList();
+		int index = 0;
+		for(CasesRefferedRequest req : casesRefferedRequestList)
+		{
+			CasesRefferedEntity casesRefferedEntity =  null;
+			if(!casesRefferedEntityList.isEmpty() && index<casesRefferedEntityList.size())
+			{
+				casesRefferedEntity = casesRefferedEntityList.get(index);
+				 casesRefferedEntity = new CasesRefferedEntity();
+					casesRefferedEntity.setCasesReferred(req.getCasesReferred());
+					casesRefferedEntity.setPartyName(req.getPartyName());
+			}
+			else
+			{
+			 casesRefferedEntity = new CasesRefferedEntity();
+			casesRefferedEntity.setCasesReferred(req.getCasesReferred());
+			casesRefferedEntity.setPartyName(req.getPartyName());
+			casesRefferedEntityList.add(casesRefferedEntity);
+			}
+		}
+		
+		SingleCouncilDetailRequest singleCouncilDetailRequest = null;
+		DoubleCouncilDetailRequest doubleCouncilDetailRequest = null;
+		DoubleCouncilDetailEntity detailEntity = null;
+		SingleCouncilDetailEntity singleCouncilDetailEntity = null; 
+		/**checking which one is present amoung single council detail or double council detail**/
+		if(addCaseBo.getSingleCouncilDetailRequest()!=null)
+		{
+			singleCouncilDetailRequest = addCaseBo.getSingleCouncilDetailRequest();
+			
+			if(caseEntity.getSingleCouncilDetailEntity()!=null)
+			{
+				singleCouncilDetailEntity = caseEntity.getSingleCouncilDetailEntity();
+			}
+			else
+			{
+			singleCouncilDetailEntity = new SingleCouncilDetailEntity();
+			}
+			
+			singleCouncilDetailEntity.setPetionerName(singleCouncilDetailRequest.getPetitionerName());
+			caseEntity.setDoubleCouncilDetailEntity(null);
+		
+		}
+		else if(addCaseBo.getDoubleCouncilDetailRequest()!=null)
+		{
+			 doubleCouncilDetailRequest = addCaseBo.getDoubleCouncilDetailRequest();
+			if(caseEntity.getDoubleCouncilDetailEntity()!=null)
+			{
+				detailEntity = caseEntity.getDoubleCouncilDetailEntity();
+			}
+			else
+			{
+			 detailEntity = new DoubleCouncilDetailEntity();
+			}
+			detailEntity.setAdvocateForAppellant(doubleCouncilDetailRequest.getAdvocateForAppellant());
+			detailEntity.setAdvocateForRespondent(doubleCouncilDetailRequest.getAdvocateForRespondent());
+			detailEntity.setExtraCouncilDetails(doubleCouncilDetailRequest.getExtraCouncilDetails());
+			caseEntity.setSingleCouncilDetailEntity(null);
+		}
+		
+		/**fetching judge name**/
+		String judgeName = addCaseBo.getJudgeName();
+		
+		/**fetching judgement Type **/
+		String judgementType = addCaseBo.getJudgementType();
+		
+		/**fetching case result**/
+		String caseResult = addCaseBo.getCaseResult();
+		
+		/**fetching judgment order**/
+		String judgementOrder = addCaseBo.getJudgementOrder();
+		
+		/**fetching appellant**/
+		String appellant = addCaseBo.getAppellant();
+		
+		/**fetching respondent**/
+		String respondent = addCaseBo.getRespondent();
+		
+		/**Saving the case Pdf file**/
+/*		
+		String originalPdfPath = saveCasePdfFile(addCaseBo.getFile(),docId);*/
+        
+		
+		
+	
+		
+		if(additionalAppellantRespondentEntityList.size()>0)
+		caseEntity.setAdditionalAppellantRespondentEntitySet(additionalAppellantRespondentEntityList);
+		
+		caseEntity.setAppellant(appellant);
+		caseEntity.setCaseHistoryEntity(caseHistoryEntity);
+		caseEntity.setCaseResult(caseResult);
+		caseEntity.setCasesReferredEntitySet(casesRefferedEntityList);
+		caseEntity.setCitationEntity(citationEntity);
+		caseEntity.setCourtDetailEntity(courtDetailEntity);
+		caseEntity.setDocId(docId);
+		caseEntity.setHeadNoteEntitySet(headnoteEntityList);
+		caseEntity.setJudgementOrder(judgementOrder);
+		caseEntity.setJudgementType(judgementType);
+		caseEntity.setJudgeName(judgeName);
+		caseEntity.setOriginalPdfPath(null);
+		caseEntity.setRemarkable(remarkable);
+		caseEntity.setRespondent(respondent);
+		
+		
+		for(HeadnoteEntity headnoteEntity : headnoteEntityList)
+		{
+			headnoteEntity.setCaseEntity(caseEntity);
+			
+		}
+		
+		for(CasesRefferedEntity casesReferredEntity : casesRefferedEntityList)
+		{
+			casesReferredEntity.setCaseEntity(caseEntity);
+		}
+		
+  for (AdditionalAppellantRespondentEntity additionalAppellantRespondentEntity : additionalAppellantRespondentEntityList) {
+
+	  additionalAppellantRespondentEntity.setCaseEntity(caseEntity);
+	  
+			}
+  
+  if(singleCouncilDetailEntity!=null)
+  {
+	  singleCouncilDetailEntity.setCaseEntity(caseEntity);
+	  caseEntity.setSingleCouncilDetailEntity(singleCouncilDetailEntity);
+	  caseEntity.setDoubleCouncilDetailEntity(null);
+  }
+  else if(detailEntity!=null)
+  {
+	  detailEntity.setCaseEntity(caseEntity);
+	  caseEntity.setDoubleCouncilDetailEntity(detailEntity);
+	  caseEntity.setSingleCouncilDetailEntity(null);
+  }
+ 
+        /**saving case entity**/
+		caseRepository.save(caseEntity);
+		
+		/**generating response**/
+		commonMessageResponse = new CommonMessageResponse();
+		commonMessageResponse.setMsg(SucessMessage.CaseMessage.CASE_EDIT_SUCCESS);
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in CaseServiceImpl --> editCaseService()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		return commonMessageResponse;
+	}
 	/*
 	 * This method saves the case PDF file and returns the saved path
 	 */
@@ -723,6 +1062,48 @@ public class CaseServiceImpl implements CaseService{
 		}
 		
 	}
+
+	@Override
+	public CommonMessageResponse deleteCaseService( int docId) {
+		
+		CommonMessageResponse commonMessageResponse = null;
+	   try
+		{
+	    CaseEntity caseEntity = caseRepository.getCaseEntityByPrimaryKeyAndDocId(docId);
+	    if(caseEntity == null)
+	    {
+	    	throw new AppException(ErrorConstant.DeleteCaseError.ERROR_TYPE,
+	    			ErrorConstant.DeleteCaseError.ERROR_CODE,
+	    			ErrorConstant.DeleteCaseError.ERROR_MESSAGE);
+	    }
+	    
+	    /**deactivating the is_active flag for soft delete**/
+	    
+	    caseEntity.setActive(false);
+	    
+	    commonMessageResponse = new CommonMessageResponse();
+	    commonMessageResponse.setMsg(SucessMessage.CaseMessage.CASE_DELETE_SUCCESS);
+	    
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in CaseServiceImpl --> deleteCaseService()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
+	    return commonMessageResponse;
+	}
+
+
 
 	
 	

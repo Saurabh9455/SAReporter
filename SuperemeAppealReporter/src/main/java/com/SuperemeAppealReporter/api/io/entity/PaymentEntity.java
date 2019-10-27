@@ -24,7 +24,7 @@ public class PaymentEntity extends BaseEntity {
 
 	
 	@Column(name = "amount", nullable = false)
-	private double name;
+	private double amount;
 	
 	
 	@Column(name = "transaction_id", nullable = false)

@@ -26,6 +26,7 @@ import com.SuperemeAppealReporter.api.constant.RestMappingConstant;
 import com.SuperemeAppealReporter.api.converter.CaseConverter;
 import com.SuperemeAppealReporter.api.service.CaseService;
 import com.SuperemeAppealReporter.api.ui.model.request.AddCaseRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.DeleteCaseRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetCaseListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UploadPdfRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
@@ -100,6 +101,7 @@ public class CaseController {
 
 	}
 	
+	/****************************************Get Pdf for Case*****************************************/
 	@GetMapping(path=RestMappingConstant.Admin.GET_PDF_CASE_URI)
 	public ResponseEntity<Resource> getCasePdf(@RequestParam(name = AppConstant.CommonConstant.DOC_ID) long docId,HttpServletRequest request)
 	{
@@ -126,5 +128,42 @@ public class CaseController {
               .body(resource);
 	  /**returning get case pdf response response**/
 	//  return fileArray;
+	}
+	
+	
+	/****************************************Edit Case*****************************************/
+	@PostMapping(path = RestMappingConstant.Admin.EDIT_CASE_URI)
+	public ResponseEntity<BaseApiResponse> editCaseHandler(@RequestBody AddCaseRequest addCaseRequest)
+	{
+		/**converting request to bo**/
+		AddCaseBo addCaseBo = CaseConverter.convertAddCaseRequestToAddCaseBo(addCaseRequest);
+		
+		/**calling service layer**/
+		CommonMessageResponse commonMessageResponse = caseService.editCaseService(addCaseBo);
+		
+		/**returning get role master data response**/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse,HttpStatus.OK);
+		
+		
+	}
+	
+	
+	/****************************************Delete Case*****************************************/
+	@PostMapping(path = RestMappingConstant.Admin.DELETE_CASE_URI)
+	public ResponseEntity<BaseApiResponse> deleteCaseHandler(@RequestBody DeleteCaseRequest deleteCaseRequest)
+	{
+		/**getting docId**/
+		int docId = Integer.parseInt(deleteCaseRequest.getDocId());
+		
+		
+		/**calling service layer**/
+		CommonMessageResponse commonMessageResponse = caseService.deleteCaseService( docId);
+		
+		/**returning get role master data response**/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse,HttpStatus.OK);
+		
+		
 	}
 }

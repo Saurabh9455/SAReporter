@@ -28,7 +28,7 @@ public class SingleCouncilDetailEntity extends BaseEntity {
 
 	/**------------------------Mappings-------------------------**/
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.REFRESH)
 	private CaseEntity caseEntity;
 	
 }

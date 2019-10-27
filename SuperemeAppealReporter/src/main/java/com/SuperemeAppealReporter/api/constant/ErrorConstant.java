@@ -197,4 +197,19 @@ public interface ErrorConstant {
 		String ERROR_MESSAGE = "No pdf file is present for the given case.Please try with difference docId";
 	}
 	
+	public interface EditCaseError
+	{
+		String ERROR_CODE = "119";
+		String ERROR_TYPE = "Edit case ERROR";
+		String ERROR_MESSAGE = "No Case available for the given docId. So edit case operation was unsuccessfull";
+	}
+	
+
+	public interface DeleteCaseError
+	{
+		String ERROR_CODE = "120";
+		String ERROR_TYPE = "Delete case ERROR";
+		String ERROR_MESSAGE = "No Case available for the given docId. So delete case operation was unsuccessfull";
+	}
+	
 }

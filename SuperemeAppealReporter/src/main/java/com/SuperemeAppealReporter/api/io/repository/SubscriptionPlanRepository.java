@@ -13,5 +13,7 @@ public interface SubscriptionPlanRepository extends JpaRepository<SubscriptionPl
 
 	@Query(value = "select * from subscription_plan where is_active = 1 ",nativeQuery = true)
 	Page<SubscriptionPlanEntity> getAllSubscriptionEntityPage(Pageable pageableRequest);
-
+	
+	@Query(value = "select count(*) from subscription_plan where is_active = 1",nativeQuery = true)
+    public int getTotalCountForPlan();
 }

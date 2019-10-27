@@ -12,6 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @ToString
 public class GetCourtRequest {
-	private String courtId;
+
 	private String searchValue;
 }

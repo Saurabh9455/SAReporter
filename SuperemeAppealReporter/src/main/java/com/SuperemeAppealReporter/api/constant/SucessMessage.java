@@ -46,6 +46,8 @@ public interface SucessMessage {
 	public  interface CaseMessage
 	{
 		String CASE_CREATED_SUCESS = "Case successfully created.";
+		String CASE_EDIT_SUCCESS = "Case Edit was successfull. Changes saved";
+		String CASE_DELETE_SUCCESS = "Case Delete was successfull. Case Deleted";
 	}
 	public interface SubscriptionMessage
 	{

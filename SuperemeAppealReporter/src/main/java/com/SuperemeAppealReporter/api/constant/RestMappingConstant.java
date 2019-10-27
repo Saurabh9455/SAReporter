@@ -63,6 +63,14 @@ public interface RestMappingConstant {
 		String GET_PDF_CASE_URI ="/getCasePdf";
 		String FULL_GET_CASE_PDF_URI = "/SuperemeAppealReporter/v1/api/admin/getCasePdf";
 		
+		String GET_DASHBOARD_DETAILS_URI  = "/getDashBoard";
+		String FULL_GET_DASHBOARD_DETAILS_URI = "/SuperemeAppealReporter/v1/api/admin/getDashBoard";
+		
+		String EDIT_CASE_URI = "/editCase";
+		String FULL_EDIT_CASE_URI = "/SuperemeAppealReporter/v1/api/admin/editCase";
+		
+		String DELETE_CASE_URI = "/deleteCase";
+		String FULL_DELETE_CASE_URI = "/SuperemeAppealReporter/v1/api/admin/deleteCase";
 		
 	}
 	
