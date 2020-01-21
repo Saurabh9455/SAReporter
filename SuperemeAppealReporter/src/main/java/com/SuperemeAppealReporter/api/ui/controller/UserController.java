@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import com.SuperemeAppealReporter.api.ui.model.request.LoginRequestModel;
 import com.SuperemeAppealReporter.api.ui.model.request.ResetPasswordRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UserSignupRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.DahsboardResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.EmailVerificationResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.ForgetPasswordResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.ResetPasswordResponse;
@@ -40,6 +42,26 @@ public class UserController {
 	
 	@Autowired
 	VerificationTokenService verificationTokenService;
+	
+	
+	/****************************************User dashboard handler method*****************************************/
+	
+	@PostMapping(path = RestMappingConstant.User.DASHBOARD_URI)
+	public ResponseEntity<BaseApiResponse> dashboardHandler()
+	{
+		String emailId = SecurityContextHolder.getContext().getAuthentication().getName();
+	    /**calling service layer**/
+		DahsboardResponse dashboardResponse = userService.giveDashboardResponseService(emailId);
+		
+
+		/**Generating Response**/
+		BaseApiResponse baseApiResponse  = ResponseBuilder.getSuccessResponse(dashboardResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse,HttpStatus.OK);
+	}
+	
+	
+	
+	
 	
 	
 	/*

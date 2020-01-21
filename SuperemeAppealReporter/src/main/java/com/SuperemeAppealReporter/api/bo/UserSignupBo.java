@@ -1,9 +1,5 @@
 package com.SuperemeAppealReporter.api.bo;
 
-import java.util.List;
-
-import com.SuperemeAppealReporter.api.io.entity.RoleEntity;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +33,8 @@ public class UserSignupBo {
 	private int cityId;
 	
 	private int countryId;
+	
+	private String address;
 	
 /*	*//**------------------------Mappings-------------------------**//*
     private List<RoleEntity> roleEntityList; */

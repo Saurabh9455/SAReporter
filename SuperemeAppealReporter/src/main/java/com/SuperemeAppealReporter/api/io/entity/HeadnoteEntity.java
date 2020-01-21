@@ -51,14 +51,14 @@ public class HeadnoteEntity extends BaseEntity{
 	private String headnote;
 	
 	@Column(name = "paragrap", nullable = true)
-	private int paragraph;
+	private String paragraph;
 	
 	
 	
 	
 	/**------------------------Mappings-------------------------**/
 
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.DETACH,fetch = FetchType.LAZY)
 	private CaseEntity caseEntity;
 	
 	

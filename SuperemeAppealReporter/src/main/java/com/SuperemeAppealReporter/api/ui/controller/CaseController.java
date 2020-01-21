@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,8 @@ import com.SuperemeAppealReporter.api.ui.model.request.UploadPdfRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.GetCaseListResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.GetCaseListResponseForSingleCase;
 import com.SuperemeAppealReporter.api.ui.model.response.ResponseBuilder;
 
 @RestController
@@ -162,6 +165,25 @@ public class CaseController {
 		
 		/**returning get role master data response**/
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse,HttpStatus.OK);
+		
+		
+	}
+	
+	
+	
+	/****************************************Add Case handler method*****************************************/
+	@GetMapping(path=RestMappingConstant.Admin.GET_SINGLE_CASE_URI)
+	public ResponseEntity<BaseApiResponse> getSingleCase(@PathVariable("docId") int docId)
+	{
+		/**converting request to bo**/
+		
+		
+		/**calling service layer**/
+		GetCaseListResponseForSingleCase getCaseListResponse = caseService.getSingleCase(docId);
+		
+		/**returning get role master data response**/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(getCaseListResponse);
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse,HttpStatus.OK);
 		
 		

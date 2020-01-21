@@ -35,20 +35,17 @@ public class AddClientRequest {
 	@Pattern(regexp = "^[1-9]{1}[0-9]{9}$",message = "Mobile Number Should not start with 0 and should be of 10 digits.")
 	private String mobile;
 	
-	@Digits(integer = 2,message = "Role id should be in digits",fraction = 0)
+	@Digits(integer = 10,message = "Role id should be in digits",fraction = 0)
 	@NotNull(message = "Please enter role id")
 	private Integer roleId;
 	
-	@Digits(integer = 2,message = "State id should be in digits",fraction = 0)
-	@NotNull(message = "Please enter state id")
+	
 	private Integer stateId;
 	
-	@Digits(integer = 2,message = "City id should be in digits",fraction = 0)
-	@NotNull(message = "Please enter city id")
+	
 	private Integer cityId;
 	
-	@Digits(integer = 2,message = "Country id should be in digits",fraction = 0)
-	@NotNull(message = "Please enter country id")
+	
 	private Integer countryId;
 	
 	
@@ -56,5 +53,7 @@ public class AddClientRequest {
 	@Pattern(regexp = "^[0-9]{6}$",message = "Zipcode code should be of digits.")
 	private String zipCode;
 	
+	
+	private String address;
 	
 }

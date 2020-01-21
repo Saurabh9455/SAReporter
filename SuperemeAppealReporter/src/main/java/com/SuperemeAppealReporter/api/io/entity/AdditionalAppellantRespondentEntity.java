@@ -44,7 +44,7 @@ public class AdditionalAppellantRespondentEntity extends BaseEntity{
 	/**------------------------Mappings-------------------------**/
 	
 	
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.DETACH,fetch = FetchType.LAZY)
 	private CaseEntity caseEntity;
 	
 	

@@ -1,6 +1,7 @@
 package com.SuperemeAppealReporter.api.service.impl;
 
-import org.springframework.beans.BeanUtils;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +9,7 @@ import com.SuperemeAppealReporter.api.constant.ErrorConstant;
 import com.SuperemeAppealReporter.api.enums.PaymentStatus;
 import com.SuperemeAppealReporter.api.enums.UserType;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
+import com.SuperemeAppealReporter.api.io.entity.CaseEntity;
 import com.SuperemeAppealReporter.api.io.repository.CaseRepository;
 import com.SuperemeAppealReporter.api.io.repository.PaymentRepository;
 import com.SuperemeAppealReporter.api.io.repository.SubscriptionPlanRepository;
@@ -59,9 +61,26 @@ public class DashBoardDetailsServiceImpl implements DashBoardService {
 	    
 	    double totalEarningThisWeek = 0.0;
 	    double totalOverallEarning = paymentRepository.getTotalCountForSuccessPayments(PaymentStatus.SUCCESS.toString());
+	   System.out.println("------------------------------------------------COUNT(*) FINISHED--------------");
+/*	    List<CaseEntity> supremeCourtCaseEntities = caseRepository.getSupremeCourtCases();
+	    List<CaseEntity> supremeCourtDivisionalBenchEntities = caseRepository.getSupremeCourtDivisionalBenchCases();
+	    List<CaseEntity> supremeCourtFullBenchEntities = caseRepository.getSupremeCourtFullBenchCases();
+	    List<CaseEntity> supremeCourtThirdBenchEntities = caseRepository.getSupremeCourtThirdBenchCases();
+	    List<CaseEntity> highCourtEntities = caseRepository.getHighCourtCases();*/
+	    
+	  /*  int supremeCourtCases = supremeCourtCaseEntities.size();
+	    int supremeCourtDivisionalBenchCases = supremeCourtDivisionalBenchEntities.size();
+	    int supremeCourtFullBenchCases = supremeCourtFullBenchEntities.size();
+	    int supremeCourtThirdBenchCases = supremeCourtThirdBenchEntities.size();
+	    int highCourtCases = highCourtEntities.size();*/
+	   
+	   int supremeCourtCases = caseRepository.getSupremeCourtCases();
+	    int supremeCourtDivisionalBenchCases = caseRepository.getSupremeCourtDivisionalBenchCases();
+	    int supremeCourtFullBenchCases = caseRepository.getSupremeCourtFullBenchCases();
+	    int supremeCourtThirdBenchCases = caseRepository.getSupremeCourtThirdBenchCases();
+	    int highCourtCases = caseRepository.getHighCourtCases();;
 	    
 	    getDashBoardResponse = new GetDashBoardResponse();
-	    
 	    getDashBoardResponse.setActiveClients(activeClients);
 	    getDashBoardResponse.setAdminStaff(adminStaff);
 	    getDashBoardResponse.setCompletedOrders(completedOrders);
@@ -79,6 +98,12 @@ public class DashBoardDetailsServiceImpl implements DashBoardService {
 	    getDashBoardResponse.setTotalPlans(totalPlans);
 	    getDashBoardResponse.setTotalStaff(totalStaff);
 	    
+	    getDashBoardResponse.setSupremeCourtCases(supremeCourtCases);
+	    getDashBoardResponse.setSupremeCourtDivisionalBenchCases(supremeCourtDivisionalBenchCases);
+	    getDashBoardResponse.setSupremeCourtFullBenchCases(supremeCourtFullBenchCases);
+	    getDashBoardResponse.setSupremeCourtThirdBenchCases(supremeCourtThirdBenchCases);
+	    
+	    getDashBoardResponse.setHighCourtCases(highCourtCases);
 	    
 		}
 		catch(AppException appException)

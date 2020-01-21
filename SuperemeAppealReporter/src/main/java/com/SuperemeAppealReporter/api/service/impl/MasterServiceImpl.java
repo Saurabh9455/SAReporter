@@ -1,24 +1,33 @@
 package com.SuperemeAppealReporter.api.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.dom4j.dom.DOMAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.SuperemeAppealReporter.api.constant.ErrorConstant;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
 import com.SuperemeAppealReporter.api.io.dao.MasterDao;
+import com.SuperemeAppealReporter.api.io.entity.CitationCategoryEntity;
 import com.SuperemeAppealReporter.api.io.entity.CityEntity;
 import com.SuperemeAppealReporter.api.io.entity.ClientIdGenerator;
 import com.SuperemeAppealReporter.api.io.entity.CountryEntity;
+import com.SuperemeAppealReporter.api.io.entity.CourtBenchEntity;
 import com.SuperemeAppealReporter.api.io.entity.DocIdGenerator;
+import com.SuperemeAppealReporter.api.io.entity.JournalEntity;
 import com.SuperemeAppealReporter.api.io.entity.StateEntity;
+import com.SuperemeAppealReporter.api.io.repository.CitationCategoryRepository;
 import com.SuperemeAppealReporter.api.io.repository.ClientIdGeneratorRepository;
+import com.SuperemeAppealReporter.api.io.repository.CourtBenchRepository;
 import com.SuperemeAppealReporter.api.io.repository.DocIdGeneratorRepository;
+import com.SuperemeAppealReporter.api.io.repository.JournalReposiotry;
 import com.SuperemeAppealReporter.api.service.MasterService;
 import com.SuperemeAppealReporter.api.shared.dto.CommonDto;
+import com.SuperemeAppealReporter.api.shared.util.AppUtility;
+import com.SuperemeAppealReporter.api.ui.model.response.AddCaseMasterResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.GetCommonMasterDataResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.GetCourtDropDownResponse;
 
 @Service
 public class MasterServiceImpl implements MasterService {
@@ -31,6 +40,15 @@ public class MasterServiceImpl implements MasterService {
 	
 	@Autowired
 	DocIdGeneratorRepository docIdGeneratorRepository;
+	
+	@Autowired
+	JournalReposiotry journalReposiotry;
+	
+	@Autowired
+	CitationCategoryRepository citationCategoryRepository;
+	
+	@Autowired
+	CourtBenchRepository courtBenchRepository;
 	
 	@Override
 	public GetCommonMasterDataResponse getRoleMasterData() {
@@ -258,9 +276,62 @@ public class MasterServiceImpl implements MasterService {
 	public Integer getNextDocId() {
 		// TODO Auto-generated method stub
 	
-		int lastDocId = docIdGeneratorRepository.giveLastDocId();
-		int nextDocId = lastDocId + 1;
+	int nextDocId = AppUtility.genDocId();
 		return nextDocId;
+	}
+
+
+
+	@Override
+	public AddCaseMasterResponse getAddCaseDropdownMasterService() {
+		
+		 Iterable<CourtBenchEntity> itrCourtBench = courtBenchRepository.findAll();
+		 Iterable<JournalEntity> itrJournal = journalReposiotry.findAll();
+		 Iterable<CitationCategoryEntity> itrCitationCategory = citationCategoryRepository.findAll();
+		 
+		 
+		 List<GetCourtDropDownResponse> courtBenchDropdownResponse = new ArrayList<GetCourtDropDownResponse>();
+		 List<GetCourtDropDownResponse> journalDropdownResponse = new ArrayList<GetCourtDropDownResponse>();
+		 List<GetCourtDropDownResponse> caseCategoryDropdownResponse = new ArrayList<GetCourtDropDownResponse>();
+		 List<GetCourtDropDownResponse> citationCategoryDropDownResponse = new ArrayList<GetCourtDropDownResponse>();
+		 
+		 for(CourtBenchEntity courtBenchEntity : itrCourtBench){
+			 GetCourtDropDownResponse getCourtBenchDropdownResponse = new GetCourtDropDownResponse();
+			 getCourtBenchDropdownResponse.setId(courtBenchEntity.getId());
+			 getCourtBenchDropdownResponse.setLabel(courtBenchEntity.getBenchName());
+			 getCourtBenchDropdownResponse.setValue(courtBenchEntity.getBenchName());
+			 courtBenchDropdownResponse.add(getCourtBenchDropdownResponse);	 
+		 }
+		 for(JournalEntity journalEntity : itrJournal){
+			 GetCourtDropDownResponse getjournalDropdownResponse = new GetCourtDropDownResponse();
+			 getjournalDropdownResponse.setId(journalEntity.getId());
+			 getjournalDropdownResponse.setLabel(journalEntity.getJournalType());
+			 getjournalDropdownResponse.setValue(journalEntity.getJournalType());
+			 journalDropdownResponse.add(getjournalDropdownResponse);	 
+		 }
+		 for(CitationCategoryEntity citationCategoryEntity : itrCitationCategory){
+			 GetCourtDropDownResponse getCitationCategoryDropdownResponse = new GetCourtDropDownResponse();
+			 getCitationCategoryDropdownResponse.setId(citationCategoryEntity.getId());
+			 getCitationCategoryDropdownResponse.setLabel(citationCategoryEntity.getCitationCategoryName());
+			 getCitationCategoryDropdownResponse.setValue(citationCategoryEntity.getCitationCategoryName());
+			 citationCategoryDropDownResponse.add(getCitationCategoryDropdownResponse);	 
+		 }
+		 for(CitationCategoryEntity citationCategoryEntity : itrCitationCategory){
+			 GetCourtDropDownResponse getCaseCategoryDropdownResponse = new GetCourtDropDownResponse();
+			 getCaseCategoryDropdownResponse.setId(citationCategoryEntity.getId());
+			 getCaseCategoryDropdownResponse.setLabel(citationCategoryEntity.getCitationCategoryName());
+			 getCaseCategoryDropdownResponse.setValue(citationCategoryEntity.getCitationCategoryName());
+			 caseCategoryDropdownResponse.add(getCaseCategoryDropdownResponse);	 
+		 }
+		 
+		 
+		 AddCaseMasterResponse addCaseMasterResponse = new AddCaseMasterResponse();
+		 addCaseMasterResponse.setJournalDropDown(journalDropdownResponse);
+		 addCaseMasterResponse.setCourtBenchDropDown(courtBenchDropdownResponse);
+		 addCaseMasterResponse.setCaseCategoryDropdown(caseCategoryDropdownResponse);
+		 addCaseMasterResponse.setCitationCategoryDropdown(citationCategoryDropDownResponse);
+		 
+		return addCaseMasterResponse;
 	}
 
 

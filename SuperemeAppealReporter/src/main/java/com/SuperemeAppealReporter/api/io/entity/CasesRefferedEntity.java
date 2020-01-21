@@ -36,6 +36,6 @@ public class CasesRefferedEntity extends BaseEntity {
 	
 	
 
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.DETACH,fetch = FetchType.LAZY)
 	private CaseEntity caseEntity;
 }

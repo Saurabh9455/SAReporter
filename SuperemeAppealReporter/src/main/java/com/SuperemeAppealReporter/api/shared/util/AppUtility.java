@@ -1,5 +1,8 @@
 package com.SuperemeAppealReporter.api.shared.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
 import java.util.Random;
 
 import com.SuperemeAppealReporter.api.io.entity.UserEntity;
@@ -26,4 +29,48 @@ public class AppUtility {
         return saltStr;
 
     }
+	
+	public static String changeDateFormatToOnlyDate(Date date)
+	{
+		 
+	    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");  
+	    String strDate= formatter.format(date);  
+	    return strDate;
+	}
+	public static boolean isObjectEmpty(Object object) {
+		if(object == null) return true;
+		else if(object instanceof String) {
+			if (((String)object).trim().length() == 0) {
+				return true;
+			}
+		} else if(object instanceof Collection) {
+			return isCollectionEmpty((Collection<?>)object);
+		}
+		return false;
+	}
+	private static boolean isCollectionEmpty(Collection<?> collection) {
+		if (collection == null || collection.isEmpty()) {
+			return true;
+		}
+		return false;
+	}
+	public static String changeDateFormatToOnlyTime(Date date)
+	{
+		 
+	    SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss a");  
+	    String strDate= formatter.format(date);  
+	    return strDate;
+	}
+	
+	public static int genClientId() {
+	    Random r = new Random( System.currentTimeMillis() );
+	    return ((1 + r.nextInt(2)) * 10000 + r.nextInt(10000));
+	}
+	
+	public static int genDocId() {
+	    Random r = new Random( System.currentTimeMillis() );
+	    return ((1 + r.nextInt(2)) * 100000 + r.nextInt(10000));
+	}
+	
+	
 }

@@ -41,10 +41,10 @@ public class UserSubscriptionDetailEntity extends BaseEntity {
 	
 	/**------------------------Mappings-------------------------**/
 	
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH},fetch = FetchType.LAZY)
 	private UserEntity userEntity;
 	
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@ManyToOne(cascade ={CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH},fetch = FetchType.LAZY)
 	private SubscriptionPlanEntity subscriptionPlanEntity;
 	
 	@OneToOne

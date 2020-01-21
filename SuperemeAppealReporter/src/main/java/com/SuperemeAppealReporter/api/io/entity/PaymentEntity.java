@@ -30,6 +30,9 @@ public class PaymentEntity extends BaseEntity {
 	@Column(name = "transaction_id", nullable = false)
 	private String transaction_id;
 	
+	@Column(name = "payment_id", nullable = true)
+	private String payment_id;
+	
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
@@ -39,6 +42,8 @@ public class PaymentEntity extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "mode", nullable = false)
 	private PaymentMode paymentMode;
+	
+	
 	
 		
 	/**------------------------Mappings-------------------------**/

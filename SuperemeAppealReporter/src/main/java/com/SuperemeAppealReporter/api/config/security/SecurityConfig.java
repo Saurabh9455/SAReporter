@@ -36,11 +36,87 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	    @Autowired private JWTAcessDeniedHandler accessDeniedHandler;
 	 
 		
+	    
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http.cors().and().csrf().disable().authorizeRequests()
 			.antMatchers(HttpMethod.POST,RestMappingConstant.User.FULL_SIGN_UP_URI).permitAll()
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/master/getRoleMasterData").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/admin/getSingleCase/{docId}").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/getClientList").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/admin/getCourtBranchByCourtId/{courtId}").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/addClient").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/master/getCountryMasterData").permitAll()
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/master/getCityMasterData/{stateId}").permitAll()
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/master/getStateMasterData/{countryId}").permitAll()
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/addClient").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/getStaffList").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/addStaff").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/deleteStaff").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/updateStaff").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/deleteClient").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/updateClient").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/addPlan").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/deletePlan").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
 			
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/master/getNextDocId").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/searchClient").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/addCase").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/uploadCasePf").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/searchStaff").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/getCaseList").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR")
+			/*.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/admin/getCasePdf").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR")*/
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/addCourt").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/deleteCourt").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/addCourtBranch").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/deleteCourtBranch").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/getCourtList").hasAnyRole("ADMIN",
+					"SUPER_ADMIN")
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/admin/getDashBoard").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR")
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/admin/getDashBoard").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/editCase").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/deleteCase").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/deleteCase").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/user/payment/initiatePayment").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/user/payment/confirmPayment").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/user/dashboardSearch").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
+			
+			
+				
+		
 			.anyRequest().authenticated()
 			.and()
 			.addFilter(getAuthenticaionFilter())
@@ -69,41 +145,43 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		webSecurity.ignoring().antMatchers("/SuperemeAppealReporter/v1/api/user/signup",
 				"/SuperemeAppealReporter/v1/api/user/forgetPassword",
 				"/SuperemeAppealReporter/v1/api/user/verifyEmail",
-				"/SuperemeAppealReporter/v1/api/admin/getClientList",
 				"/SuperemeAppealReporter/v1/api/user/validateResetPasswordLink",
-				"/SuperemeAppealReporter/v1/api/admin/getRoleMasterData",
-				"/SuperemeAppealReporter/v1/api/admin/getClientList/addClient",
-				"/SuperemeAppealReporter/v1/api/master/getCountryMasterData",
-                "/SuperemeAppealReporter/v1/api/master/getCityMasterData/{stateId}",
-                "/SuperemeAppealReporter/v1/api/master/getStateMasterData/{countryId}",
-                "/SuperemeAppealReporter/v1/api/admin/addClient",
-                "/SuperemeAppealReporter/v1/api/admin/getStaffList",
-                "/SuperemeAppealReporter/v1/api/admin/addStaff",
-                "/SuperemeAppealReporter/v1/api/admin/deleteStaff",
-                "/SuperemeAppealReporter/v1/api/admin/updateStaff",
-                "/SuperemeAppealReporter/v1/api/admin/deleteClient",
-                "/SuperemeAppealReporter/v1/api/admin/updateClient",
-                "/SuperemeAppealReporter/v1/api/admin/addPlan",
-                "/SuperemeAppealReporter/v1/api/admin/deletePlan",
-                "/SuperemeAppealReporter/v1/api/admin/getPlanList",
-                "/SuperemeAppealReporter/v1/api/master/getNextDocId",
-                "/SuperemeAppealReporter/v1/api/admin/searchClient",
-                "/SuperemeAppealReporter/v1/api/admin/addCase",
-                "/SuperemeAppealReporter/v1/api/admin/uploadCasePf",
-                "/SuperemeAppealReporter/v1/api/admin/searchStaff",
-                "/SuperemeAppealReporter/v1/api/admin/getCaseList",
+				"/SuperemeAppealReporter/v1/api/admin/getCasePdf",
+				"/SuperemeAppealReporter/v1/api/user/resetPassword",
+				"/SuperemeAppealReporter/v1/api/admin/getPlanList",
+				
+			
+				
+				
+      /*          "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
 
-                "/SuperemeAppealReporter/v1/api/admin/addCourt",
-                "/SuperemeAppealReporter/v1/api/admin/deleteCourt",
-                "/SuperemeAppealReporter/v1/api/admin/addCourtBranch",
-                "/SuperemeAppealReporter/v1/api/admin/deleteCourtBranch",
+                "",
+                "",
+                "",
+                "",
 
-                "/SuperemeAppealReporter/v1/api/admin/getCasePdf",
-                "/SuperemeAppealReporter/v1/api/admin/getCourtList",
+                "",
+                "",*/
                 "/SuperemeAppealReporter/v1/api/admin/getCourtListV2",
-                "/SuperemeAppealReporter/v1/api/admin/getDashBoard",
-                "/SuperemeAppealReporter/v1/api/admin/editCase",
-                "/SuperemeAppealReporter/v1/api/admin/deleteCase",
+              
+               /* "",
+                "",
+                "",*/
 				"/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**",
 				"/swagger-ui.html", "/webjars/**"); // skip security entirely
 	}

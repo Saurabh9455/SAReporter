@@ -1,9 +1,7 @@
 package com.SuperemeAppealReporter.api.io.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -34,7 +32,7 @@ public class DoubleCouncilDetailEntity extends BaseEntity {
 
 	/**------------------------Mappings-------------------------**/
 
-	@OneToOne(cascade = CascadeType.REFRESH)
-	private CaseEntity caseEntity;
+/*	@OneToOne(cascade = CascadeType.REFRESH,fetch=FetchType.LAZY)
+	private CaseEntity caseEntity;*/
 	
 }

@@ -1,13 +1,14 @@
 package com.SuperemeAppealReporter.api.service;
 
 import org.springframework.core.io.Resource;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.SuperemeAppealReporter.api.bo.AddCaseBo;
 import com.SuperemeAppealReporter.api.bo.GetCaseListBo;
 import com.SuperemeAppealReporter.api.bo.UploadCasePdfBo;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.GetCaseListResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.GetCaseListResponseForSingleCase;
 
 
 public interface CaseService {
@@ -23,5 +24,7 @@ public interface CaseService {
     public Resource getCasePdf(long docId);
 
     public CommonMessageResponse deleteCaseService( int docId);
+    
+    public GetCaseListResponseForSingleCase getSingleCase(int docId);
 
 }

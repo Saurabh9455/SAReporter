@@ -38,4 +38,11 @@ public class GetDashBoardResponse {
     
     private Double totalEarningThisWeek;
     private Double totalOverallEarning;
+    
+    private int supremeCourtCases;
+    private int supremeCourtDivisionalBenchCases;
+    private int supremeCourtFullBenchCases;
+    private int supremeCourtThirdBenchCases;
+    
+    private int highCourtCases;
 }

@@ -32,4 +32,6 @@ public class UpdateStaffBo {
 	private int cityId;
 	
 	private int countryId;
+	
+	private String address;
 }

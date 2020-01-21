@@ -5,6 +5,7 @@ import com.SuperemeAppealReporter.api.io.entity.ClientIdGenerator;
 import com.SuperemeAppealReporter.api.io.entity.CountryEntity;
 import com.SuperemeAppealReporter.api.io.entity.DocIdGenerator;
 import com.SuperemeAppealReporter.api.io.entity.StateEntity;
+import com.SuperemeAppealReporter.api.ui.model.response.AddCaseMasterResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.GetCommonMasterDataResponse;
 
 public interface MasterService {
@@ -35,6 +36,10 @@ public interface MasterService {
 	public CountryEntity getCountryEntityByCountryId(int countryId);
 	public StateEntity getStateEntityByStateId(int stateId);
 	public CityEntity getCityEntityByCityId(int cityId);
+	
+	
+	/**master dropdown for add case**/
+	public AddCaseMasterResponse getAddCaseDropdownMasterService();
 
 
 

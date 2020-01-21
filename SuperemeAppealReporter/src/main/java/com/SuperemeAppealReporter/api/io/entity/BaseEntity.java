@@ -32,7 +32,7 @@ import lombok.ToString;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
 
-	@Column(name = "id",nullable = false, updatable = false,insertable = false)
+	@Column(name = "id",nullable = false, updatable = false,insertable = true)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	private Integer id;

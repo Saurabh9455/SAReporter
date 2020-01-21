@@ -158,7 +158,10 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		if(token1!=null)
 		{	
 		
-		String token = request.getHeader(SecurityConstant.HEADER_STRING).substring(7);	
+		String alltoken = request.getHeader(SecurityConstant.HEADER_STRING).substring(7);	
+		String token_arr[] = alltoken.split("@");
+		String token = token_arr[0];
+		System.out.println("-----------TOKEN----------"+token);
 		final JwtParser jwtParser = Jwts.parser().setSigningKey(SecurityConstant.SECRET);
 
 		final Claims claimsJws = jwtParser.parseClaimsJws(token).getBody();

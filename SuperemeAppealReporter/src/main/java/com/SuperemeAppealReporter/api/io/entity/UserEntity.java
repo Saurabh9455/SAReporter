@@ -58,6 +58,12 @@ public class UserEntity extends BaseEntity {
 	private boolean isSubscriptionActive = false;
 	
 	
+	@Column(name = "is_staff_active", nullable = true)
+	private boolean isStaffActive = true;
+	
+	
+	
+	
 	
 	
 	/**------------------------Mappings-------------------------**/
@@ -72,5 +78,7 @@ public class UserEntity extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userEntity")
 	private List<VerificationTokenEntity> verificationTokenEntity;
 	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userEntity")
+	private List<UserSubscriptionDetailEntity> userSubscriptionDetailEntityList;
 
 }

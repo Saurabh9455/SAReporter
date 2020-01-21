@@ -8,6 +8,13 @@ public interface ErrorConstant {
 		
 	}
 	
+	public interface CaseAlreadyExistsError{
+		String CASE_ALREADY_EXISTS_ERROR_MESSAGE = "The given Doc Id is already present";
+		String CASE_ALREADY_EXISTS_ERROR_CODE = "140";
+		String CASE_ALREADY_EXISTS_ERROR_TYPE = "Duplicate Case Error";
+		
+	}
+	
 	public interface ExpiredJwtTokenError
 	{
 		String ERROR_CODE = "101";
@@ -69,6 +76,15 @@ public interface ErrorConstant {
 		String ERROR_CODE = "109";
 		String ERROR_TYPE = "Email not verified ERROR";
 		String ERROR_MESSAGE = "Please verify your email to login";
+		
+	}
+	
+	public interface AccountLockedError
+	{
+		String ERROR_CODE = "128";
+		String ERROR_TYPE = "Account Locked ERROR";
+		String ERROR_MESSAGE = "Account Locked by Admin";
+		
 	}
 	
 	public interface SendingEmailError
@@ -210,6 +226,52 @@ public interface ErrorConstant {
 		String ERROR_CODE = "120";
 		String ERROR_TYPE = "Delete case ERROR";
 		String ERROR_MESSAGE = "No Case available for the given docId. So delete case operation was unsuccessfull";
+	}
+	
+	
+	public interface GetSingleCaseError
+	{
+		String ERROR_CODE = "121";
+		String ERROR_TYPE = "Get Single case ERROR";
+		String ERROR_MESSAGE = "No Case available for the given docId. So get single case operation was unsuccessfull";
+	}
+	
+	public interface GetCourtBranchError
+	{
+		String ERROR_CODE= "122";
+		String ERROR_TYPE = "Get Court Branch ERROR";
+		String ERROR_MESSAGE = "No Court Available for the give court Id. Please try with a valid court id";
+	}
+	
+	public interface RazorPayError
+	{
+		String ERROR_CODE = "124";
+		String ERROR_TYPE = "Error while creating order i.e hiting RazorPay's create order API";
+		String ERROR_TYPE2 = "Error while capturing payment i.e hiting RazorPay's capture Payment API";
+		String ERROR_MESSAGE= "";
+	}
+	
+	public interface JSonExceptionError
+	{
+		String ERROR_CODE = "125";
+		String ERROR_TYPE = "Error while making order request";
+		String ERROR_MESSAGE= "";
+	}
+	
+	public interface PaymentConfirmationError
+	{
+		String ERROR_CODE = "126";
+		String ERROR_TYPE = "Error while confirming order";
+		String ERROR_MESSAGE = "The Oder Id has no payment with status-authrorized at RazorPay End. Kindly contact admin or RazorPay. The order ID for your reference is ";
+	
+		String AMOUNT_PLAN_MISMATCH_ERROR_MESSAGE = "The amount of payment didn't match the plan cost. Plan Id and Amount should match";
+	}
+	
+	public interface SearchCaseError
+	{
+		String ERROR_CODE = "127";
+		String ERROR_TYPE = "Search not allowed";
+		String ERROR_MESSAGE = "You have not subscribed to any Plan yet. Please subscribe to any plan by clicking Purchase tab.";
 	}
 	
 }

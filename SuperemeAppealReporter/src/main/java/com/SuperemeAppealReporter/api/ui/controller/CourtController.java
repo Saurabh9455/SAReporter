@@ -1,10 +1,14 @@
 package com.SuperemeAppealReporter.api.ui.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +32,7 @@ import com.SuperemeAppealReporter.api.ui.model.request.GetCourtRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.GetCourtDropDownResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.ResponseBuilder;
 
 @RestController
@@ -128,4 +133,35 @@ public class CourtController {
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(response);
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
 	}
+	
+	/******************************Get Court For DropDown********************************/	
+	@GetMapping(path = RestMappingConstant.Court.GET_COURT_FOR_DROPDOWN)
+	public ResponseEntity<BaseApiResponse> getCourtForDropDown(){
+		/******************************Converting Request into Bo********************************/
+		
+		
+		/******************************Calling Service********************************/
+		
+	   List<GetCourtDropDownResponse> respList = courtService.getOnlyCourtList();
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(respList);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	}
+	
+	
+	/******************************Get Court For DropDown********************************/	
+	@GetMapping(path = RestMappingConstant.Court.GET_COURT_BRANCH_BY_COURT_ID)
+	public ResponseEntity<BaseApiResponse> getCourtForDropDown(@PathVariable("courtId") int courtId){
+		/******************************Converting Request into Bo********************************/
+		
+		
+		/******************************Calling Service********************************/
+		
+	   List<GetCourtDropDownResponse> respList = courtService.getCourtBranchByCourtId(courtId);
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(respList);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	}
+	
+	
 }

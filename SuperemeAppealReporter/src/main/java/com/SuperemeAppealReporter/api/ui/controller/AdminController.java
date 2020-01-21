@@ -246,4 +246,56 @@ public class AdminController {
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonPaginationResponse);
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
 	}
+	
+	@PostMapping(path = RestMappingConstant.Staff.CHANGE_STAFF_ACTIVE_STATUS)	
+	public ResponseEntity<BaseApiResponse> staffActiveInactive(@RequestParam("status") boolean status,@RequestParam("staffId")String staffId){
+		
+		/** Converting request to bo **/
+		
+		/** Calling service **/
+		CommonMessageResponse commonMessageResponse =  adminService.staffActiveInactive(status,staffId);
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	}
+	
+	@PostMapping(path = RestMappingConstant.Admin.CASE_OVERULED_STATUS_CHANGE_URI)	
+	public ResponseEntity<BaseApiResponse> caseOveruledStatusChange(@RequestParam("status") boolean status,@RequestParam("docId")String docId){
+		
+		/** Converting request to bo **/
+		
+		/** Calling service **/
+		CommonMessageResponse commonMessageResponse =  adminService.caseOveruledStatusChange(status,docId);
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	}
+	
+	@PostMapping(path = RestMappingConstant.Admin.CASE_LIVE_STATUS_CHANGE_URI)	
+	public ResponseEntity<BaseApiResponse> caseLiveStatusChange(@RequestParam("status") boolean status,@RequestParam("docId")String docId){
+		
+		/** Converting request to bo **/
+		
+		/** Calling service **/
+		CommonMessageResponse commonMessageResponse =  adminService.caseLiveStatusChange(status,docId);
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	}
+	
+	@PostMapping(path = RestMappingConstant.Admin.GET_ORDER_LIST_URI)	
+	public ResponseEntity<BaseApiResponse> getOrderListHandler(@RequestParam(name = AppConstant.CommonConstant.PAGE_NUMBER, defaultValue = "1") int pageNumber,
+			@RequestParam(name = AppConstant.CommonConstant.PAGE_LIMIT, defaultValue = "8") int perPageLimit){
+	
+		
+		/** Calling service **/
+		CommonPaginationResponse commonPaginationResponse = adminService.getOrderList(pageNumber,
+				perPageLimit);
+
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonPaginationResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	
+	}
+	
 }

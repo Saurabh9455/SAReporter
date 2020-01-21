@@ -1,0 +1,70 @@
+package com.SuperemeAppealReporter.api.ui.model.response;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import groovy.transform.ToString;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public class GetCaseListResponseForSingleCase {
+
+	private long docId;
+
+	private boolean isOverruled ;
+
+	private boolean isLive ;
+	
+	private String updatedBy;
+	
+	private String createdBy;
+	
+	private Date createdDate;
+	
+	private Date updatedDate;
+
+	private String appellant;
+	
+	private String respondent;
+
+	private String remarkable;
+
+	private String judgeName;
+
+	private String judgementType;
+
+	private String judgementOrder;
+	
+	private String caseResult;
+
+	private String originalPdfPath;
+	
+	private MultipartFile file;
+	
+	private CourtDetailResponseForSingleCase courtDetailResponse;
+	
+	private CitationResponseForSingleCase citationResponse;
+	
+	private List<AdditionalAppellantRespondentResponse> additionalAppellantRespondentResponseList;
+	
+	private CaseHistoryResponse caseHistoryResponse;
+
+	private List<CasesReferredResponse> casesReferredResponseList;
+	
+	private List<HeadnoteResponse> headnoteResponseList;
+	
+	private SingleCouncileDetailResponse singleCouncilDetailResponse;
+	
+	private DoubleCouncilDetailResponse doubleCouncilDetailResponse;
+	
+	
+}

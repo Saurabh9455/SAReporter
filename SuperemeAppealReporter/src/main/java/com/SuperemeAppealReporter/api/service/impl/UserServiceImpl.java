@@ -33,9 +33,14 @@ import com.SuperemeAppealReporter.api.enums.UserType;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
 import com.SuperemeAppealReporter.api.io.dao.UserDao;
 import com.SuperemeAppealReporter.api.io.entity.AddressEntity;
+import com.SuperemeAppealReporter.api.io.entity.CityEntity;
 import com.SuperemeAppealReporter.api.io.entity.ClientIdGenerator;
+import com.SuperemeAppealReporter.api.io.entity.CountryEntity;
+import com.SuperemeAppealReporter.api.io.entity.PaymentEntity;
 import com.SuperemeAppealReporter.api.io.entity.RoleEntity;
+import com.SuperemeAppealReporter.api.io.entity.StateEntity;
 import com.SuperemeAppealReporter.api.io.entity.UserEntity;
+import com.SuperemeAppealReporter.api.io.entity.UserSubscriptionDetailEntity;
 import com.SuperemeAppealReporter.api.io.entity.VerificationTokenEntity;
 import com.SuperemeAppealReporter.api.pojo.Mail;
 import com.SuperemeAppealReporter.api.pojo.StaffMail;
@@ -44,13 +49,18 @@ import com.SuperemeAppealReporter.api.service.NotificationService;
 import com.SuperemeAppealReporter.api.service.RoleService;
 import com.SuperemeAppealReporter.api.service.UserService;
 import com.SuperemeAppealReporter.api.service.VerificationTokenService;
+import com.SuperemeAppealReporter.api.shared.dto.CityDto;
+import com.SuperemeAppealReporter.api.shared.dto.CountryDto;
+import com.SuperemeAppealReporter.api.shared.dto.StateDto;
 import com.SuperemeAppealReporter.api.shared.dto.UserDto;
 import com.SuperemeAppealReporter.api.shared.util.AppUtility;
 import com.SuperemeAppealReporter.api.ui.model.response.AddStaffResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CustomSignupResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.DahsboardResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.EmailVerificationResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.ForgetPasswordResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.ResetPasswordResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.UserOrderResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.UserSignupResponse;
 
 @Service
@@ -110,14 +120,16 @@ public class UserServiceImpl implements UserService {
 		addressEntity.setCityEntity(masterService.getCityEntityByCityId(userSignupBo.getCityId()));
 		addressEntity.setStateEntity(masterService.getStateEntityByStateId(userSignupBo.getStateId()));
 		addressEntity.setCountryEntity(masterService.getCountryEntityByCountryId(userSignupBo.getCountryId()));
+		addressEntity.setAddress(userSignupBo.getAddress());
 		System.out.println("ZIPCODE------>" + userSignupBo.getZipCode());
 		addressEntity.setZipcode(userSignupBo.getZipCode());
 		userEntity.setAddressEntity(addressEntity);
 
 		/** Generating client id **/
-		ClientIdGenerator clientIdGenerator = new ClientIdGenerator();
+	/*	ClientIdGenerator clientIdGenerator = new ClientIdGenerator();
 		masterService.save(clientIdGenerator);
-		int nextClientId = masterService.giveNextClientId();
+		int nextClientId = masterService.giveNextClientId();*/
+		int nextClientId = AppUtility.genClientId();
 		userEntity.setClientId(nextClientId);
 
 		/** Assigning Role to User **/
@@ -431,9 +443,10 @@ public class UserServiceImpl implements UserService {
 		userEntity.setAddressEntity(addressEntity);
 
 		/** Generating client id **/
-		ClientIdGenerator clientIdGenerator = new ClientIdGenerator();
+		/*ClientIdGenerator clientIdGenerator = new ClientIdGenerator();
 		masterService.save(clientIdGenerator);
-		int nextClientId = masterService.giveNextClientId();
+		int nextClientId = masterService.giveNextClientId();*/
+		int nextClientId = AppUtility.genClientId();
 		userEntity.setClientId(nextClientId);
 
 		/** Assigning Role to User **/
@@ -531,9 +544,10 @@ public class UserServiceImpl implements UserService {
 		userEntity.setAddressEntity(addressEntity);
 
 		/** Generating client id **/
-		ClientIdGenerator clientIdGenerator = new ClientIdGenerator();
+		/*ClientIdGenerator clientIdGenerator = new ClientIdGenerator();
 		masterService.save(clientIdGenerator);
-		int nextClientId = masterService.giveNextClientId();
+		int nextClientId = masterService.giveNextClientId();*/
+		int nextClientId = AppUtility.genClientId();
 		userEntity.setClientId(nextClientId);
 
 		/** Assigning Role to User **/
@@ -577,7 +591,7 @@ public class UserServiceImpl implements UserService {
 
 		/** Generating and returning response from service **/
 		AddStaffResponse customSignupResponse = new AddStaffResponse();
-		customSignupResponse.setMessage(SucessMessage.CustomUserSignup.CUSTOM_USER_SIGNUP_SUCCESS);
+		customSignupResponse.setMessage(SucessMessage.StaffMessage.STAFF_CREATED);
 		customSignupResponse.setUserId(userEmail);
 		customSignupResponse.setUserPassword(defaultPassword);
 		return customSignupResponse;
@@ -596,6 +610,108 @@ public class UserServiceImpl implements UserService {
 			
 		}
 
+	}
+
+	@Override
+	public UserEntity findByEmail(String email) {
+		// TODO Auto-generated method stub
+		return userDao.getUserEntityByEmail(email);
+	}
+
+	@Override
+	public DahsboardResponse giveDashboardResponseService(String emailId) {
+		
+		DahsboardResponse dashboardResponse = null;
+		try
+		{
+		UserEntity userEntity = findByEmail(emailId);
+		AddressEntity addressEntity = userEntity.getAddressEntity();
+		CityEntity cityEntity = addressEntity.getCityEntity();
+		CountryEntity countryEntity = addressEntity.getCountryEntity();
+		StateEntity stateEntity = addressEntity.getStateEntity();
+		
+		
+		dashboardResponse = new DahsboardResponse();
+		dashboardResponse.setName(userEntity.getName());
+		dashboardResponse.setDesgination(userEntity.getDesgination());
+		dashboardResponse.setEmail(userEntity.getEmail());
+		dashboardResponse.setMobile(userEntity.getMobile());
+		dashboardResponse.setSubscriptionActive(userEntity.isSubscriptionActive());
+		dashboardResponse.setPassword(userEntity.getPassword());
+		dashboardResponse.setClientId(userEntity.getClientId());
+		dashboardResponse.setZipCode(addressEntity.getZipcode());
+		dashboardResponse.setAddress(addressEntity.getAddress());
+		StateDto stateDto = new StateDto();
+		stateDto.setId(stateEntity.getId());
+		stateDto.setLabel(stateEntity.getName());
+		stateDto.setValue(stateEntity.getName());
+		
+		CountryDto countryDto = new CountryDto();
+		countryDto.setId(countryEntity.getId());
+		countryDto.setLabel(countryEntity.getName());
+		countryDto.setValue(countryEntity.getName());
+		
+		CityDto cityDto = new CityDto();
+		cityDto.setId(cityEntity.getId());
+		cityDto.setLabel(cityEntity.getName());
+		cityDto.setValue(cityEntity.getName());
+		
+		dashboardResponse.setStateDto(stateDto);
+		dashboardResponse.setCityDto(cityDto);
+		dashboardResponse.setCountryDto(countryDto);
+
+		List<UserSubscriptionDetailEntity> userSubscriptionDetailEntityList = userEntity.getUserSubscriptionDetailEntityList();
+		
+		List<UserOrderResponse> userOrderResponseList = new ArrayList<UserOrderResponse>();
+		
+		for(UserSubscriptionDetailEntity entity : userSubscriptionDetailEntityList)
+		{
+			PaymentEntity paymentEntity = entity.getPaymentEntity();
+			double paymentAmount = paymentEntity.getAmount();
+			String paymentMode = paymentEntity.getPaymentMode().toString();
+			String paymentStatus = paymentEntity.getPaymentStatus().toString();
+			Date paymentDate = paymentEntity.getCreatedDate();
+			UserOrderResponse userOrderResponse = new UserOrderResponse();
+			userOrderResponse.setPaymentAmount(paymentAmount);
+			userOrderResponse.setPaymentDate(paymentDate);
+			userOrderResponse.setPaymentStatus(paymentStatus);
+			userOrderResponse.setPlanActive(entity.getIs_plan_active());
+			userOrderResponse.setPlanEndDate(entity.getEndDate());
+			userOrderResponse.setPlanStartDate(entity.getStartDate());
+			userOrderResponse.setTransactionId(paymentEntity.getTransaction_id());
+			userOrderResponse.setPaymentMode(paymentMode);
+			userOrderResponse.setPaymentId(paymentEntity.getPayment_id());
+			userOrderResponse.setPlanType(entity.getSubscriptionPlanEntity().getSubscriptionName());
+			if(entity.getStartDate().after(new Date()))
+			{
+				userOrderResponse.setFuturePlan(true);
+			}
+			else
+			{
+				userOrderResponse.setFuturePlan(false);
+			}
+			userOrderResponseList.add(userOrderResponse);
+			
+		}
+		
+		dashboardResponse.setUserOrderList(userOrderResponseList);
+		
+		}
+				
+				catch(AppException appException)
+				{
+					throw appException;
+				}
+				catch(Exception ex)
+				{
+					String errorMessage = "Error in UserServiceImpl --> giveDashboardResponseService()";
+					AppException appException = new AppException("Type : " + ex.getClass()
+					+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+							ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+					throw appException;
+					
+				}
+		return dashboardResponse;
 	}
 
 }

@@ -32,7 +32,7 @@ public class UserSignupRequest {
 
 	
 	@NotBlank(message = "Enter a password")
-	@Length(max = 15, min = 8, message = "Password should be minimum 8 characters long or maximum 15 characters long")
+	//@Length(max = 15, min = 8, message = "Password should be minimum 8 characters long or maximum 15 characters long")
 	private String password;
 
 	@NotBlank(message = "Designation should not be blank")
@@ -42,19 +42,18 @@ public class UserSignupRequest {
 	@Pattern(regexp = "^[1-9]{1}[0-9]{9}$",message = "Mobile Number Should not start with 0 and should be of 10 digits.")
 	private String mobile;
 	
-	@Digits(integer = 2,message = "State id should be in digits",fraction = 0)
-	@NotNull(message = "Please enter state id")
+
 	private Integer stateId;
 	
-	@Digits(integer = 2,message = "City id should be in digits",fraction = 0)
-	@NotNull(message = "Please enter city id")
+
 	private Integer cityId;
 	
-	@Digits(integer = 2,message = "Country id should be in digits",fraction = 0)
-	@NotNull(message = "Please enter country id")
+
 	private Integer countryId;
 	
 	@NotNull(message = "Zipcode should not be blank")
 	@Pattern(regexp = "^[0-9]{6}$",message = "Zipcode code should be of 6 digits.")
 	private String zipCode;
+	
+	private String address;
 }

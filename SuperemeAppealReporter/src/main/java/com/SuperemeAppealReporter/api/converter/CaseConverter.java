@@ -16,6 +16,7 @@ public class CaseConverter {
 	{
 		AddCaseBo addCaseBo = new AddCaseBo();
 		BeanUtils.copyProperties(addCaseRequest, addCaseBo);
+		
 		return addCaseBo;
 	}
 	

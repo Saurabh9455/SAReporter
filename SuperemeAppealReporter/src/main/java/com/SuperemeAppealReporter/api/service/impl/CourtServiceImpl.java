@@ -31,6 +31,7 @@ import com.SuperemeAppealReporter.api.io.repository.CourtRepository;
 import com.SuperemeAppealReporter.api.service.CourtService;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.GetCourtDropDownResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.GetCourtResponse;
 
 @Service
@@ -270,5 +271,94 @@ public class CourtServiceImpl implements CourtService{
 	commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(recordCountFinal);
 	commonPaginationResponse.setOjectList(getCourtResponseList);
 		return commonPaginationResponse;
+	}
+
+	@Override
+	public List<GetCourtDropDownResponse> getOnlyCourtList() {
+		
+		List<GetCourtDropDownResponse> getCourtDropdownResponse = null;
+		
+		try
+		{
+		Iterable<CourtEntity> courtEntityList = courtRepository.findAll();
+		
+		getCourtDropdownResponse = new ArrayList<GetCourtDropDownResponse>();
+	
+		if(courtEntityList==null)
+		{
+			return getCourtDropdownResponse;
+		}
+		
+		for(CourtEntity court : courtEntityList)
+		{
+			GetCourtDropDownResponse resp = new GetCourtDropDownResponse();
+			if(court.getActive())
+			{
+				resp.setId(court.getId());
+				resp.setValue(court.getCourtType());
+				resp.setLabel(court.getCourtType());
+				getCourtDropdownResponse.add(resp);
+			}
+		}
+	}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in CourtServiceImpl --> getOnlyCourtList()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		return getCourtDropdownResponse;
+	}
+
+	@Override
+	public List<GetCourtDropDownResponse> getCourtBranchByCourtId(int courtId) {
+		
+		List<GetCourtDropDownResponse> getCourtDropDownResponseList = null;
+		
+		try
+		{
+		getCourtDropDownResponseList = new ArrayList<GetCourtDropDownResponse>();
+		
+		CourtEntity courtEntity = courtDao.findCourtById(courtId).orElseThrow(()-> 
+		new AppException(ErrorConstant.GetCourtBranchError.ERROR_TYPE,
+				ErrorConstant.GetCourtBranchError.ERROR_CODE,
+				ErrorConstant.GetCourtBranchError.ERROR_MESSAGE));
+		
+		Set<CourtBranchEntity> presentBranchSet = courtEntity.getCourtBranchSet();
+		
+		for(CourtBranchEntity courtBranchEntity : presentBranchSet)
+		{
+			GetCourtDropDownResponse getCourtDropDownResponse = new GetCourtDropDownResponse();
+			getCourtDropDownResponse.setId(courtBranchEntity.getId());
+			getCourtDropDownResponse.setLabel(courtBranchEntity.getBranchName());
+			getCourtDropDownResponse.setValue(courtBranchEntity.getBranchName());
+			getCourtDropDownResponseList.add(getCourtDropDownResponse);
+		}
+		}
+		
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in CourtServiceImpl --> getCourtBranchByCourtId()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		return getCourtDropDownResponseList;
+		
 	}
 }

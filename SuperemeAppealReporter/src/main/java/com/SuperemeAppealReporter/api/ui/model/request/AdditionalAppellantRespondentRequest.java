@@ -13,7 +13,7 @@ import lombok.Setter;
 @ToString
 public class AdditionalAppellantRespondentRequest {
 
-	private int case_number;
+	private String case_number;
 	private String extraCaseAndYear; 	
 	private String respondent;
 	private String appellant;

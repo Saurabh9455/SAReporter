@@ -20,7 +20,7 @@ public class AddressEntity extends BaseEntity {
 
 	
 	@Column(name = "full_address", nullable = true)
-	private String fullAddress;
+	private String address;
 	
 	
 	@Column(name = "zipcode", nullable = false)

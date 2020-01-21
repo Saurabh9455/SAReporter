@@ -28,5 +28,6 @@ public class ClientDto {
 	private String password;
 	private boolean isSubscriptionActive;
 	private String zipCode;
+	private String address;
 	
 }

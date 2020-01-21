@@ -14,15 +14,19 @@ import lombok.Setter;
 public class CaseHistoryResponse {
 
 
-	private int caseNumber;
+	private String caseNumber;
 
-	private int year;
+	private YearResponse year;
 	
-	private int decided_day;
+	//private String decided_day;
+	private YearResponse decided_day;
 	
-	private int decidedMonth;
+	//private String decidedMonth;
 
-	private int decidedYear;
+	private YearResponse decidedMonth;
+	//private String decidedYear;
 
+	private YearResponse decidedYear;
+	
 	private String notes;
 }

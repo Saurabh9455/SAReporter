@@ -22,6 +22,9 @@ public interface RestMappingConstant {
 		String SIGN_IN_URI = "/signin";
 		String FULL_SIGN_IN_URI = "/SuperemeAppealReporter/v1/api/user/signin";
 		
+		String DASHBOARD_URI = "/getDashBoard";
+		String FULL_DASHBOARD_URI = "/SuperemeAppealReporter/v1/api/user/getDashBoard";
+		
 		String FORGET_PASSWORD_URI = "/forgetPassword";
 		String FULL_FORGET_PASSWORD_URI = "/SuperemeAppealReporter/v1/api/user/forgetPassword";
 		
@@ -33,6 +36,8 @@ public interface RestMappingConstant {
 		String FULL_RESET_PASSWORD_URI = "/SuperemeAppealReporter/v1/api/user/resetPassword";
 		
 
+		String MAIN_SEARCH_URI = "/mainSearch";
+		String FULL_MAIN_SEARCH_URI = "/SuperemeAppealReporter/v1/api/user/mainSearch";
 		
 	}
 	
@@ -72,6 +77,14 @@ public interface RestMappingConstant {
 		String DELETE_CASE_URI = "/deleteCase";
 		String FULL_DELETE_CASE_URI = "/SuperemeAppealReporter/v1/api/admin/deleteCase";
 		
+		String GET_SINGLE_CASE_URI = "/getSingleCase/{docId}";
+		String GET_SINGLE_CASE_FULL_URI = "/SuperemeAppealReporter/v1/api/admin/getSingleCase/{docId}";
+	
+		
+		String CASE_OVERULED_STATUS_CHANGE_URI = "/changeCaseOveruledStatus";
+		String CASE_LIVE_STATUS_CHANGE_URI = "/changeCaseLiveStatus";
+		
+		String GET_ORDER_LIST_URI = "/getOrderList";
 	}
 	
 	public interface Master
@@ -93,6 +106,8 @@ public interface RestMappingConstant {
 	
 	    String GET_NEXT_DOC_ID_URI = "/getNextDocId";
 	    String FULL_GET_NEXT_DOC_ID_URI = "/SuperemeAppealReporter/v1/api/master/getNextDocId";
+	    
+	    String ADD_CASE_MASTER_API = "/addCaseMasterAPI";
 	
 	}
 	
@@ -103,13 +118,15 @@ public interface RestMappingConstant {
 		String DELETE_STAFF_URI = "/deleteStaff";
 		String UPDATE_STAFF_URI = "/updateStaff";
 		String SEARCH_STAFF_URI = "/searchStaff";
+		String CHANGE_STAFF_ACTIVE_STATUS ="/staffActiveInActive";
 	}
 	
 	public interface SubscriptionPlan
 	{
 		String ADD_PLAN_URI = "/addPlan";
 		String DELETE_PLAN_URI = "/deletePlan";
-		String GET_PLAN_URI = "/getPlanList";	
+		String GET_PLAN_URI = "/getPlanList";
+		String EDIT_PLAN_URI = "/editPlan";
 	}
 	
 	public interface Court
@@ -120,5 +137,22 @@ public interface RestMappingConstant {
 		String DELETE_COURT_BRANCH_URI = "/deleteCourtBranch";
 		String GET_COURT_URI = "/getCourtList";
 		String GET_COURT_URI_V2 = "/getCourtListV2";
+		String GET_COURT_FOR_DROPDOWN = "/getCourtForDropDown";	
+		String GET_COURT_BRANCH_BY_COURT_ID = "/getCourtBranchByCourtId/{courtId}";
+	}
+	
+	public interface Payment
+	{
+		String PAYMENT_BASE_URI = "/SuperemeAppealReporter/v1/api/user/payment";
+		String INITIATE_PAYMENT_URI = "/initiatePayment";
+		String INITIATE_PAYMENT_FULL_URI = "/SuperemeAppealReporter/v1/api/user/payment/initiatePayment";
+	    String CONFIRM_PAYMENT_URI = "/confirmPayment";
+	    String CONFIRM_PAYMENT_FULL_URI = "/SuperemeAppealReporter/v1/api/user/payment/confirmPayment";
+	}
+	
+	public interface Search
+	{
+		String DASHBOARD_SEARCH_URI = "/dashboardSearch";
+		String DASHBOARD_SEARCH_FULL_URI = "/SuperemeAppealReporter/v1/api/user/dashboardSearch";
 	}
 }

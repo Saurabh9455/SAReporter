@@ -35,16 +35,10 @@ public class UpdateClientRequest {
 	@NotNull(message = "Please enter role id")
 	private Integer roleId;
 	
-	@Digits(integer = 2,message = "State id should be in digits",fraction = 0)
-	@NotNull(message = "Please enter state id")
 	private Integer stateId;
-	
-	@Digits(integer = 2,message = "City id should be in digits",fraction = 0)
-	@NotNull(message = "Please enter city id")
+
 	private Integer cityId;
 	
-	@Digits(integer = 2,message = "Country id should be in digits",fraction = 0)
-	@NotNull(message = "Please enter country id")
 	private Integer countryId;
 	
 	
@@ -54,4 +48,6 @@ public class UpdateClientRequest {
 	
 	@NotBlank(message = "Password should not be blank")
 	private String password;
+	
+	private String address;
 }

@@ -20,6 +20,7 @@ import com.SuperemeAppealReporter.api.converter.AdminConverter;
 import com.SuperemeAppealReporter.api.service.SubscriptionPlanService;
 import com.SuperemeAppealReporter.api.ui.model.request.AddPlanRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.DeletePlanRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.EditPlan;
 import com.SuperemeAppealReporter.api.ui.model.request.GetPlanListRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
@@ -82,5 +83,21 @@ public class SubscriptionPlanController {
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonPaginationResponse);
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
 		
+	}
+	
+	/*****************************Add Plan API***************************/
+	@PostMapping(path = RestMappingConstant.SubscriptionPlan.EDIT_PLAN_URI)
+	public ResponseEntity<BaseApiResponse> editPlan(@Valid @RequestBody EditPlan editPlan){
+		
+		/*****************************Converting Plan Request to Bo***************************/
+	/*	AddPlanBo addPlanBo = AdminConverter.convertAddPlanRequestToAddPlanBo(addPlanRequest);*/
+		
+		/*****************************Sending request to Service Layer***************************/
+		CommonMessageResponse response = subscriptionPlanService.editPlan(editPlan);
+		
+		
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(response);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
 	}
 }

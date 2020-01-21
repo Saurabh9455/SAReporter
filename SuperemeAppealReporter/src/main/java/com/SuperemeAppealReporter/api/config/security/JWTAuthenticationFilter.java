@@ -165,9 +165,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.SuperemeAppealReporter.api.constant.ErrorConstant;
 import com.SuperemeAppealReporter.api.constant.SecurityConstant;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
+import com.SuperemeAppealReporter.api.io.entity.UserEntity;
 import com.SuperemeAppealReporter.api.service.UserService;
 import com.SuperemeAppealReporter.api.ui.model.request.LoginRequestModel;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.LoginResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.ResponseBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -231,11 +233,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	                                            FilterChain chain,
 	                                            Authentication auth) throws IOException, ServletException {
 
-	    	System.out.println("HEREEE");
+	    /*	System.out.println("HEREEE");*/
 		 User user =  (User) auth.getPrincipal();
 		 String authorities = user.getAuthorities().stream()
 	                .map(GrantedAuthority::getAuthority)
 	                .collect(Collectors.joining(","));
+		 System.out.println("Authorities "+authorities);
 		 Date now = new Date();
 	        Date expiryDate = new Date(now.getTime() + SecurityConstant.EXPIRATION_TIME);
 	        String token = Jwts.builder()
@@ -245,19 +248,51 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	                .setExpiration(expiryDate)
 	                .signWith(SignatureAlgorithm.HS512, SecurityConstant.SECRET)
 	                .compact();
-	   
 	      
 	        /**Checking if the email is verified. If it is verified then only the user will get token**/
 	        
 	      if(userService.checkEmailVerification(user.getUsername()))
 	      {
-	        
-	      res.addHeader(SecurityConstant.HEADER_STRING, SecurityConstant.TOKEN_PREFIX + token);
+	    	  
+	    
+	    	  UserEntity userEntity = userService.findByEmail(user.getUsername());
+	    	  if(userEntity.isStaffActive())
+	    	  {
+	    		  
+	    	  
+	    	  int k = 0;
+	        if(authorities.equals("ROLE_SUPER_ADMIN"))
+	        		{
+	        	k = 0;
+	        		}
+	        else if(authorities.equals("ROLE_ADMIN"))
+	        		{
+	        	k =1;
+	        		}
+	        else  if(authorities.equals("ROLE_DATA_ENTRY_OPERATOR"))
+	        		{
+	        	k = 2;
+	        		}
+	        else  if(authorities.equals("ROLE_USER"))
+	        		{
+	        	k = 3;
+	        		}
+	       
+	        		
+	      res.addHeader(SecurityConstant.HEADER_STRING, SecurityConstant.TOKEN_PREFIX + token+"@"+k);
 	
 	
 	      res.setHeader("Content-Type", "application/json");
 	  
-		  BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse();
+		 
+		/*  UserEntity userEntity = userService.findByEmail(user.getUsername());*/
+		  LoginResponse loginResponse = new LoginResponse();
+		  loginResponse.setEmail(userEntity.getEmail());
+		  loginResponse.setName(userEntity.getName());
+		  loginResponse.setId(userEntity.getId());
+		  loginResponse.setStaffOrClientId(userEntity.getClientId());
+		  BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(loginResponse);
+		  
 		  byte[] responseToSend = restResponseBytes(baseApiResponse);
     	  res.setHeader("Content-Type", "application/json");
     	  res.setHeader("Access-Control-Allow-Headers",
@@ -265,6 +300,15 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
   						+ "Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     	  res.setHeader("Access-Control-Expose-Headers", "Authorization");
 		  res.getOutputStream().write(responseToSend);
+	    	  }
+	    	  else
+	    	  {
+	    			AppException appException = new AppException(ErrorConstant.AccountLockedError.ERROR_TYPE,
+	    					ErrorConstant.AccountLockedError.ERROR_CODE, ErrorConstant.AccountLockedError.ERROR_MESSAGE);
+	    			BaseApiResponse baseApiResponse = ResponseBuilder.getFailureResponse(appException);
+	    			byte[] responseToSend = restResponseBytes(baseApiResponse);
+	    			res.getOutputStream().write(responseToSend); 
+	    	  }
 		
 	      }
 	      else

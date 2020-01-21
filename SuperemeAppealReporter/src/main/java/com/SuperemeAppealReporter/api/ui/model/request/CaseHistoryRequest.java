@@ -13,17 +13,16 @@ import lombok.Setter;
 @ToString
 public class CaseHistoryRequest {
 
-	private int caseNumber;
+	private String caseNumber;
 	
-	private int year;
+	private String year;
 	
-	private int decidedDay;
+	private String decidedDay;
 	
-	private int decidedMonth;
+	private String decidedMonth;
 	
-	private int decidedYear;
+	private String decidedYear;
 
 	private String notes;
 	
-
 }

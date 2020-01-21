@@ -32,4 +32,6 @@ public class UpdateClientBo {
 	private int cityId;
 	
 	private int countryId;
+	
+	private String address;
 }

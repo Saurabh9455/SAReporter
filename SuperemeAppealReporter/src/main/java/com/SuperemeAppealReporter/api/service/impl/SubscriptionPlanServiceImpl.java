@@ -16,6 +16,7 @@ import com.SuperemeAppealReporter.api.bo.AddPlanBo;
 import com.SuperemeAppealReporter.api.bo.DeletePlanBo;
 import com.SuperemeAppealReporter.api.bo.GetPlanListBo;
 import com.SuperemeAppealReporter.api.constant.ErrorConstant;
+import com.SuperemeAppealReporter.api.constant.SucessMessage;
 import com.SuperemeAppealReporter.api.constant.SucessMessage.SubscriptionMessage;
 import com.SuperemeAppealReporter.api.converter.AdminConverter;
 import com.SuperemeAppealReporter.api.enums.SubscriptionType;
@@ -26,9 +27,11 @@ import com.SuperemeAppealReporter.api.io.entity.UserEntity;
 import com.SuperemeAppealReporter.api.service.SubscriptionPlanService;
 import com.SuperemeAppealReporter.api.shared.dto.PlanListDto;
 import com.SuperemeAppealReporter.api.shared.dto.StaffDto;
+import com.SuperemeAppealReporter.api.ui.model.request.EditPlan;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
 
+@org.springframework.transaction.annotation.Transactional
 @Service
 public class SubscriptionPlanServiceImpl implements SubscriptionPlanService{
 
@@ -162,6 +165,45 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService{
 		}
 
 		return commonPaginationResponse;
+	}
+
+	@Override
+	public CommonMessageResponse editPlan(EditPlan editPlan) {
+		
+
+		CommonMessageResponse commonMessageResponse = null;
+		
+		try
+		{
+
+		SubscriptionPlanEntity planEntity = subscriptionPlanDao.findById(editPlan.getId()).orElseThrow(() ->new AppException(ErrorConstant.InvalidPlanIdError.ERROR_TYPE,
+				ErrorConstant.InvalidPlanIdError.ERROR_CODE,
+				ErrorConstant.InvalidPlanIdError.ERROR_MESSAGE));
+		
+		planEntity.setSubscriptionCost(Double.parseDouble(editPlan.getSubscriptionCost()));
+		planEntity.setSubscriptionParellelUserCount(editPlan.getSubscriptionParellelUserCount());
+		planEntity.setSubscriptionDescription(editPlan.getSubscriptionDescription());
+		planEntity.setSubscriptionName(editPlan.getSubscriptionName());
+		
+		commonMessageResponse = new CommonMessageResponse();
+		commonMessageResponse.setMsg(SucessMessage.SubscriptionMessage.PLAN_EDITED_SUCCESS);
+		
+		
+	}
+		catch (AppException appException) {
+			throw appException;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			String errorMessage = "Error in SubscriptionPlanServiceImpl --> editPlan()";
+			AppException appException = new AppException(
+					"Type : " + ex.getClass() + ", " + "Cause : " + ex.getCause() + ", " + "Message : "
+							+ ex.getMessage(),
+					ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+
+		}
+		return commonMessageResponse;
 	}
 
 }

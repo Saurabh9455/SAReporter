@@ -14,10 +14,15 @@ import lombok.Setter;
 public class CitationRequest {
 
 	private String otherCitation;
-	private int pageNumber;
+	private String pageNumber;
 	private int citationCategoryId;
 	private int journalId;
-	private int year;
+	private String year;
+	
+	private String secondaryPageNumber;
+	private int secondaryCitationCategoryId;
+	private int secondaryJournalId;
+	private String secondaryYear;
 	
 	
 

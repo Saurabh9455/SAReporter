@@ -10,8 +10,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cascade;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,11 +29,11 @@ public class CaseEntity extends BaseEntity {
 	
 	
 	@Column(name = "isOverruled", nullable = true)
-	private boolean isOverruled = true;
+	private boolean isOverruled = false;
 	
 	
 	@Column(name = "isLive", nullable = true)
-	private boolean isLive = false;
+	private boolean isLive = true;
 	
 	
 	@Column(name = "appellant", nullable = true)
@@ -73,16 +71,16 @@ public class CaseEntity extends BaseEntity {
 	
 	/**------------------------Mappings-------------------------**/
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
 	private CourtDetailEntity courtDetailEntity;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
 	private CitationEntity citationEntity;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntity")
 	private List<AdditionalAppellantRespondentEntity> additionalAppellantRespondentEntitySet;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
 	private CaseHistoryEntity caseHistoryEntity;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntity")
@@ -91,9 +89,9 @@ public class CaseEntity extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "caseEntity")
 	private List<HeadnoteEntity> headNoteEntitySet;
 	
-	@OneToOne(cascade = CascadeType.ALL,mappedBy = "caseEntity")
+	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
 	private DoubleCouncilDetailEntity doubleCouncilDetailEntity;
 	
-	@OneToOne(cascade = CascadeType.ALL,mappedBy = "caseEntity")
+	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
 	private SingleCouncilDetailEntity singleCouncilDetailEntity;
 }

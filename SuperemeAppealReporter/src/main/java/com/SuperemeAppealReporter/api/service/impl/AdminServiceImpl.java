@@ -1,6 +1,7 @@
 package com.SuperemeAppealReporter.api.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +31,17 @@ import com.SuperemeAppealReporter.api.constant.SucessMessage.StaffMessage;
 import com.SuperemeAppealReporter.api.enums.UserType;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
 import com.SuperemeAppealReporter.api.io.dao.AdminDao;
+import com.SuperemeAppealReporter.api.io.entity.CaseEntity;
 import com.SuperemeAppealReporter.api.io.entity.CityEntity;
 import com.SuperemeAppealReporter.api.io.entity.CountryEntity;
 import com.SuperemeAppealReporter.api.io.entity.RoleEntity;
 import com.SuperemeAppealReporter.api.io.entity.StateEntity;
 import com.SuperemeAppealReporter.api.io.entity.UserEntity;
+import com.SuperemeAppealReporter.api.io.entity.UserSubscriptionDetailEntity;
+import com.SuperemeAppealReporter.api.io.repository.CaseRepository;
+import com.SuperemeAppealReporter.api.io.repository.PaymentRepository;
+import com.SuperemeAppealReporter.api.io.repository.UserRepository;
+import com.SuperemeAppealReporter.api.io.repository.UserSubscriptionDetailRepository;
 import com.SuperemeAppealReporter.api.pojo.Mail;
 import com.SuperemeAppealReporter.api.pojo.StaffMail;
 import com.SuperemeAppealReporter.api.service.AdminService;
@@ -46,8 +53,11 @@ import com.SuperemeAppealReporter.api.shared.dto.ClientDto;
 import com.SuperemeAppealReporter.api.shared.dto.CountryDto;
 import com.SuperemeAppealReporter.api.shared.dto.StaffDto;
 import com.SuperemeAppealReporter.api.shared.dto.StateDto;
+import com.SuperemeAppealReporter.api.shared.util.AppUtility;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.GetCourtDropDownResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.GetOrderResponse;
 @Service
 public class AdminServiceImpl implements AdminService {
 
@@ -59,7 +69,19 @@ public class AdminServiceImpl implements AdminService {
 	private MasterService masterService;
 	
 	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
 	private NotificationService notificationService;
+	
+	@Autowired
+	private CaseRepository caseRepository;
+	
+	@Autowired
+	private PaymentRepository paymentRepository;
+	
+	@Autowired
+	private UserSubscriptionDetailRepository userSubscriptionDetailRepository;
 	
 	
 	@Override
@@ -131,7 +153,7 @@ public class AdminServiceImpl implements AdminService {
 			clientDto.setCity(city);
 			clientDto.setPassword(userEntity.getPassword());
 			clientDto.setZipCode(userEntity.getAddressEntity().getZipcode());
-		
+		    clientDto.setAddress(userEntity.getAddressEntity().getAddress());
 			clientDtoList.add(clientDto);
 		}
 		
@@ -200,9 +222,22 @@ public class AdminServiceImpl implements AdminService {
 		{
 			StaffDto staffDto = new StaffDto();
 			BeanUtils.copyProperties(userEntity, staffDto);
+			if(userEntity.isStaffActive())
+			{
+			   staffDto.setStaffActive(true);	
+			}
+			else
+			{
+				staffDto.setStaffActive(false);
+			}
 			staffDto.setStaffId(userEntity.getClientId());
 			staffDto.setStaffCategory(userEntity.getUserType());
-		
+		    GetCourtDropDownResponse getCourtDropDownResponse = new GetCourtDropDownResponse();
+		    getCourtDropDownResponse.setValue(userEntity.getUserType());
+		    getCourtDropDownResponse.setLabel(userEntity.getUserType());
+		    getCourtDropDownResponse.setId(userEntity.getRoleEntityList().get(0).getId());
+		    staffDto.setRoleDropDownResponse(getCourtDropDownResponse);
+		    
 			CountryDto country = new CountryDto();
 			country.setId(userEntity.getAddressEntity().getCountryEntity().getId());
 			country.setLabel(userEntity.getAddressEntity().getCountryEntity().getName());
@@ -225,6 +260,7 @@ public class AdminServiceImpl implements AdminService {
 			staffDto.setCity(city);
 			staffDto.setZipcode(userEntity.getAddressEntity().getZipcode());
 			staffDto.setPassword(userEntity.getPassword());
+			staffDto.setAddress(userEntity.getAddressEntity().getAddress());
 			staffDtoList.add(staffDto);
 		}
 		
@@ -329,6 +365,7 @@ public class AdminServiceImpl implements AdminService {
 		userEntity.getAddressEntity().setStateEntity(stateEntity);
 		userEntity.getAddressEntity().setCityEntity(cityEntity);
 		userEntity.getAddressEntity().setZipcode(updateStaffBo.getZipCode());
+		userEntity.getAddressEntity().setAddress(updateStaffBo.getAddress());
 		/** Assigning Role to User **/
 		ArrayList<RoleEntity> roleList = new ArrayList<RoleEntity>();
 		roleList.add(roleEntity);
@@ -451,6 +488,7 @@ public class AdminServiceImpl implements AdminService {
 		userEntity.getAddressEntity().setStateEntity(stateEntity);
 		userEntity.getAddressEntity().setCityEntity(cityEntity);
 		userEntity.getAddressEntity().setZipcode(updateClientBo.getZipCode());
+		userEntity.getAddressEntity().setAddress(updateClientBo.getAddress());
 		/** Assigning Role to User **/
 		ArrayList<RoleEntity> roleList = new ArrayList<RoleEntity>();
 		roleList.add(roleEntity);
@@ -711,4 +749,189 @@ public class AdminServiceImpl implements AdminService {
 	
 	}
 
+	@Override
+	@org.springframework.transaction.annotation.Transactional
+	public CommonMessageResponse staffActiveInactive(boolean status,String staffId) {
+		
+		CommonMessageResponse  commonMessageResponse = null;
+		try
+		{
+		// String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+			
+		 UserEntity userEntity = userRepository.getUserByStaffId(Integer.parseInt(staffId));
+		 userEntity.setStaffActive(status);
+		 commonMessageResponse = new CommonMessageResponse();
+		 String embedMessage = "DEACTIVATED";
+		 
+		 if(status)
+		 {
+			 embedMessage = "ACTIVATED";
+		 }
+		 commonMessageResponse.setMsg("Staff status successfully "+embedMessage);
+		
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in AdminServiceImpl --> staffActiveInactive()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
+		
+		 return commonMessageResponse;
+	}
+
+	@org.springframework.transaction.annotation.Transactional
+	@Override
+	public CommonMessageResponse caseOveruledStatusChange(boolean status, String docId) {
+	
+		CommonMessageResponse  commonMessageResponse = null;
+		try
+		{
+		CaseEntity caseEntity = caseRepository.findByDocId(Long.parseLong(docId));
+		
+		caseEntity.setOverruled(status);
+		 commonMessageResponse = new CommonMessageResponse();
+		 String embedMessage = "DEACTIVATED";
+		 
+		 if(status)
+		 {
+			 embedMessage = "ACTIVATED";
+		 }
+		 commonMessageResponse.setMsg("Case Overuled "+embedMessage);
+		
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in AdminServiceImpl --> caseOveruledStatusChange()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
+		
+		 return commonMessageResponse;
+	}
+
+	@org.springframework.transaction.annotation.Transactional
+	@Override
+	public CommonMessageResponse caseLiveStatusChange(boolean status, String docId) {
+		CommonMessageResponse  commonMessageResponse = null;
+		try
+		{
+			CaseEntity caseEntity = caseRepository.findByDocId(Long.parseLong(docId));
+			
+			caseEntity.setLive(status);
+		commonMessageResponse = new CommonMessageResponse();
+		 String embedMessage = "DEACTIVATED";
+		 
+		 if(status)
+		 {
+			 embedMessage = "ACTIVATED";
+		 }
+		 commonMessageResponse.setMsg("Case Live Status "+embedMessage);
+		
+		}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in AdminServiceImpl --> caseLiveStatusChange()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
+		
+		 return commonMessageResponse;
+	}
+
+	@Override
+	@org.springframework.transaction.annotation.Transactional
+	public CommonPaginationResponse getOrderList(int pageNumber, int perPageLimit) {
+
+     CommonPaginationResponse commonPaginationResponse = null;
+     try
+     {
+		if (pageNumber > 0)
+			pageNumber = pageNumber - 1;
+		
+		Pageable pageableRequest = PageRequest.of(pageNumber, perPageLimit);
+		Page<UserSubscriptionDetailEntity> userSubscriptionPage = null;
+		
+		userSubscriptionPage = userSubscriptionDetailRepository.findAll(pageableRequest);
+		
+		List<UserSubscriptionDetailEntity> userSubscriptionDetailEntityList = userSubscriptionPage.getContent();
+		
+		List<GetOrderResponse> getOrderResponseList = new ArrayList<>();
+		
+		for(UserSubscriptionDetailEntity entity : userSubscriptionDetailEntityList)
+		{
+			String paymentId = entity.getPaymentEntity().getPayment_id();
+			String orderId = entity.getPaymentEntity().getTransaction_id();
+			double amount = entity.getPaymentEntity().getAmount();
+			String planName = entity.getSubscriptionPlanEntity().getSubscriptionName();
+			Date orderDate = entity.getPaymentEntity().getCreatedDate();
+			Date planStartDate  = entity.getStartDate();
+			Date planEndDate = entity.getEndDate();
+			String clientId = entity.getUserEntity().getClientId()+"";
+			String status  = entity.getPaymentEntity().getPaymentStatus()+"";
+			
+			GetOrderResponse getOrderResponse = new GetOrderResponse();
+			getOrderResponse.setAmount(amount);
+			getOrderResponse.setClientId(clientId);
+			getOrderResponse.setOrderDate(AppUtility.changeDateFormatToOnlyDate(orderDate));
+			getOrderResponse.setOrderId(orderId);
+			getOrderResponse.setOrderTime(AppUtility.changeDateFormatToOnlyTime(orderDate));
+			getOrderResponse.setPaymentId(paymentId);
+			getOrderResponse.setPlanEndDate(AppUtility.changeDateFormatToOnlyDate(planEndDate));
+			getOrderResponse.setPlanName(planName);
+			getOrderResponse.setPlanStartDate(AppUtility.changeDateFormatToOnlyDate(planStartDate));
+			getOrderResponse.setStatus(status);
+			
+			getOrderResponseList.add(getOrderResponse);
+		}
+		
+		commonPaginationResponse = new CommonPaginationResponse();
+		commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(userSubscriptionPage.getTotalPages());
+		commonPaginationResponse.setOjectList(getOrderResponseList);
+		
+	}
+     catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in AdminServiceImpl --> getOrderList()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+     return commonPaginationResponse;
+}
+	
 }

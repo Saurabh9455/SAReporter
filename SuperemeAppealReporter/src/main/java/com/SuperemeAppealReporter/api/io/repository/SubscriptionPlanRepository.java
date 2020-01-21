@@ -11,9 +11,10 @@ import com.SuperemeAppealReporter.api.io.entity.SubscriptionPlanEntity;
 @Repository
 public interface SubscriptionPlanRepository extends JpaRepository<SubscriptionPlanEntity, Integer>{
 
-	@Query(value = "select * from subscription_plan where is_active = 1 ",nativeQuery = true)
+	@Query(value = "select * from subscription_plan where is_active = 1 order by created_date desc",nativeQuery = true)
 	Page<SubscriptionPlanEntity> getAllSubscriptionEntityPage(Pageable pageableRequest);
 	
 	@Query(value = "select count(*) from subscription_plan where is_active = 1",nativeQuery = true)
     public int getTotalCountForPlan();
+	
 }

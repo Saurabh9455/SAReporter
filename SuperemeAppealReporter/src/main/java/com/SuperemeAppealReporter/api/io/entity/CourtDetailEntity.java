@@ -31,15 +31,15 @@ public class CourtDetailEntity extends BaseEntity{
 	
 	/**------------------------Mappings-------------------------**/
 	
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
 	private CourtEntity courtEntity;
 	
 	//@JsonIgnore
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
 	private CourtBranchEntity courtBranchEntity;
 	
 	//@JsonIgnore
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
 	private CourtBenchEntity courtBenchEntity;
 	
 	

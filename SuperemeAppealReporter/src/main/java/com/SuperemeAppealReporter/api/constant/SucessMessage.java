@@ -14,7 +14,7 @@ public interface SucessMessage {
 	
 	public interface ForgetPassword
 	{
-		String FORGET_PASSWORD_SUCCESS = "Forget password initated successfully";
+		String FORGET_PASSWORD_SUCCESS = "We have sent you a password reset link on your email";
 	}
 	
 	public interface ValidatePasswordResetLink
@@ -40,6 +40,7 @@ public interface SucessMessage {
 	{
 		String STAFF_UPDATED = "Staff updated successfully.";
 		String STAFF_DELETED = "Staff deleted successfully.";
+		String STAFF_CREATED = "Staff created successfully.";
 	}
 	
 
@@ -53,6 +54,7 @@ public interface SucessMessage {
 	{
 		String PLAN_ADDED = "Subscription plan added successfully.";
 		String PLAN_DELETED = "Subscription plan deleted successfully.";
+		String PLAN_EDITED_SUCCESS = "Plan edited successfully.";
 		
 
 	}

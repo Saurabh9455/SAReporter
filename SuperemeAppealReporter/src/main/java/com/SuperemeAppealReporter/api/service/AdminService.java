@@ -30,4 +30,14 @@ public interface AdminService {
 	public CommonPaginationResponse searchClient(SearchClientBo searchClientBo, int pageNumber, int perPageLimit);
 
 	public CommonPaginationResponse searchStaff(SearchStaffBo searchStaffBo, int pageNumber, int perPageLimit);
+
+	public CommonMessageResponse staffActiveInactive(boolean status,String staffId);
+	
+	public CommonMessageResponse caseOveruledStatusChange(boolean status,String docId);
+	
+	public CommonMessageResponse caseLiveStatusChange(boolean status,String docId);
+	
+	public CommonPaginationResponse getOrderList(int pageNumber, int perPageLimit);
 }
+
+

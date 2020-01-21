@@ -5,6 +5,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -22,25 +24,30 @@ public class CitationEntity extends BaseEntity {
 
 	
 	@Column(name = "page_number", nullable = true)
-	private int pageNumber;
+	private String pageNumber;
 	
 	
 	
 	@Column(name = "year", nullable = true)
-	private int year;
+	private String year;
 	
 	
 	
 	@Column(name = "other_citation", nullable = true)
 	private String otherCitation;
 	
+	
+	
 
 	/**------------------------Mappings-------------------------**/
 	
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL)
+	private SecondaryCitationEntity secondaryCitationEntity;
+	
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
 	private CitationCategoryEntity citationCategoryEntity;
     
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
 	private JournalEntity journalEntity;
 	
 }

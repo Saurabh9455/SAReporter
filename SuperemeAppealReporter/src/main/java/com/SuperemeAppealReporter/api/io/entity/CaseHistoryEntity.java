@@ -20,21 +20,21 @@ public class CaseHistoryEntity extends BaseEntity{
 	
 	
 	@Column(name = "case_number", nullable = true)
-	private int caseNumber;
+	private String caseNumber;
 	
 	@Column(name = "year", nullable = true)
-	private int year;
+	private String year;
 	
 	
 	@Column(name = "decided_day", nullable = true)
-	private int decided_day;
+	private String decided_day;
 	
 	
 	@Column(name = "decided_month", nullable = true)
-	private int decidedMonth;
+	private String decidedMonth;
 	
 	@Column(name = "decided_year", nullable = true)
-	private int decidedYear;
+	private String decidedYear;
 	
 	
 	@Column(name = "notes", nullable = true)
