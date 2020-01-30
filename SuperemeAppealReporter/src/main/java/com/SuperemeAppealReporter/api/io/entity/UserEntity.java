@@ -61,6 +61,9 @@ public class UserEntity extends BaseEntity {
 	@Column(name = "is_staff_active", nullable = true)
 	private boolean isStaffActive = true;
 	
+	@Column(name = "profile_picture_path", nullable = false)
+	private String profilePicturePath;
+	
 	
 	
 	

@@ -7,7 +7,9 @@ import com.SuperemeAppealReporter.api.bo.ForgetPasswordBo;
 import com.SuperemeAppealReporter.api.bo.ResetPasswordBo;
 import com.SuperemeAppealReporter.api.bo.UserSignupBo;
 import com.SuperemeAppealReporter.api.io.entity.UserEntity;
+import com.SuperemeAppealReporter.api.ui.model.request.UploadProfilePictureRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.AddStaffResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CustomSignupResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.DahsboardResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.EmailVerificationResponse;
@@ -35,5 +37,7 @@ public interface UserService extends UserDetailsService {
 	public UserEntity findByEmail(String email);
 	
 	public DahsboardResponse giveDashboardResponseService(String emailId);
+	
+	public CommonMessageResponse uploadProfilePicture(UploadProfilePictureRequest uploadProfilePictureRequest);
 
 }

@@ -11,19 +11,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.SuperemeAppealReporter.api.bo.ForgetPasswordBo;
 import com.SuperemeAppealReporter.api.bo.ResetPasswordBo;
+import com.SuperemeAppealReporter.api.bo.UploadCasePdfBo;
 import com.SuperemeAppealReporter.api.bo.UserSignupBo;
 import com.SuperemeAppealReporter.api.constant.RestMappingConstant;
+import com.SuperemeAppealReporter.api.converter.CaseConverter;
 import com.SuperemeAppealReporter.api.converter.UserConverter;
 import com.SuperemeAppealReporter.api.service.UserService;
 import com.SuperemeAppealReporter.api.service.VerificationTokenService;
 import com.SuperemeAppealReporter.api.ui.model.request.ForgetPasswordRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.LoginRequestModel;
 import com.SuperemeAppealReporter.api.ui.model.request.ResetPasswordRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.UploadPdfRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.UploadProfilePictureRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UserSignupRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.DahsboardResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.EmailVerificationResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.ForgetPasswordResponse;
@@ -59,6 +65,25 @@ public class UserController {
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse,HttpStatus.OK);
 	}
 	
+	@PostMapping(path=RestMappingConstant.User.UPLOAD_PROFILE_PICTURE,consumes = {
+	"multipart/form-data" })
+	public ResponseEntity<BaseApiResponse> uploadCasePdf(@RequestParam("profilePicture")MultipartFile file)
+	{
+		UploadProfilePictureRequest uploadProfilePictureRequest = new UploadProfilePictureRequest();
+		
+		String emailId = SecurityContextHolder.getContext().getAuthentication().getName();
+		uploadProfilePictureRequest.setFile(file);
+		uploadProfilePictureRequest.setUserEmail(emailId);
+		
+		/**calling service layer**/
+		CommonMessageResponse commonMessageResponse = userService.uploadProfilePicture(uploadProfilePictureRequest);
+		
+		
+		/**returning get role master data response**/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse,HttpStatus.OK);
+
+	}
 	
 	
 	

@@ -1,7 +1,12 @@
 package com.SuperemeAppealReporter.api.service.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +16,7 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.SuperemeAppealReporter.api.bo.AddStaffBo;
 import com.SuperemeAppealReporter.api.bo.ForgetPasswordBo;
@@ -33,6 +40,7 @@ import com.SuperemeAppealReporter.api.enums.UserType;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
 import com.SuperemeAppealReporter.api.io.dao.UserDao;
 import com.SuperemeAppealReporter.api.io.entity.AddressEntity;
+import com.SuperemeAppealReporter.api.io.entity.CaseEntity;
 import com.SuperemeAppealReporter.api.io.entity.CityEntity;
 import com.SuperemeAppealReporter.api.io.entity.ClientIdGenerator;
 import com.SuperemeAppealReporter.api.io.entity.CountryEntity;
@@ -42,6 +50,7 @@ import com.SuperemeAppealReporter.api.io.entity.StateEntity;
 import com.SuperemeAppealReporter.api.io.entity.UserEntity;
 import com.SuperemeAppealReporter.api.io.entity.UserSubscriptionDetailEntity;
 import com.SuperemeAppealReporter.api.io.entity.VerificationTokenEntity;
+import com.SuperemeAppealReporter.api.io.repository.UserRepository;
 import com.SuperemeAppealReporter.api.pojo.Mail;
 import com.SuperemeAppealReporter.api.pojo.StaffMail;
 import com.SuperemeAppealReporter.api.service.MasterService;
@@ -54,7 +63,9 @@ import com.SuperemeAppealReporter.api.shared.dto.CountryDto;
 import com.SuperemeAppealReporter.api.shared.dto.StateDto;
 import com.SuperemeAppealReporter.api.shared.dto.UserDto;
 import com.SuperemeAppealReporter.api.shared.util.AppUtility;
+import com.SuperemeAppealReporter.api.ui.model.request.UploadProfilePictureRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.AddStaffResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CustomSignupResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.DahsboardResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.EmailVerificationResponse;
@@ -81,9 +92,15 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private MasterService masterService;
+	
+	@Autowired
+	private UserRepository userRepository;
 
 	@Value("${api.reset-password.token.expire-time}")
 	private long resetPasswordExpirationTime;
+	
+	@Value("${file.profile-upload-dir}")
+	private String fileUploadDirectoryForProfilePicture;
 
 	public UserSignupResponse userSignupService(UserSignupBo userSignupBo) {
 		
@@ -625,6 +642,13 @@ public class UserServiceImpl implements UserService {
 		try
 		{
 		UserEntity userEntity = findByEmail(emailId);
+		
+		String profilePicturePath = userEntity.getProfilePicturePath();
+		
+	    if(profilePicturePath==null){
+	    	profilePicturePath =fileUploadDirectoryForProfilePicture+"/default.jpeg";
+	    }
+		
 		AddressEntity addressEntity = userEntity.getAddressEntity();
 		CityEntity cityEntity = addressEntity.getCityEntity();
 		CountryEntity countryEntity = addressEntity.getCountryEntity();
@@ -696,6 +720,16 @@ public class UserServiceImpl implements UserService {
 		
 		dashboardResponse.setUserOrderList(userOrderResponseList);
 		
+	
+		
+		byte[] fileContent = FileUtils.readFileToByteArray(new File(profilePicturePath));
+		String encodedString = Base64.getEncoder().encodeToString(fileContent);
+		
+		dashboardResponse.setProfilePictureBase64EncodedString(encodedString);
+		
+		
+		
+		
 		}
 				
 				catch(AppException appException)
@@ -713,5 +747,70 @@ public class UserServiceImpl implements UserService {
 				}
 		return dashboardResponse;
 	}
+
+	@Override
+	public CommonMessageResponse uploadProfilePicture(UploadProfilePictureRequest uploadProfilePictureRequest) {
+		
+		CommonMessageResponse commonMessageResponse = null;
+		try {
+			
+			String originalProfilePicturePath = saveProfilePicture(uploadProfilePictureRequest.getFile(), uploadProfilePictureRequest.getUserEmail());
+			UserEntity userEntity = this.userRepository.getUserEntityByEmail(uploadProfilePictureRequest.getUserEmail());
+			if (userEntity == null)
+				throw new AppException("Profile Picture Upload ERROR", "222",
+						"User Record not found");
+			
+			userEntity.setProfilePicturePath(originalProfilePicturePath);
+			commonMessageResponse = new CommonMessageResponse("PDF File Uploaded Successfully");
+		} catch (AppException appException) {
+			throw appException;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			String errorMessage = "Error in UserServiceImpl --> uploadProfilePicture()";
+			AppException appException = new AppException(
+					"Type : " + ex.getClass() + ", Cause : " + ex.getCause() + ", Message : " + ex.getMessage(), "500",
+					"Error Description  :  : " + errorMessage);
+			throw appException;
+		}
+		return commonMessageResponse;
+	}
+
+	private String saveProfilePicture(MultipartFile file, String userEmail) {
+		try {
+			InputStream inputStream = null;
+			OutputStream outputStream = null;
+			String name = file.getOriginalFilename();
+			System.out.println("------ORIGINAL FILE NAME----" + name);
+			String extension = null;
+			int lastIndexOf = name.lastIndexOf(".");
+			if (lastIndexOf == -1) {
+				extension = "";
+			} else {
+				extension = name.substring(lastIndexOf);
+			}
+			String fileName = "profile_" + userEmail + extension;
+			System.out.println("---------EXTENSION--------" + extension);
+			File newFile = new File(this.fileUploadDirectoryForProfilePicture + "/" + fileName);
+			inputStream = file.getInputStream();
+			if (!newFile.exists())
+				newFile.createNewFile();
+			outputStream = new FileOutputStream(newFile);
+			int read = 0;
+			byte[] bytes = new byte[1024];
+			while ((read = inputStream.read(bytes)) != -1)
+				outputStream.write(bytes, 0, read);
+			outputStream.close();
+			String absolutePath = newFile.getAbsolutePath();
+			return absolutePath;
+		} catch (IOException e) {
+			e.printStackTrace();
+			AppException appException = new AppException("File Upload ERROR", "798", "Unable to upload Profile Picture.");
+			throw appException;
+		}
+	}
+
+		
+		
+	
 
 }

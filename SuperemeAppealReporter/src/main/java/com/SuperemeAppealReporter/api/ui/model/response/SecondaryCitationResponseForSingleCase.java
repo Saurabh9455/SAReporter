@@ -14,12 +14,12 @@ import lombok.Setter;
 public class SecondaryCitationResponseForSingleCase {
 
 
-		private int pageNumber;
+		private String pageNumber;
 
-		private int year;
+		private  YearResponse year;
 		
 		private CitationCategoryResponseForSingleCase citationCategoryResponse;
 
-		private JournalResponse journalResponse;
+		private JournalResponseForSingleCase journalResponse;
 	
 }

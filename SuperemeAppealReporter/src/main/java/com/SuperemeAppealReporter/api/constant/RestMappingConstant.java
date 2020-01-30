@@ -8,6 +8,7 @@ public interface RestMappingConstant {
 	{
 		String USER_BASE_URI = APP_BASE_URI+"/user";
 		
+		
 		// sign in urls for security filter
 		String USER_SIGN_IN_DEV_URL = "/SuperemeAppealReporter/SuperemeAppealReporter/v1/api/user/signin";
 		String USER_SIGN_IN_LOCAL_URL ="/SuperemeAppealReporter/v1/api/user/signin"; 
@@ -38,6 +39,8 @@ public interface RestMappingConstant {
 
 		String MAIN_SEARCH_URI = "/mainSearch";
 		String FULL_MAIN_SEARCH_URI = "/SuperemeAppealReporter/v1/api/user/mainSearch";
+		
+		String UPLOAD_PROFILE_PICTURE = "/uploadProfilePicture";
 		
 	}
 	

@@ -303,25 +303,35 @@ public class MasterServiceImpl implements MasterService {
 			 courtBenchDropdownResponse.add(getCourtBenchDropdownResponse);	 
 		 }
 		 for(JournalEntity journalEntity : itrJournal){
+			 if(journalEntity.getId()!=5){
+				 
+			 
 			 GetCourtDropDownResponse getjournalDropdownResponse = new GetCourtDropDownResponse();
 			 getjournalDropdownResponse.setId(journalEntity.getId());
 			 getjournalDropdownResponse.setLabel(journalEntity.getJournalType());
 			 getjournalDropdownResponse.setValue(journalEntity.getJournalType());
-			 journalDropdownResponse.add(getjournalDropdownResponse);	 
+			 journalDropdownResponse.add(getjournalDropdownResponse);	
+			 }
 		 }
 		 for(CitationCategoryEntity citationCategoryEntity : itrCitationCategory){
+			 if(citationCategoryEntity.getId()!=5){
 			 GetCourtDropDownResponse getCitationCategoryDropdownResponse = new GetCourtDropDownResponse();
 			 getCitationCategoryDropdownResponse.setId(citationCategoryEntity.getId());
 			 getCitationCategoryDropdownResponse.setLabel(citationCategoryEntity.getCitationCategoryName());
 			 getCitationCategoryDropdownResponse.setValue(citationCategoryEntity.getCitationCategoryName());
 			 citationCategoryDropDownResponse.add(getCitationCategoryDropdownResponse);	 
+			 }
 		 }
 		 for(CitationCategoryEntity citationCategoryEntity : itrCitationCategory){
+			 if(citationCategoryEntity.getId()!=5){
+				 
+			 
 			 GetCourtDropDownResponse getCaseCategoryDropdownResponse = new GetCourtDropDownResponse();
 			 getCaseCategoryDropdownResponse.setId(citationCategoryEntity.getId());
 			 getCaseCategoryDropdownResponse.setLabel(citationCategoryEntity.getCitationCategoryName());
 			 getCaseCategoryDropdownResponse.setValue(citationCategoryEntity.getCitationCategoryName());
 			 caseCategoryDropdownResponse.add(getCaseCategoryDropdownResponse);	 
+			 }
 		 }
 		 
 		 

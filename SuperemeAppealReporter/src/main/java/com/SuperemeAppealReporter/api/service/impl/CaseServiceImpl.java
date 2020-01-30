@@ -59,6 +59,7 @@ import com.SuperemeAppealReporter.api.ui.model.response.GetCaseListResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.GetCaseListResponseForSingleCase;
 import com.SuperemeAppealReporter.api.ui.model.response.HeadnoteResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.JournalResponseForSingleCase;
+import com.SuperemeAppealReporter.api.ui.model.response.SecondaryCitationResponseForSingleCase;
 import com.SuperemeAppealReporter.api.ui.model.response.SingleCouncileDetailResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.YearResponse;
 import java.io.File;
@@ -799,7 +800,28 @@ public class CaseServiceImpl implements CaseService {
 		
 		if(secondaryCitationEntity!=null){
 			
+			SecondaryCitationResponseForSingleCase secondaryCitationResponseForSingleCase = new SecondaryCitationResponseForSingleCase();
 			
+			CitationCategoryEntity secondaryCitationCategoryEntity = secondaryCitationEntity.getCitationCategoryEntity();
+			JournalEntity secondaryJournalEntity = citationEntity.getJournalEntity();
+			CitationCategoryResponseForSingleCase secondaryCitationCategoryResponseForSingleCase = new CitationCategoryResponseForSingleCase();
+			secondaryCitationCategoryResponseForSingleCase.setLabel(secondaryCitationCategoryEntity.getCitationCategoryName());
+			secondaryCitationCategoryResponseForSingleCase.setValue(secondaryCitationCategoryEntity.getCitationCategoryName());
+			secondaryCitationCategoryResponseForSingleCase.setId(secondaryCitationCategoryEntity.getId().intValue());
+			JournalResponseForSingleCase secondaryJournalResponse = new JournalResponseForSingleCase();
+			secondaryJournalResponse.setLabel(secondaryJournalEntity.getJournalType());
+			secondaryJournalResponse.setValue(secondaryJournalEntity.getJournalType());
+			secondaryJournalResponse.setId(secondaryJournalEntity.getId().intValue());
+			secondaryCitationResponseForSingleCase.setCitationCategoryResponse(secondaryCitationCategoryResponseForSingleCase);
+			secondaryCitationResponseForSingleCase.setJournalResponse(secondaryJournalResponse);
+
+			secondaryCitationResponseForSingleCase.setPageNumber(secondaryCitationEntity.getPageNumber());
+			YearResponse secondaryYearResponse = new YearResponse(secondaryCitationEntity.getYear(), secondaryCitationEntity.getYear(),
+					Integer.parseInt(secondaryCitationEntity.getYear()));
+			secondaryCitationResponseForSingleCase.setYear(secondaryYearResponse);
+			citationResponse.setSecondaryCitationResponseForSingleCase(secondaryCitationResponseForSingleCase);
+			
+		 
 		}
 		
 		

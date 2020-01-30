@@ -32,6 +32,7 @@ public class DahsboardResponse {
 	private boolean isSubscriptionActive;
 	private String zipCode;
 	private String address;
+	private String profilePictureBase64EncodedString;
 	
 	private List<UserOrderResponse> userOrderList;
 	
