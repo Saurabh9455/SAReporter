@@ -7,8 +7,6 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,6 +30,9 @@ public class HeadnoteEntity extends BaseEntity{
 	@Column(name = "actname_3", nullable = true)
 	private String actname3;
 	
+	@Column(name = "actname_4", nullable = true)
+	private String actname4;
+	
 	@Column(name = "section_1", nullable = true)
 	private String section1;
 	
@@ -40,6 +41,9 @@ public class HeadnoteEntity extends BaseEntity{
 	
 	@Column(name = "section_3", nullable = true)
 	private String section3;
+
+	@Column(name = "section_4", nullable = true)
+	private String section4;
 	
 	@Column(name = "topic", nullable = true)
 	private String topic;
@@ -52,6 +56,44 @@ public class HeadnoteEntity extends BaseEntity{
 	
 	@Column(name = "paragrap", nullable = true)
 	private String paragraph;
+	
+	@Column(name = "order_1", nullable = true)
+	private String order1;
+	
+	@Column(name = "order_2", nullable = true)
+	private String order2;
+	
+	@Column(name = "order_3", nullable = true)
+	private String order3;
+	
+	@Column(name = "order_4", nullable = true)
+	private String order4;
+	
+	@Column(name = "article_1", nullable = true)
+	private String article1;
+	
+	@Column(name = "article_2", nullable = true)
+	private String article2;
+	
+	@Column(name = "article_3", nullable = true)
+	private String article3;
+	
+	@Column(name = "article_4", nullable = true)
+	private String article14;
+	
+	@Column(name = "rule_1", nullable = true)
+	private String rule1;
+	
+	@Column(name = "rule_2", nullable = true)
+	private String rule2;
+	
+	@Column(name = "rule_3", nullable = true)
+	private String rule3;
+	
+	@Column(name = "rule_4", nullable = true)
+	private String rule4;
+	
+	
 	
 	
 	
