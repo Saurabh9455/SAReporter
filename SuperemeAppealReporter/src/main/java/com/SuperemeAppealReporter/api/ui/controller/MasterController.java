@@ -1,5 +1,7 @@
 package com.SuperemeAppealReporter.api.ui.controller;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.SuperemeAppealReporter.api.constant.RestMappingConstant;
+import com.SuperemeAppealReporter.api.io.repository.DummyDocIdRepository;
+import com.SuperemeAppealReporter.api.service.CaseService;
 import com.SuperemeAppealReporter.api.service.MasterService;
 import com.SuperemeAppealReporter.api.ui.model.response.AddCaseMasterResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
@@ -23,6 +27,19 @@ public class MasterController {
 	
 	@Autowired
 	MasterService masterService;
+	
+	@Autowired
+	DummyDocIdRepository docIdRepository;
+	
+    private Long caseSequence ;
+    
+    @Autowired
+    private CaseService caseService;
+	
+	@PostConstruct
+	public void initializeDocId(){
+		caseSequence = Long.parseLong(caseService.getNextDocId());
+	}
 	
 	/****************************************Get role master data handler method*****************************************/
 	@GetMapping(path = RestMappingConstant.Master.GET_ROLE_MASTER_DATA_URI)
@@ -90,11 +107,33 @@ public class MasterController {
 	public ResponseEntity<BaseApiResponse> getNextDocId()
 	{
 		
-		/**calling service layer**/
+		/**calling service layer**//*
 		int nextDocId = masterService.getNextDocId();
 		
+		*//**check if this id already existed**//*
+		boolean isUnique = false;
+		
+		while (!isUnique) {
+
+			DocIdDummyEntity docIdDummyEntity = docIdRepository.findByDocId(String.valueOf(nextDocId));
+
+			if (docIdDummyEntity == null) {
+				isUnique = true;
+			}
+			
+			else {
+				nextDocId = masterService.getNextDocId();
+			}
+
+		}
+		DocIdDummyEntity docIdDummyEntity = new DocIdDummyEntity();
+		docIdDummyEntity.setDocId(String.valueOf(nextDocId));
+		*/
+		
+		caseSequence = caseSequence+1;
+		
 		GetCommonMasterDataResponse getCommonMasterDataResponse = new GetCommonMasterDataResponse();
-		getCommonMasterDataResponse.setObjectList(nextDocId);
+		getCommonMasterDataResponse.setObjectList(caseSequence);
 		
 		/**returning get role master data response**/
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(getCommonMasterDataResponse);
@@ -113,4 +152,18 @@ public class MasterController {
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(addCaseMasterResponse);
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse,HttpStatus.OK);
 	}
+	
+	
+	@GetMapping(path = RestMappingConstant.Master.OTHER_CITATION_JOURNAL_MASTER_URI)
+	public ResponseEntity<BaseApiResponse> getOtherCitationJournalsHandler()
+	{
+		
+		GetCommonMasterDataResponse otherJournalMasterResponse = masterService.getOtherCitationJournalDropDownMasterResponse();
+		
+		/**returning get role master data response**/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(otherJournalMasterResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse,HttpStatus.OK);
+	}
+	
+	
 }

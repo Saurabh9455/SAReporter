@@ -39,14 +39,35 @@ public class SearchRequest {
 	
 	
 	/**for search type = CitationSearch**/
+	private boolean isOtherSearch;
 	private String citationSearchJournal;
 	private String citationSearchYear;
 	private String citationSearchPageNumber;
+	private String citationCategory;
+	
+	//other citation variables 
+	private String otherCitationSearchJournal;
+	private String otherCitationSearchYear;
+	private String otherCitationSearchVolume;
+	private String otherCitationSearchPageNumber;
 	
 	
 	/**for search type = StatueSearch**/
 	private String statueSearchActName;
 	private String statueSearchSection;
+	private String statueSearchOrder;
+	private String statueSearchRule;
+	private String statueSearchArticle;
+	
+	
+	/**for all search alphabet start**/
+	private String startsWithAlphabet;
+	
+	/**for all search decidedDate order a->Ascending, d->Descedning **/
+	private String decidedDateOrder;
+	
+	/**for all search appellant name order a->Ascending, d->Descedning **/
+	private String appellantNameOrder;
 	
 	
 	

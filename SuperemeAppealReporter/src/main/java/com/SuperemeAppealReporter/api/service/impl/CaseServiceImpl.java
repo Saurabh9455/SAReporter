@@ -209,13 +209,33 @@ public class CaseServiceImpl implements CaseService {
 				headnoteEntity.setActname1(req.getActname1());
 				headnoteEntity.setActname2(req.getActname2());
 				headnoteEntity.setActname3(req.getActname3());
+				headnoteEntity.setActname4(req.getActname4());
 				headnoteEntity.setHeadnote(req.getHeadnote());
 				headnoteEntity.setPriority(req.getPriority());
 				headnoteEntity.setSection1(req.getSection1());
 				headnoteEntity.setSection2(req.getSection2());
 				headnoteEntity.setSection3(req.getSection3());
+				headnoteEntity.setSection4(req.getSection4());
 				headnoteEntity.setTopic(req.getTopic());
 				headnoteEntity.setParagraph(req.getParagraph());
+				/**added for update  in headnote **/
+				headnoteEntity.setOrder1(req.getOrder1());
+				headnoteEntity.setOrder2(req.getOrder2());
+				headnoteEntity.setOrder3(req.getOrder3());
+				headnoteEntity.setOrder4(req.getOrder4());
+				
+				headnoteEntity.setRule1(req.getRule1());
+				headnoteEntity.setRule2(req.getRule2());
+				headnoteEntity.setRule3(req.getRule3());
+				headnoteEntity.setRule4(req.getRule4());
+				
+				headnoteEntity.setArticle1(req.getArticle1());
+				headnoteEntity.setArticle2(req.getArticle2());
+				headnoteEntity.setArticle3(req.getArticle3());
+				headnoteEntity.setArticle4(req.getArticle4());
+				
+				
+				
 				headnoteEntityList.add(headnoteEntity);
 			}
 			List<CasesRefferedEntity> casesRefferedEntityList = new ArrayList<>();
@@ -224,7 +244,9 @@ public class CaseServiceImpl implements CaseService {
 				CasesRefferedEntity casesRefferedEntity = new CasesRefferedEntity();
 				casesRefferedEntity.setCasesReferred(req.getCasesReferred());
 				casesRefferedEntity.setPartyName(req.getPartyName());
+				casesRefferedEntity.setLinkedDocId(req.getLinkedDocId());
 				casesRefferedEntityList.add(casesRefferedEntity);
+				
 			}
 			SingleCouncilDetailRequest singleCouncilDetailRequest = null;
 			DoubleCouncilDetailRequest doubleCouncilDetailRequest = null;
@@ -331,6 +353,11 @@ public class CaseServiceImpl implements CaseService {
 				JournalEntity secondaryJournalEntity = this.journalRepository
 						.findById(Integer.valueOf(citationRequest.getSecondaryJournalId())).get();
 				
+				
+				System.out.println("--------------Secondary Journal ID--------------- "+citationRequest.getSecondaryJournalId());
+				
+				System.out.println("--------------Journal Name--------------- "+citationRequest.getSecondaryJournalId());
+				
 				String secondaryCitationYear = citationRequest.getSecondaryYear();
 				String secondaryCitationPageNumber = citationRequest.getSecondaryPageNumber();
 			
@@ -391,13 +418,32 @@ public class CaseServiceImpl implements CaseService {
 				headnoteEntity.setActname1(req.getActname1());
 				headnoteEntity.setActname2(req.getActname2());
 				headnoteEntity.setActname3(req.getActname3());
+				headnoteEntity.setActname4(req.getActname4());
 				headnoteEntity.setHeadnote(req.getHeadnote());
 				headnoteEntity.setPriority(req.getPriority());
 				headnoteEntity.setSection1(req.getSection1());
 				headnoteEntity.setSection2(req.getSection2());
 				headnoteEntity.setSection3(req.getSection3());
+				headnoteEntity.setSection4(req.getSection4());
 				headnoteEntity.setTopic(req.getTopic());
 				headnoteEntity.setParagraph(req.getParagraph());
+				
+				/**added for update  in headnote **/
+				headnoteEntity.setOrder1(req.getOrder1());
+				headnoteEntity.setOrder2(req.getOrder2());
+				headnoteEntity.setOrder3(req.getOrder3());
+				headnoteEntity.setOrder4(req.getOrder4());
+				
+				headnoteEntity.setRule1(req.getRule1());
+				headnoteEntity.setRule2(req.getRule2());
+				headnoteEntity.setRule3(req.getRule3());
+				headnoteEntity.setRule4(req.getRule4());
+				
+				headnoteEntity.setArticle1(req.getArticle1());
+				headnoteEntity.setArticle2(req.getArticle2());
+				headnoteEntity.setArticle3(req.getArticle3());
+				headnoteEntity.setArticle4(req.getArticle4());
+				
 				headnoteEntityList.add(headnoteEntity);
 			}
 			List<CasesRefferedEntity> casesRefferedEntityList = new ArrayList<>();
@@ -406,6 +452,7 @@ public class CaseServiceImpl implements CaseService {
 				CasesRefferedEntity casesRefferedEntity = new CasesRefferedEntity();
 				casesRefferedEntity.setCasesReferred(req.getCasesReferred());
 				casesRefferedEntity.setPartyName(req.getPartyName());
+				casesRefferedEntity.setLinkedDocId(req.getLinkedDocId());
 				casesRefferedEntityList.add(casesRefferedEntity);
 			}
 			SingleCouncilDetailRequest singleCouncilDetailRequest = null;
@@ -536,6 +583,7 @@ public class CaseServiceImpl implements CaseService {
 
 	public CommonPaginationResponse getCaseList(GetCaseListBo getCaseListBo, int pageNumber, int perPage) {
 		CommonPaginationResponse commonPaginationResponse = null;
+	
 		try {
 			if (pageNumber > 0)
 				pageNumber--;
@@ -646,6 +694,174 @@ public class CaseServiceImpl implements CaseService {
 			System.out.println("--------------------QUERY FINISHED-----------------------");
 			List<Object> caseEntityList = caseEntityPage.getContent();
 			List<GetCaseListResponse> getCaseResponseList = new ArrayList<>();
+		
+			for (int i = 0; i < caseEntityList.size(); i++) {
+				Object[] arr = (Object[]) caseEntityList.get(i);
+				long docId = ((Long) arr[0]).longValue();
+				String appellant = String.valueOf(arr[1]);
+				String respondent = String.valueOf(arr[2]);
+				String caseCategoryResult = String.valueOf(arr[3]);
+				String courtType = String.valueOf(arr[4]);
+				boolean isOveruled = ((Boolean) arr[5]).booleanValue();
+				boolean isLive = ((Boolean) arr[6]).booleanValue();
+				String createdBy = String.valueOf(arr[7]);
+				Date createdDate = (Date) arr[8];
+				String originalPdfPath = String.valueOf(arr[9]);
+				if (originalPdfPath.equals("null"))
+					originalPdfPath = null;
+				GetCaseListResponse getCaseListResponse = new GetCaseListResponse();
+				getCaseListResponse.setOriginalPdfPath(originalPdfPath);
+				getCaseListResponse.setAppellant(appellant);
+				getCaseListResponse.setCreatedBy(createdBy);
+				getCaseListResponse.setCreatedDate(createdDate);
+				getCaseListResponse.setDocId(docId);
+				getCaseListResponse.setLive(isLive);
+				getCaseListResponse.setOverruled(isOveruled);
+				getCaseListResponse.setRespondent(respondent);
+				CourtDetailResponse courtDetailResponse = new CourtDetailResponse();
+				CourtResponse courtresponse = new CourtResponse();
+				courtresponse.setCourtType(courtType);
+				courtDetailResponse.setCourtResponse(courtresponse);
+				CitationCategoryResponse citationCategoryResponse = new CitationCategoryResponse();
+				citationCategoryResponse.setCitationCategoryName(caseCategoryResult);
+				CitationResponse citationResponse = new CitationResponse();
+				citationResponse.setCitationCategoryResponse(citationCategoryResponse);
+				getCaseListResponse.setCitationResponse(citationResponse);
+				getCaseListResponse.setCourtDetailResponse(courtDetailResponse);
+				getCaseResponseList.add(getCaseListResponse);
+			}
+			commonPaginationResponse = new CommonPaginationResponse();
+			commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(caseEntityPage.getTotalPages());
+			commonPaginationResponse.setOjectList(getCaseResponseList);
+			return commonPaginationResponse;
+		} catch (AppException appException) {
+			throw appException;
+		} catch (Exception ex) {
+			String errorMessage = "Error in CaseServiceImpl --> getCaseList()";
+			AppException appException = new AppException(
+					"Type : " + ex.getClass() + ", Cause : " + ex.getCause() + ", Message : " + ex.getMessage(), "500",
+					"Error Description  :  : " + errorMessage);
+			throw appException;
+		}
+	}
+	
+	
+	/********************Added for the functionality where Data entry operator can only see his own added cases*********************************/
+	
+	public CommonPaginationResponse getCaseListForDataEntryOperator(GetCaseListBo getCaseListBo, int pageNumber, int perPage,String email) {
+		CommonPaginationResponse commonPaginationResponse = null;
+	
+		try {
+			if (pageNumber > 0)
+				pageNumber--;
+			PageRequest pageRequest = PageRequest.of(pageNumber, perPage);
+			String caseCategory = getCaseListBo.getCaseCategory();
+			String courCategory = getCaseListBo.getCourCategory();
+			String overRuled = getCaseListBo.getOverRuled();
+			String live = getCaseListBo.getLive();
+			String searchValue = getCaseListBo.getSearchValue();
+			if (caseCategory.equals("ALL") && courCategory.equals("ALL") && overRuled.equals("ALL")
+					&& live.equals("ALL") && searchValue.equals("")) {
+				Page<Object> page = null;
+				page = this.caseRepository.findAllByActiveForDataEntryOperator(true,email, (Pageable) pageRequest);
+				List<Object> list = page.getContent();
+				List<GetCaseListResponse> list1 = new ArrayList<>();
+				for (int j = 0; j < list.size(); j++) {
+					Object[] arr = (Object[]) list.get(j);
+					long docId = ((Long) arr[0]).longValue();
+					String appellant = String.valueOf(arr[1]);
+					String respondent = String.valueOf(arr[2]);
+					String caseCategoryResult = String.valueOf(arr[3]);
+					String courtType = String.valueOf(arr[4]);
+					boolean isOveruled = ((Boolean) arr[5]).booleanValue();
+					boolean isLive = ((Boolean) arr[6]).booleanValue();
+					String createdBy = String.valueOf(arr[7]);
+					Date createdDate = (Date) arr[8];
+					String originalPdfPath = String.valueOf(arr[9]);
+					if (originalPdfPath.equals("null"))
+						originalPdfPath = null;
+					GetCaseListResponse getCaseListResponse = new GetCaseListResponse();
+					getCaseListResponse.setOriginalPdfPath(originalPdfPath);
+					getCaseListResponse.setAppellant(appellant);
+					getCaseListResponse.setCreatedBy(createdBy);
+					getCaseListResponse.setCreatedDate(createdDate);
+					getCaseListResponse.setDocId(docId);
+					getCaseListResponse.setLive(isLive);
+					getCaseListResponse.setOverruled(isOveruled);
+					getCaseListResponse.setRespondent(respondent);
+					CourtDetailResponse courtDetailResponse = new CourtDetailResponse();
+					CourtResponse courtresponse = new CourtResponse();
+					courtresponse.setCourtType(courtType);
+					courtDetailResponse.setCourtResponse(courtresponse);
+					CitationCategoryResponse citationCategoryResponse = new CitationCategoryResponse();
+					citationCategoryResponse.setCitationCategoryName(caseCategoryResult);
+					CitationResponse citationResponse = new CitationResponse();
+					citationResponse.setCitationCategoryResponse(citationCategoryResponse);
+					getCaseListResponse.setCitationResponse(citationResponse);
+					getCaseListResponse.setCourtDetailResponse(courtDetailResponse);
+					list1.add(getCaseListResponse);
+				}
+				commonPaginationResponse = new CommonPaginationResponse();
+				commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(page.getTotalPages());
+				commonPaginationResponse.setOjectList(list1);
+				return commonPaginationResponse;
+			}
+			List<String> caseCategoryList = new ArrayList<>();
+			List<String> courtCategoryList = new ArrayList<>();
+			List<Boolean> overRuledList = new ArrayList<>();
+			List<Boolean> liveList = new ArrayList<>();
+			Page<Object> caseEntityPage = null;
+			if (caseCategory.equals("ALL")) {
+				Iterable<CitationCategoryEntity> citationList = this.citationCategoryRepository.findAll();
+				Iterator<CitationCategoryEntity> citationIterator = citationList.iterator();
+				while (citationIterator.hasNext())
+					caseCategoryList.add(((CitationCategoryEntity) citationIterator.next()).getCitationCategoryName());
+			}
+			if (courCategory.equals("ALL")) {
+				Iterable<CourtEntity> courtList = this.courtRepository.findAll();
+				Iterator<CourtEntity> citationIterator = courtList.iterator();
+				while (citationIterator.hasNext())
+					courtCategoryList.add(((CourtEntity) citationIterator.next()).getCourtType());
+			}
+			if (overRuled.equals("ALL")) {
+				overRuledList.add(Boolean.valueOf(true));
+				overRuledList.add(Boolean.valueOf(false));
+			}
+			if (live.equals("ALL")) {
+				liveList.add(Boolean.valueOf(true));
+				liveList.add(Boolean.valueOf(false));
+			}
+			if (live.equals("YES"))
+				liveList.add(Boolean.valueOf(true));
+			if (live.equals("NO"))
+				liveList.add(Boolean.valueOf(false));
+			if (overRuled.equals("YES"))
+				overRuledList.add(Boolean.valueOf(true));
+			if (overRuled.equals("NO"))
+				overRuledList.add(Boolean.valueOf(false));
+			if (caseCategoryList.size() == 0)
+				caseCategoryList.add(caseCategory);
+			if (courtCategoryList.size() == 0)
+				courtCategoryList.add(courCategory);
+			if (searchValue.equals("")) {
+				caseEntityPage = this.caseDao.getCasePageForDataEntry((Pageable) pageRequest, courtCategoryList, caseCategoryList,
+						liveList, overRuledList,email);
+			} else if (!searchValue.equals("")) {
+				try {
+					Long searchValueInt = Long.valueOf(Long.parseLong(searchValue));
+					System.out.println("--------------------SEARCH VALUE------------" + searchValueInt);
+					caseEntityPage = this.caseDao.getCasePageIntForDataEntry((Pageable) pageRequest, courtCategoryList,
+							caseCategoryList, liveList, overRuledList, searchValueInt,email);
+				} catch (NumberFormatException e) {
+					System.out.println("HERE");
+					caseEntityPage = this.caseDao.getCasePageForDataEntry((Pageable) pageRequest, courtCategoryList,
+							caseCategoryList, liveList, overRuledList, "%" + searchValue + "%", email);
+				}
+			}
+			System.out.println("--------------------QUERY FINISHED-----------------------");
+			List<Object> caseEntityList = caseEntityPage.getContent();
+			List<GetCaseListResponse> getCaseResponseList = new ArrayList<>();
+		
 			for (int i = 0; i < caseEntityList.size(); i++) {
 				Object[] arr = (Object[]) caseEntityList.get(i);
 				long docId = ((Long) arr[0]).longValue();
@@ -684,15 +900,18 @@ public class CaseServiceImpl implements CaseService {
 			commonPaginationResponse.setOjectList(getCaseResponseList);
 			return commonPaginationResponse;
 		} catch (AppException appException) {
+			appException.printStackTrace();
 			throw appException;
 		} catch (Exception ex) {
 			String errorMessage = "Error in CaseServiceImpl --> getCaseList()";
 			AppException appException = new AppException(
 					"Type : " + ex.getClass() + ", Cause : " + ex.getCause() + ", Message : " + ex.getMessage(), "500",
 					"Error Description  :  : " + errorMessage);
+			ex.printStackTrace();
 			throw appException;
 		}
 	}
+
 
 	public Resource getCasePdf(long docId) {
 		try {
@@ -803,7 +1022,7 @@ public class CaseServiceImpl implements CaseService {
 			SecondaryCitationResponseForSingleCase secondaryCitationResponseForSingleCase = new SecondaryCitationResponseForSingleCase();
 			
 			CitationCategoryEntity secondaryCitationCategoryEntity = secondaryCitationEntity.getCitationCategoryEntity();
-			JournalEntity secondaryJournalEntity = citationEntity.getJournalEntity();
+			JournalEntity secondaryJournalEntity = secondaryCitationEntity.getJournalEntity();
 			CitationCategoryResponseForSingleCase secondaryCitationCategoryResponseForSingleCase = new CitationCategoryResponseForSingleCase();
 			secondaryCitationCategoryResponseForSingleCase.setLabel(secondaryCitationCategoryEntity.getCitationCategoryName());
 			secondaryCitationCategoryResponseForSingleCase.setValue(secondaryCitationCategoryEntity.getCitationCategoryName());
@@ -886,4 +1105,58 @@ public class CaseServiceImpl implements CaseService {
 		getCaseListResponse.setHeadnoteResponseList(headnoteResponses);
 		return getCaseListResponse;
 	}
+
+	@Override
+	public String getNextDocId() {
+		
+		String docId = String.valueOf(caseRepository.getLatestDocId());
+		return docId;
+	}
+
+	@Override
+	@Transactional(rollbackFor=RuntimeException.class)
+	public CommonMessageResponse deletePdf(String docId) {
+		CommonMessageResponse commonMessageResponse = null;
+		
+		try 
+		{
+		CaseEntity caseEntity = caseRepository.findByDocId(Long.parseLong(docId));
+		caseEntity.setOriginalPdfPath(null);
+		commonMessageResponse = new CommonMessageResponse();
+		commonMessageResponse.setMsg("Pdf Deleted Succeddfully");
+	    }
+	catch (AppException appException) {
+		throw appException;
+	} catch (Exception ex) {
+		ex.printStackTrace();
+		String errorMessage = "Error in CaseServiceImpl --> deletePdf()";
+		AppException appException = new AppException(
+				"Type : " + ex.getClass() + ", Cause : " + ex.getCause() + ", Message : " + ex.getMessage(), "500",
+				"Error Description  :  : " + errorMessage);
+		throw appException;
+	}
+	return commonMessageResponse;
+}
+	/*
+	 * CommonMessageResponse commonMessageResponse = null;
+		try {
+			CaseEntity caseEntity = this.caseRepository.getCaseEntityByPrimaryKeyAndDocId(docId);
+			if (caseEntity == null)
+				throw new AppException("Delete case ERROR", "120",
+						"No Case available for the given docId. So delete case operation was unsuccessfull");
+			caseEntity.setActive(Boolean.valueOf(false));
+			commonMessageResponse = new CommonMessageResponse();
+			commonMessageResponse.setMsg("Case Delete was successfull. Case Deleted");
+		} catch (AppException appException) {
+			throw appException;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			String errorMessage = "Error in CaseServiceImpl --> deleteCaseService()";
+			AppException appException = new AppException(
+					"Type : " + ex.getClass() + ", Cause : " + ex.getCause() + ", Message : " + ex.getMessage(), "500",
+					"Error Description  :  : " + errorMessage);
+			throw appException;
+		}
+		return commonMessageResponse;
+	 */
 }

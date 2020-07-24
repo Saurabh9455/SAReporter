@@ -20,11 +20,17 @@ public interface CaseService {
 	public CommonMessageResponse uploadCasePdf(UploadCasePdfBo uploadCasePdfBo,Long docId);
 	
 	public CommonPaginationResponse getCaseList(GetCaseListBo getCaseListBo,int pageNumber, int perPage);
+	
+	public CommonPaginationResponse getCaseListForDataEntryOperator(GetCaseListBo getCaseListBo,int pageNumber, int perPage,String email);
 
     public Resource getCasePdf(long docId);
 
     public CommonMessageResponse deleteCaseService( int docId);
     
     public GetCaseListResponseForSingleCase getSingleCase(int docId);
+    
+    public String getNextDocId();
+    
+    public CommonMessageResponse deletePdf(String docId);
 
 }

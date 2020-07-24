@@ -1,6 +1,8 @@
 package com.SuperemeAppealReporter.api.shared.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Random;
@@ -70,6 +72,22 @@ public class AppUtility {
 	public static int genDocId() {
 	    Random r = new Random( System.currentTimeMillis() );
 	    return ((1 + r.nextInt(2)) * 100000 + r.nextInt(10000));
+	}
+	
+	public static Date convertStringToDate(String format,String dateStr) throws ParseException{
+	   
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		Date outDate = sdf.parse(dateStr);
+		
+		return outDate;
+	}
+	
+	public static String convertDateToString(String format,Date date) throws ParseException{
+		   
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		String outDate = sdf.format(date);
+		
+		return outDate;
 	}
 	
 	

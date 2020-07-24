@@ -11,7 +11,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "double_council_detail_entity")

@@ -71,7 +71,7 @@ public class NotificationServiceImpl implements NotificationService {
 	        	if(mail.getBelongsTo().equals(UserType.USER))
 		             html = templateEngine.process("email-template-updated-user-onboarding", context);
 	        }
-	        helper.setFrom("SarOnline");
+	        helper.setFrom("system@saronline.co.in");
 	     
 	        helper.setTo(mail.getTo());
 	        helper.setText(html, true);

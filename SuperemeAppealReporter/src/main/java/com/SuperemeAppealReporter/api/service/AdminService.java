@@ -9,6 +9,8 @@ import com.SuperemeAppealReporter.api.bo.SearchStaffBo;
 import com.SuperemeAppealReporter.api.bo.UpdateClientBo;
 import com.SuperemeAppealReporter.api.bo.UpdateStaffBo;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
+import com.SuperemeAppealReporter.api.ui.model.request.PostRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.UpdatePostRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 
 public interface AdminService {
@@ -38,6 +40,15 @@ public interface AdminService {
 	public CommonMessageResponse caseLiveStatusChange(boolean status,String docId);
 	
 	public CommonPaginationResponse getOrderList(int pageNumber, int perPageLimit);
+	
+	public CommonMessageResponse makePost(PostRequest postReqest);
+	
+
+	CommonMessageResponse updatePost(UpdatePostRequest postRequest);
+	
+	CommonPaginationResponse getPost(int pageNumber, int pagePerLimit);
+	
+	CommonMessageResponse deletePost(String postId);
 }
 
 

@@ -16,4 +16,6 @@ public class CasesReferredResponse {
 	private String partyName;
 	
 	private String casesReferred;
+	
+	private String linkedDocId;
 }

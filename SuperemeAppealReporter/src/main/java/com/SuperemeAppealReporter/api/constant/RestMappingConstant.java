@@ -42,6 +42,18 @@ public interface RestMappingConstant {
 		
 		String UPLOAD_PROFILE_PICTURE = "/uploadProfilePicture";
 		
+		String ADD_CASE_TO_MY_LIBRARY_URI = "/addCaseToMyLibrary";
+		
+		String GET_MY_LIBRARY_CASE_LIST = "/getMyLibraryCaseList";
+		
+		String LOGOUT = "/logout";
+		
+		String LOGIN_HISTORY = "/loginHistory";
+		
+		String LOGIN_HISTORY_FOR_ADMIN_PANEL = "/loginHistoryByClientIdForAdminPanel";
+		
+		String DELETE_MY_CASE_IN_LIBRARY = "/deleteCaseFromMyLibrary/{docId}";
+		
 	}
 	
 	public interface Admin
@@ -88,6 +100,20 @@ public interface RestMappingConstant {
 		String CASE_LIVE_STATUS_CHANGE_URI = "/changeCaseLiveStatus";
 		
 		String GET_ORDER_LIST_URI = "/getOrderList";
+		
+		String MAKE_POST_URI = "/makePost";
+		
+		String UPDATE_POST_URI = "/updatePost";
+		
+		String GET_POST_URI = "/getPostList";
+		
+		String DELETE_POST_URI = "/deletePost/{postId}";
+		
+		String GET_SINGLE_CASE_URI_FOR_GUEST = "/getSingleCaseForGuest/{docId}";
+		
+		String DELETE_PDF_DOC = "/deletePdf/{docId}";
+		
+		
 	}
 	
 	public interface Master
@@ -111,8 +137,12 @@ public interface RestMappingConstant {
 	    String FULL_GET_NEXT_DOC_ID_URI = "/SuperemeAppealReporter/v1/api/master/getNextDocId";
 	    
 	    String ADD_CASE_MASTER_API = "/addCaseMasterAPI";
+	    
+	    String OTHER_CITATION_JOURNAL_MASTER_URI = "/getOtherCitationJournals";
 	
 	}
+	
+	
 	
 	public interface Staff
 	{
@@ -157,5 +187,15 @@ public interface RestMappingConstant {
 	{
 		String DASHBOARD_SEARCH_URI = "/dashboardSearch";
 		String DASHBOARD_SEARCH_FULL_URI = "/SuperemeAppealReporter/v1/api/user/dashboardSearch";
+		String ACT_NAME_MASTER_SEARCH = "/actNameMasterSearch";
+		String TOPIC_MASTER_SEARCH = "/topicMasterSearch";
+	}
+	
+	public interface Notification{
+		String NOTIFICATION_BASE_URI = APP_BASE_URI+"/notification";
+		String SEND_NOTIFICATION_URI = "/send";
+		String REGISTER_DEVICE_URI = "/registerDevice";
+		String GET_NOTIFICATION_LIST = "/getNotificationList";
+		
 	}
 }

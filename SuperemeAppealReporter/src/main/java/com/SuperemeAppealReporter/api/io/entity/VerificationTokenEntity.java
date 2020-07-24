@@ -19,7 +19,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @Entity
 @Table(name = "verification")
 public class VerificationTokenEntity extends BaseEntity {

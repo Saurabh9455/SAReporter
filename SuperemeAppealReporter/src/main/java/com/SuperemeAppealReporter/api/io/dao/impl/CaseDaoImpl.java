@@ -28,10 +28,26 @@ public class CaseDaoImpl implements CaseDao {
 		return caseRepository.getCaseList(pageable, courtCategoryList, caseCategoryList, liveList, overuledList);
 	}
 	
+	@Override
+	public Page<Object> getCasePageForDataEntry(Pageable pageable, List<String> courtCategoryList, List<String> caseCategoryList,
+			List<Boolean> liveList, List<Boolean> overuledList,String email) {
+	
+		return caseRepository.getCaseListForDataEntry(pageable, courtCategoryList, caseCategoryList, liveList, overuledList,email);
+	}
+	
+	
 	
 	@Override
 	public Page<Object> getCasePage(Pageable pageable, List<String> courtCategoryList, List<String> caseCategoryList,
 			List<Boolean> liveList, List<Boolean> overuledList,String searchValue) {
+	
+		return caseRepository.getCaseList(pageable, courtCategoryList, caseCategoryList, liveList, overuledList,searchValue);
+	}
+	
+	
+	@Override
+	public Page<Object> getCasePageForDataEntry(Pageable pageable, List<String> courtCategoryList, List<String> caseCategoryList,
+			List<Boolean> liveList, List<Boolean> overuledList,String searchValue,String email) {
 	
 		return caseRepository.getCaseList(pageable, courtCategoryList, caseCategoryList, liveList, overuledList,searchValue);
 	}
@@ -43,6 +59,12 @@ public class CaseDaoImpl implements CaseDao {
 		return caseRepository.getCaseListInt(pageable, courtCtegoryList, caseCategoryList, liveList, overRuledList,searchValue);
 	}
 
+	
+	@Override
+	public Page<Object> getCasePageIntForDataEntry(Pageable pageable, List<String> courtCtegoryList,
+			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList, Long searchValue,String email) {
+		return caseRepository.getCaseListIntForDataEntry(pageable, courtCtegoryList, caseCategoryList, liveList, overRuledList,searchValue,email);
+	}
 
 	@Override
 	public String getPdfPathByDocId(long docId) {

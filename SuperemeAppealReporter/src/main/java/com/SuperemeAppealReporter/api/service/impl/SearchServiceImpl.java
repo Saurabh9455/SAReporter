@@ -1,11 +1,15 @@
 package com.SuperemeAppealReporter.api.service.impl;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +29,10 @@ import com.SuperemeAppealReporter.api.io.repository.CourtRepository;
 import com.SuperemeAppealReporter.api.io.repository.HeadnoteRepository;
 import com.SuperemeAppealReporter.api.io.repository.UserRepository;
 import com.SuperemeAppealReporter.api.service.SearchService;
+import com.SuperemeAppealReporter.api.shared.util.AppUtility;
+import com.SuperemeAppealReporter.api.ui.model.request.ActNameMasterSearchRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.SearchRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.TopicMasterSearchRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.SearchCaseListResponse;
 
@@ -68,43 +75,18 @@ public class SearchServiceImpl implements SearchService {
 		if (pageNumber > 0)
 			pageNumber = pageNumber - 1;
 		
-		Pageable pageableRequest = PageRequest.of(pageNumber, perPage);
-		Page<Object> page = null;
+		
+		perPage = 8;
+				
 		
 		/**for DashBoardSearchTyPE***************************************/
 		if(searchType.equalsIgnoreCase("DashBoardSearchType"))
 		{
 			
-			String dashboardSearchValue = searchRequest.getDashboardSearchValue();
-			try
-			{
-			
-				long docIdForSearch = Integer.parseInt(dashboardSearchValue.trim());
-				page = caseRepository.dashboardSearchForDocIdV2(pageableRequest, docIdForSearch);
-			}
-			catch(NumberFormatException ex)
-			{
-				page=	caseRepository.dashboardSearchV2(pageableRequest,dashboardSearchValue.toUpperCase().trim());
-			}
-			
-					List idList = page.getContent();
-					System.out.println("-----The list size is--->"+idList.size());
-					System.out.println(idList);
-					Set<SearchCaseListResponse> searchCaseListResponseSet = new HashSet<SearchCaseListResponse>();
-
-					searchCaseListResponseSet = prepareCaseRepresentation(idList,pageNumber+1);
-					commonPaginationResponse = new CommonPaginationResponse();
-
-					commonPaginationResponse.setOjectList(searchCaseListResponseSet);
-					commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(page.getTotalPages());
-					return commonPaginationResponse;
-	
-		}
 		
-		else if(searchType.equalsIgnoreCase("CitationSearchType"))
-		{
-			List idListForSize = searchDao.performCitationSearch(searchRequest, pageNumber, perPage,true);
-			List idList = searchDao.performCitationSearch(searchRequest, pageNumber, perPage,false);
+			List idListForSize = searchDao.performDashBoardSearch(searchRequest, pageNumber, perPage,true);
+			List idList = searchDao.performDashBoardSearch(searchRequest, pageNumber, perPage,false);
+			//List idList = searchDao.performDashBoardSearch2(idListForSize, pageNumber, perPage);
 			Set<SearchCaseListResponse> searchCaseListResponseSet = new HashSet<SearchCaseListResponse>();
 
 			searchCaseListResponseSet = prepareCaseRepresentation(idList,pageNumber+1);
@@ -113,6 +95,43 @@ public class SearchServiceImpl implements SearchService {
 			commonPaginationResponse.setOjectList(searchCaseListResponseSet);
 			commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit((int)(Math.ceil(idListForSize.size()/8.0)));
 			return commonPaginationResponse;
+			
+	
+		}
+		
+		else if(searchType.equalsIgnoreCase("CitationSearchType"))
+		{
+			
+			/**For Other Citation Search**/
+			if(searchRequest.isOtherSearch()){
+				List idListForSize = searchDao.performCitationSearch(searchRequest, pageNumber, perPage,true,true);
+				List idList = searchDao.performCitationSearch(searchRequest, pageNumber, perPage,false,true);
+				Set<SearchCaseListResponse> searchCaseListResponseSet = new HashSet<SearchCaseListResponse>();
+
+				searchCaseListResponseSet = prepareCaseRepresentation(idList,pageNumber+1);
+				commonPaginationResponse = new CommonPaginationResponse();
+
+				commonPaginationResponse.setOjectList(searchCaseListResponseSet);
+				commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit((int)(Math.ceil(idListForSize.size()/8.0)));
+				return commonPaginationResponse;
+		
+			}
+			
+			/**For Main Citation Search**/
+			else {
+				
+				
+				List idListForSize = searchDao.performCitationSearch(searchRequest, pageNumber, perPage,true,false);
+				List idList = searchDao.performCitationSearch(searchRequest, pageNumber, perPage,false,false);
+				Set<SearchCaseListResponse> searchCaseListResponseSet = new HashSet<SearchCaseListResponse>();
+
+				searchCaseListResponseSet = prepareCaseRepresentation(idList,pageNumber+1);
+				commonPaginationResponse = new CommonPaginationResponse();
+
+				commonPaginationResponse.setOjectList(searchCaseListResponseSet);
+				commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit((int)(Math.ceil(idListForSize.size()/8.0)));
+				return commonPaginationResponse;
+			}
 					
 		}
 		
@@ -135,7 +154,10 @@ public class SearchServiceImpl implements SearchService {
 		{
 
 			        List idListForSize = searchDao.performMainSearch(searchRequest, pageNumber, perPage,true);
+			    	/*int startRow = pageNumber==0 ? 0 : pageNumber*8;
+			    	int endRow = 8;*/
 					List idList = searchDao.performMainSearch(searchRequest, pageNumber, perPage,false);
+			    	//List idList = idListForSize.subList(startRow, startRow+8);
 					Set<SearchCaseListResponse> searchCaseListResponseSet = new HashSet<SearchCaseListResponse>();
 
 					searchCaseListResponseSet = prepareCaseRepresentation(idList,pageNumber+1);
@@ -185,7 +207,7 @@ public class SearchServiceImpl implements SearchService {
 			 
 	}
 	
-	private Set<SearchCaseListResponse>  prepareCaseRepresentation(List caseIdList,int pageNumber)
+	public Set<SearchCaseListResponse>  prepareCaseRepresentation(List caseIdList,int pageNumber) throws ParseException
 	{
 		pageNumber = pageNumber-1;
 		int startNumber = pageNumber*8;
@@ -195,37 +217,69 @@ public class SearchServiceImpl implements SearchService {
 			caseIdListV2.add(Integer.parseInt(String.valueOf(obj)));
 			
 		}
-		List<CaseEntity> caseEntities = null;
+		List<CaseEntity> caseEntities  = new ArrayList<CaseEntity>();
+		
+		/*if(caseIdListV2!=null && !caseIdListV2.isEmpty())
+		{
+		   for(Integer k :caseIdListV2 ){
+			CaseEntity cE = caseRepository.findById(k).get();
+
+			String otherCitation = cE.getCitationEntity().getOtherCitation();
+			if(StringUtils.isNotBlank(otherCitation)){
+				
+			}
+		   caseEntities.add(cE);
+		   }
+		}*/
+		List<Object[]> cE = new ArrayList<Object[]>();
 		if(caseIdListV2!=null && !caseIdListV2.isEmpty())
 		{
-		caseEntities= caseRepository.findAppResByIdV2(caseIdListV2);
+		  
+		//	cE = caseRepository.findAllById(caseIdListV2).iterator();
+			cE=  caseRepository.getCaseEntityFieldsForPreparation(caseIdListV2);
+
 		}
-		else
-		{
-			caseEntities = new ArrayList<CaseEntity>();
-		}
+		
+		
+		
+		System.out.println("============Size of the Id List ==========="+caseIdListV2.size());
+		
+		System.out.println("============Size of the Case Entity List==========="+caseEntities.size());
+		
 		Set<SearchCaseListResponse> searchCaseListResponses = new LinkedHashSet<SearchCaseListResponse>();
-		
-		
-		for(CaseEntity entity : caseEntities)
+		//TreeMap<Date,SearchCaseListResponse> decidedDateAndRestRepresentationMap = new TreeMap<Date,SearchCaseListResponse>();
+		List<SearchCaseListResponse> decidedDateAndRestRepresentationSet = new ArrayList<SearchCaseListResponse>();
+		List<SearchCaseListResponse> searchCaseListResponsList = new ArrayList<SearchCaseListResponse>();
+		ArrayList<Date> decidedDateList = new ArrayList<Date>();
+		int secondsForKeepingKeyUnique = 0;
+		for(Object[] obj : cE)
 		{
-	   ++startNumber;
-		String appellant = entity.getAppellant();
-		String respondent = entity.getRespondent();
-		String docId = entity.getDocId()+"";
+		//	CaseEntity entity  = cE.next();
+			++secondsForKeepingKeyUnique;
+		String appellant = String.valueOf(obj[1]);
+		String respondent = String.valueOf(obj[2]);
+		String docId = String.valueOf(obj[0]);
 		SearchCaseListResponse searchCaseListResponse = new SearchCaseListResponse();
-	
+	/*
+	 * select cE.docId, cE.appellant, cE.respondent, 
+	 * cE.courtDetailEntity.courtEntity.courtType, 
+	 * cE.caseHistoryEntity.decided_day, 
+	 * cE.caseHistoryEntity.decidedMonth, 
+	 * cE.caseHistoryEntity.decidedYear
+	 *  where cE.id in () 
+	 * 
+	 */
 		
 	
-		String courtType = entity.getCourtDetailEntity().getCourtEntity().getCourtType();
+		String courtType =String.valueOf(obj[3]);;
 		
-		CaseHistoryEntity caseHisotry = entity.getCaseHistoryEntity();
-		String decidedDate = caseHisotry.getDecided_day()+"/"+caseHisotry.getDecidedMonth()+"/"+caseHisotry.getDecidedYear();
+		//CaseHistoryEntity caseHisotry = entity.getCaseHistoryEntity();
+		String decidedDate = String.valueOf(obj[4])+"/"+String.valueOf(obj[5])+"/"+String.valueOf(obj[6]);;
 		
 		String courtShortForm = prepareCourtShortForm(courtType);
 		
 		
-		List<HeadnoteEntity> headnoteEntities = entity.getHeadNoteEntitySet();
+		List<HeadnoteEntity> headnoteEntities = headnoteRepository.getRecord(Integer.parseInt(String.valueOf(obj[7])));
 		
 		String headNote = "";
 		boolean flag = false;
@@ -318,18 +372,60 @@ public class SearchServiceImpl implements SearchService {
 			}
 			
 		}
+		
+		
 			searchCaseListResponse.setDocId(docId);
 			
 			searchCaseListResponse.setCaseRepresentation(appellant+" VS "+respondent+" ( "+courtShortForm+" ) "+decidedDate+"# "+headNote);
-			searchCaseListResponse.setStartNumber(startNumber);
-	
-		
-		searchCaseListResponses.add(searchCaseListResponse);
+			
+			searchCaseListResponsList.add(searchCaseListResponse);
+			
+			Date decidedDateKey = AppUtility.convertStringToDate("dd/MM/yyyy", decidedDate);
+			
+			decidedDateList.add(decidedDateKey);
+			
+			decidedDateAndRestRepresentationSet.add(searchCaseListResponse);
+			
+			/*   SearchCaseListResponse prevSearchCaseListResponse =	decidedDateAndRestRepresentationMap.put(decidedDateKey,searchCaseListResponse );
+			if(prevSearchCaseListResponse != null){
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(decidedDateKey);
+				cal.add(Calendar.SECOND, secondsForKeepingKeyUnique);
+				
+				prevSearchCaseListResponse =	decidedDateAndRestRepresentationMap.put(cal.getTime(),prevSearchCaseListResponse );
+			}
+		*/
 		
 		 
 		
 	}
+		for(SearchCaseListResponse searchCaseListResponse :decidedDateAndRestRepresentationSet  ){
+			   ++startNumber;
+			 
+			 searchCaseListResponse.setStartNumber(startNumber);
+			searchCaseListResponses.add(searchCaseListResponse);
+		}
 		return searchCaseListResponses;
+		
+		/*Collections.sort(decidedDateList);
+		for(int i=0;i<decidedDateList.size();i++){
+			
+			for(int j=0;j<searchCaseListResponsList.size();j++){
+				
+				String decidedDateString = AppUtility.convertDateToString("dd/MM/yyyy", decidedDateList.get(i))	;
+				
+				SearchCaseListResponse res = searchCaseListResponsList.get(j);
+				
+				if(res.getCaseRepresentation().contains(decidedDateString)){
+				   
+					startNumber++;
+					res.setStartNumber(startNumber);
+					searchCaseListResponses.add(res);
+				}
+				
+			}
+		}*/
+		/*return searchCaseListResponses;*/
 	}
 	
 	private String prepareCourtShortForm(String courtType)
@@ -341,6 +437,87 @@ public class SearchServiceImpl implements SearchService {
 	    	result  = result+Character.toUpperCase(out.charAt(0));
 	    }
 	    return result;	
+	}
+
+	@Override
+	public HashSet<String> performActNameMasterSearch(ActNameMasterSearchRequest searchRequest) {
+		
+		HashSet<String> actNameList = new HashSet<String>();
+		System.out.println("----isLive----"+headnoteRepository.findById(260).get().getCaseEntity().isLive());
+		if(StringUtils.isNotBlank(searchRequest.getSearchKeywords())){
+			Pageable pageableRequest = PageRequest.of(0, 100);
+		Page<String[]> stringArrListPage = headnoteRepository.searchActname(searchRequest.getSearchKeywords().toUpperCase(),pageableRequest);
+		
+		List<String[]> stringArrList = stringArrListPage.getContent();
+		System.out.println("------------stringArrList---------"+stringArrList.size());
+		if(stringArrList!=null &&  !stringArrList.isEmpty()){
+		 
+			for(Object[] obj : stringArrList ) {
+
+					String headNoteArr[] = new String[] { String.valueOf(obj[0]), String.valueOf(obj[1]),
+							String.valueOf(obj[2]), String.valueOf(obj[3]) };
+				
+				for(String out : headNoteArr){
+					
+					if(actNameList.size()>50){
+						break;
+					}
+					if(StringUtils.isNotBlank(out)){
+						
+						if(out.toUpperCase().contains(searchRequest.getSearchKeywords().toUpperCase())){
+							System.out.println("------OUT Value----"+out);
+						actNameList.add(out.trim());
+						}
+					}
+				}
+				
+				
+				
+			}
+		}
+		
+		
+		}
+		return actNameList;
+	}
+	
+	
+	@Override
+	public HashSet<String> performTopicMasterSearch(TopicMasterSearchRequest searchRequest) {
+		
+		HashSet<String> topicList = new HashSet<String>();
+		//System.out.println("----isLive----"+headnoteRepository.findById(260).get().getCaseEntity().isLive());
+		if(StringUtils.isNotBlank(searchRequest.getSearchKeywords())){
+			Pageable pageableRequest = PageRequest.of(0, 100);
+		Page<String> stringArrListPage = headnoteRepository.searchTopic(searchRequest.getSearchKeywords().toUpperCase(),pageableRequest);
+		
+		List<String> stringArrList = stringArrListPage.getContent();
+		System.out.println("------------stringArrList---------"+stringArrList.size());
+		if(stringArrList!=null &&  !stringArrList.isEmpty()){
+		 
+			for(String out : stringArrList ) {
+
+					
+					if(topicList.size()>50){
+						break;
+					}
+					if(StringUtils.isNotBlank(out)){
+						
+						if(out.toUpperCase().contains(searchRequest.getSearchKeywords().toUpperCase())){
+							System.out.println("------OUT Value----"+out);
+							topicList.add(out.trim());
+						}
+					}
+				}
+				
+				
+				
+			}
+		}
+		
+		
+		
+		return topicList;
 	}
 
 }

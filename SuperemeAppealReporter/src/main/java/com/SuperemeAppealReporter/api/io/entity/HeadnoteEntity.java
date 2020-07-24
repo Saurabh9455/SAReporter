@@ -14,7 +14,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "head_note")
@@ -79,7 +78,7 @@ public class HeadnoteEntity extends BaseEntity{
 	private String article3;
 	
 	@Column(name = "article_4", nullable = true)
-	private String article14;
+	private String article4;
 	
 	@Column(name = "rule_1", nullable = true)
 	private String rule1;

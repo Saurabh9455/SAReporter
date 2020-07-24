@@ -34,12 +34,14 @@ import com.SuperemeAppealReporter.api.io.dao.AdminDao;
 import com.SuperemeAppealReporter.api.io.entity.CaseEntity;
 import com.SuperemeAppealReporter.api.io.entity.CityEntity;
 import com.SuperemeAppealReporter.api.io.entity.CountryEntity;
+import com.SuperemeAppealReporter.api.io.entity.PostEntity;
 import com.SuperemeAppealReporter.api.io.entity.RoleEntity;
 import com.SuperemeAppealReporter.api.io.entity.StateEntity;
 import com.SuperemeAppealReporter.api.io.entity.UserEntity;
 import com.SuperemeAppealReporter.api.io.entity.UserSubscriptionDetailEntity;
 import com.SuperemeAppealReporter.api.io.repository.CaseRepository;
 import com.SuperemeAppealReporter.api.io.repository.PaymentRepository;
+import com.SuperemeAppealReporter.api.io.repository.PostRepository;
 import com.SuperemeAppealReporter.api.io.repository.UserRepository;
 import com.SuperemeAppealReporter.api.io.repository.UserSubscriptionDetailRepository;
 import com.SuperemeAppealReporter.api.pojo.Mail;
@@ -54,10 +56,13 @@ import com.SuperemeAppealReporter.api.shared.dto.CountryDto;
 import com.SuperemeAppealReporter.api.shared.dto.StaffDto;
 import com.SuperemeAppealReporter.api.shared.dto.StateDto;
 import com.SuperemeAppealReporter.api.shared.util.AppUtility;
+import com.SuperemeAppealReporter.api.ui.model.request.PostRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.UpdatePostRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.GetCourtDropDownResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.GetOrderResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.GetPostResponse;
 @Service
 public class AdminServiceImpl implements AdminService {
 
@@ -82,6 +87,9 @@ public class AdminServiceImpl implements AdminService {
 	
 	@Autowired
 	private UserSubscriptionDetailRepository userSubscriptionDetailRepository;
+	
+	@Autowired
+	private PostRepository postRepository;
 	
 	
 	@Override
@@ -933,5 +941,153 @@ public class AdminServiceImpl implements AdminService {
 		}
      return commonPaginationResponse;
 }
+
+	@Override
+	public CommonMessageResponse makePost(PostRequest postRequest) {
+		
+		CommonMessageResponse commonMessageResponse = null;
+		
+		try
+		{
+		PostEntity postEntity = new PostEntity();
+		postEntity.setBody(postRequest.getPostBody());
+		postEntity.setHeading(postRequest.getPostHeading());
+		postEntity.setLinkedDocId(postRequest.getLinkedDocId());
+		postRepository.save(postEntity);
+		
+		commonMessageResponse = new CommonMessageResponse();
+		commonMessageResponse.setMsg("Post saved Successfully");
+		
+		return commonMessageResponse;
+		
+		}
+		
+		catch(Exception ex){
+			ex.printStackTrace();
+			String errorMessage = "Error in AdminServiceImpl --> makePost()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+		}
+	}
+	
+	
+
+	@Override
+	@Transactional
+	public CommonMessageResponse updatePost(UpdatePostRequest postRequest) {
+		
+		CommonMessageResponse commonMessageResponse = null;
+		
+		try
+		{
+		PostEntity postEntity = postRepository.findById(Integer.parseInt(postRequest.getId())).get();
+		postEntity.setBody(postRequest.getBody());
+		postEntity.setHeading(postRequest.getHeading());
+		postEntity.setLinkedDocId(postRequest.getLinkedDocId());
+		
+		
+		commonMessageResponse = new CommonMessageResponse();
+		commonMessageResponse.setMsg("Post updated Successfully");
+		
+		return commonMessageResponse;
+		
+		}
+		
+		catch(Exception ex){
+			ex.printStackTrace();
+			String errorMessage = "Error in AdminServiceImpl --> updatePost()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+		}
+	}
+
+	@Override
+	public CommonPaginationResponse getPost(int pageNumber, int pagePerLimit) {
+		CommonPaginationResponse	commonPaginationResponse = null;
+		
+		try {
+			
+		if (pageNumber > 0)
+			pageNumber = pageNumber - 1;
+		
+		Pageable pageableRequest = PageRequest.of(pageNumber, pagePerLimit);
+		Page<Object> posPage = null;
+		
+		List<GetPostResponse> getPostList = new ArrayList<GetPostResponse>();
+		posPage = postRepository.getPostList(pageableRequest);
+		
+		
+		List<Object> list = posPage.getContent();
+		
+		for(int i=0;i<list.size();i++){
+			Object arr[] = (Object[])list.get(i);
+			
+			String id = String.valueOf(arr[0]);
+			String body = String.valueOf(arr[1]);
+			String head = String.valueOf(arr[2]);
+			String linkedDocId = String.valueOf(arr[3]);
+			GetPostResponse getPostResponse = new GetPostResponse();
+			getPostResponse.setId(id);
+			getPostResponse.setBody(body);
+			getPostResponse.setHead(head);
+			getPostResponse.setLinkedDocId(linkedDocId);
+			
+			getPostList.add(getPostResponse);
+			
+			
+			
+		}
+		
+		commonPaginationResponse = new CommonPaginationResponse();
+		commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(posPage.getTotalPages());
+		commonPaginationResponse.setOjectList(getPostList);
+		
+	}
+     catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in AdminServiceImpl --> getPost()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+     return commonPaginationResponse;
+		
+	}
+
+	@Override
+	public CommonMessageResponse deletePost(String postId) {
+		
+		CommonMessageResponse commonMessageResponse = null;
+		try
+		{
+		postRepository.deleteById(Integer.parseInt(postId));
+		commonMessageResponse = new CommonMessageResponse();
+		commonMessageResponse.setMsg("Post Deleted Successfully");
+		
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in AdminServiceImpl --> deletePost()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
+		return commonMessageResponse;
+	}
 	
 }

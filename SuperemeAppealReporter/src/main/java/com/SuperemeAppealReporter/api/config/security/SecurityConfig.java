@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/master/getRoleMasterData").hasAnyRole("ADMIN",
 					"SUPER_ADMIN")
 			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/admin/getSingleCase/{docId}").hasAnyRole("ADMIN",
-					"SUPER_ADMIN","DATA_ENTRY_OPERATOR")
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
 			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/admin/getClientList").hasAnyRole("ADMIN",
 					"SUPER_ADMIN")
 			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/admin/getCourtBranchByCourtId/{courtId}").hasAnyRole("ADMIN",
@@ -114,8 +114,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/user/dashboardSearch").hasAnyRole("ADMIN",
 					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
 			
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/user/loginHistory").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/user/loginHistoryByClientIdForAdminPanel").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
 			
-				
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/user/logout").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
+			
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/user/addCaseToMyLibrary").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
+			
+			
+			
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/user/getMyLibraryCaseList").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
+			
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/user/deleteCaseFromMyLibrary/{docId}").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/user/resetPassword").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
+			
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/user/uploadProfilePicture").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
+			
+			.antMatchers(HttpMethod.POST,"/SuperemeAppealReporter/v1/api/user/uploadProfilePicture").hasAnyRole("ADMIN",
+					"SUPER_ADMIN","DATA_ENTRY_OPERATOR","USER")
+			
+			
+			
 		
 			.anyRequest().authenticated()
 			.and()
@@ -149,8 +176,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				"/SuperemeAppealReporter/v1/api/admin/getCasePdf",
 				"/SuperemeAppealReporter/v1/api/user/resetPassword",
 				"/SuperemeAppealReporter/v1/api/admin/getPlanList",
+				"/SuperemeAppealReporter/v1/api/master/getCountryMasterData",
+				"/SuperemeAppealReporter/v1/api/master/getCityMasterData/{stateId}",
+				"/SuperemeAppealReporter/v1/api/master/getStateMasterData/{countryId}",
+				"/SuperemeAppealReporter/v1/api/admin/getSingleCaseForGuest/{docId}",
+		/*
+		 * .antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/master/getCountryMasterData").permitAll()
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/master/getCityMasterData/{stateId}").permitAll()
+			.antMatchers(HttpMethod.GET,"/SuperemeAppealReporter/v1/api/master/getStateMasterData/{countryId}").permitAll()
 				
-			
+		 */
 				
 				
       /*          "",

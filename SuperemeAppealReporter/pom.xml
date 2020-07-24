@@ -165,6 +165,20 @@
         <version>0.9.5.2</version>
     </dependency>
 
+
+<!-- For Push Notifications Firebase Cloud Messaging -->
+
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+ 
+<dependency>
+  <groupId>org.json</groupId>
+  <artifactId>json</artifactId>
+  <version>20160810</version>
+</dependency>
+
 	</dependencies>
 
 	<build>

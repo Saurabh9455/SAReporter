@@ -13,13 +13,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.mail.MessagingException;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,19 +46,26 @@ import com.SuperemeAppealReporter.api.enums.UserType;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
 import com.SuperemeAppealReporter.api.io.dao.UserDao;
 import com.SuperemeAppealReporter.api.io.entity.AddressEntity;
+import com.SuperemeAppealReporter.api.io.entity.AuthenticationAndHistoryEntity;
 import com.SuperemeAppealReporter.api.io.entity.CaseEntity;
 import com.SuperemeAppealReporter.api.io.entity.CityEntity;
-import com.SuperemeAppealReporter.api.io.entity.ClientIdGenerator;
 import com.SuperemeAppealReporter.api.io.entity.CountryEntity;
+import com.SuperemeAppealReporter.api.io.entity.FirebaseUserDeviceMappingEntity;
 import com.SuperemeAppealReporter.api.io.entity.PaymentEntity;
 import com.SuperemeAppealReporter.api.io.entity.RoleEntity;
 import com.SuperemeAppealReporter.api.io.entity.StateEntity;
+import com.SuperemeAppealReporter.api.io.entity.UserCaseLibraryEntity;
 import com.SuperemeAppealReporter.api.io.entity.UserEntity;
 import com.SuperemeAppealReporter.api.io.entity.UserSubscriptionDetailEntity;
 import com.SuperemeAppealReporter.api.io.entity.VerificationTokenEntity;
+import com.SuperemeAppealReporter.api.io.repository.AuthenticationAndHistoryRepository;
+import com.SuperemeAppealReporter.api.io.repository.CaseRepository;
+import com.SuperemeAppealReporter.api.io.repository.FirebaseUserDeviceMappingRepository;
+import com.SuperemeAppealReporter.api.io.repository.UserCaseLibraryRepository;
 import com.SuperemeAppealReporter.api.io.repository.UserRepository;
 import com.SuperemeAppealReporter.api.pojo.Mail;
 import com.SuperemeAppealReporter.api.pojo.StaffMail;
+import com.SuperemeAppealReporter.api.service.CaseService;
 import com.SuperemeAppealReporter.api.service.MasterService;
 import com.SuperemeAppealReporter.api.service.NotificationService;
 import com.SuperemeAppealReporter.api.service.RoleService;
@@ -63,14 +76,18 @@ import com.SuperemeAppealReporter.api.shared.dto.CountryDto;
 import com.SuperemeAppealReporter.api.shared.dto.StateDto;
 import com.SuperemeAppealReporter.api.shared.dto.UserDto;
 import com.SuperemeAppealReporter.api.shared.util.AppUtility;
+import com.SuperemeAppealReporter.api.ui.model.request.AddCaseToMyLibraryRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UploadProfilePictureRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.AddStaffResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CustomSignupResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.DahsboardResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.EmailVerificationResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.ForgetPasswordResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.LoginHistoryResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.ResetPasswordResponse;
+import com.SuperemeAppealReporter.api.ui.model.response.SearchCaseListResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.UserOrderResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.UserSignupResponse;
 
@@ -95,6 +112,24 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	CaseRepository caseRepository;
+	
+	@Autowired
+	CaseService caseService;
+	
+	@Autowired
+	SearchServiceImpl searchService;
+	
+	@Autowired
+	UserCaseLibraryRepository userCaseLibraryRepository;
+	
+	@Autowired
+	AuthenticationAndHistoryRepository authenticationAndHistoryRepository;
+	
+	@Autowired
+	FirebaseUserDeviceMappingRepository firebaseUserDeviceMappingRepository;
 
 	@Value("${api.reset-password.token.expire-time}")
 	private long resetPasswordExpirationTime;
@@ -809,8 +844,292 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
+	@Override
+	public CommonMessageResponse addCaseToMyLibraryService(AddCaseToMyLibraryRequest addCaseToMyLibraryRequest) {
+		
+		CommonMessageResponse commonMessageResponse = null;
+		try
+		{
+		String docId = addCaseToMyLibraryRequest.getDocId();
+		
+		CaseEntity caseEntity = caseRepository.findByDocId(Long.parseLong(docId));
+		
+		UserEntity userEntity = userRepository.getUserEntityByEmail( SecurityContextHolder.getContext().getAuthentication().getName());
+	
+		/**checking whether the case already exists to the user library**/
+		
+		
+		List<Integer> previousList = userCaseLibraryRepository.getAllPreviousCaseList(userEntity.getId(), caseEntity.getId());
+		
+		if(previousList!=null && previousList.size()>0){
+			throw new AppException(ErrorConstant.AddToMyLibraryError.ERROR_TYPE,
+					ErrorConstant.AddToMyLibraryError.ERROR_CODE,
+					ErrorConstant.AddToMyLibraryError.ERROR_MESSAGE);
+		}
+		
+		UserCaseLibraryEntity userCaseLibraryEntity = new UserCaseLibraryEntity();
+		userCaseLibraryEntity.setUserEntity(userEntity);
+		userCaseLibraryEntity.setCaseEntity(caseEntity);
+		userCaseLibraryRepository.save(userCaseLibraryEntity);
+		commonMessageResponse = new CommonMessageResponse();
+		commonMessageResponse.setMsg("Case added to My Library successfully");
+	} catch (AppException appException) {
+		throw appException;
+	} catch (Exception ex) {
+		ex.printStackTrace();
+		String errorMessage = "Error in UserServiceImpl --> addCaseToMyLibraryService()";
+		AppException appException = new AppException(
+				"Type : " + ex.getClass() + ", Cause : " + ex.getCause() + ", Message : " + ex.getMessage(), "500",
+				"Error Description  :  : " + errorMessage);
+		throw appException;
+	}
+	return commonMessageResponse;
+	}
+
+	@Override
+	public CommonPaginationResponse getMyLibraryCaseList(int pageNumber) {
+	
+		CommonPaginationResponse commonPaginationResponse = null;
+		try
+		{
+		UserEntity userEntity = userRepository.getUserEntityByEmail( SecurityContextHolder.getContext().getAuthentication().getName());
+		int perPage = 8;
+		if (pageNumber > 0)
+			pageNumber = pageNumber - 1;
+		
+		Pageable pageableRequest = PageRequest.of(pageNumber, perPage);
+		
+		Page<UserCaseLibraryEntity> userCaseLibraryEntityPage = userCaseLibraryRepository.getAllEntriesForUser(userEntity.getId(),pageableRequest);
+		
+		List<UserCaseLibraryEntity> userCaseLibraryEntities = userCaseLibraryEntityPage.getContent();
+		List<String> caseIdList = new ArrayList<String>();
+		
+		for(UserCaseLibraryEntity userCaseLibraryEntity : userCaseLibraryEntities){
+			
+			caseIdList.add(userCaseLibraryEntity.getCaseEntity().getId()+"");
+		}
+		
+		Set<SearchCaseListResponse> searchCaseListResponseSet = new HashSet<SearchCaseListResponse>();
+
+		searchCaseListResponseSet = searchService.prepareCaseRepresentation(caseIdList,pageNumber+1);
+		commonPaginationResponse = new CommonPaginationResponse();
+
+		commonPaginationResponse.setOjectList(searchCaseListResponseSet);
+		commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(userCaseLibraryEntityPage.getTotalPages());
+		
+		
+		} catch (AppException appException) {
+			throw appException;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			String errorMessage = "Error in UserServiceImpl --> getMyLibraryCaseList()";
+			AppException appException = new AppException(
+					"Type : " + ex.getClass() + ", Cause : " + ex.getCause() + ", Message : " + ex.getMessage(), "500",
+					"Error Description  :  : " + errorMessage);
+			throw appException;
+		}
+		return commonPaginationResponse;
+		}
+
+	@Override
+	
+	public void logUserActivity(String token, String userEmail,boolean isLoginPerformed,int userType) {
+		
+		
+		/**For Login**/
+		if(isLoginPerformed){
+			
+			UserEntity userEntity = userRepository.getUserEntityByEmail(userEmail);
+			
+		/*	if (userType == 3) {   //we have to disable all previous logins for only those which has role "USER"
+*/
+				List<AuthenticationAndHistoryEntity> currentActiveLoginList = authenticationAndHistoryRepository
+						.getAllActiveLoginDetails(userEntity.getId());
+
+				for (AuthenticationAndHistoryEntity entity : currentActiveLoginList) {
+
+					entity.setActive(false);
+				
+					 entity.setLogoutTimestamp(new Date());
+						
+					 long diffInMillies = Math.abs(entity.getLogoutTimestamp().getTime() - entity.getLoginTimestamp().getTime());
+					 long minutesActive = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
+					 entity.setActiveDurationInMinutes(minutesActive);
+				}
+			
+			
+			AuthenticationAndHistoryEntity newActiveLogin = new AuthenticationAndHistoryEntity();
+			newActiveLogin.setActive(true);
+			newActiveLogin.setJwtToken(token);
+			newActiveLogin.setLoginTimestamp(new Date());
+			newActiveLogin.setUserEntity(userEntity);
+			
+			
+			authenticationAndHistoryRepository.save(newActiveLogin);
+		}
+		
+		/**For Logout**/
+		else{
+			
+			UserEntity userEntity = userRepository.getUserEntityByEmail(userEmail);
+			List<AuthenticationAndHistoryEntity> currentActiveLoginList =  authenticationAndHistoryRepository.getAllActiveLoginDetails(userEntity.getId());
+		
+			for(AuthenticationAndHistoryEntity entity : currentActiveLoginList ){
+				
+				 entity.setActive(false);
+				 entity.setLogoutTimestamp(new Date());
+				
+				 long diffInMillies = Math.abs(entity.getLogoutTimestamp().getTime() - entity.getLoginTimestamp().getTime());
+				 long minutesActive = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
+				 entity.setActiveDurationInMinutes(minutesActive);
+				 
+				 
+				  
+			}
+			
+		
+		}
+		
+	}
+
+	@Override
+	public AuthenticationAndHistoryEntity getAuthenticationAndHistoryEntityByToken(String token) {
+	
+	return authenticationAndHistoryRepository.getAuthenticationAndHistoryEntityByToken(token);
+	}
+
+	@Override
+	@Transactional(rollbackFor=Exception.class)
+	public CommonMessageResponse logOut(String token,String email,String clientHeader) {
+	
+		CommonMessageResponse commonPaginationResponse = null;
+		try
+		{
+	
+		if(!"MOBILE_APP".equals(clientHeader)){
+			logUserActivity(token,email,false,1); //here the the 4th parameter i.e user type does not matter beacuse its logout
+		}
+		else {
+			FirebaseUserDeviceMappingEntity firebaseEntity =firebaseUserDeviceMappingRepository.getEntityByUserEmail(email);
+			firebaseEntity.setUserLoggedIn(false);
+		}
+		
+			commonPaginationResponse = new CommonMessageResponse();
+			commonPaginationResponse.setMsg("Logged Out Successfully");
+		} catch (AppException appException) {
+			throw appException;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			String errorMessage = "Error in UserServiceImpl --> logOut()";
+			AppException appException = new AppException(
+					"Type : " + ex.getClass() + ", Cause : " + ex.getCause() + ", Message : " + ex.getMessage(), "500",
+					"Error Description  :  : " + errorMessage);
+			throw appException;
+		}
+		return commonPaginationResponse;
+		}
+
+	@Override
+	public CommonPaginationResponse getLoginHistory(String email,int pageNumber,int perPage) {
+	
+		CommonPaginationResponse commonPaginationResponse = null;
+		try
+		{
+		if (pageNumber > 0)
+			pageNumber = pageNumber - 1                                 ;
+		
+		Pageable pageableRequest = PageRequest.of(pageNumber, perPage);
+		Page<AuthenticationAndHistoryEntity> auPage = null;
+		
+		UserEntity userEntity = userRepository.getUserEntityByEmail(email);
+		auPage = authenticationAndHistoryRepository.getAllLoginDetailsPage(userEntity.getId(),pageableRequest);
+		
+		List<AuthenticationAndHistoryEntity> entityList = auPage.getContent();
+		
+		List<LoginHistoryResponse> loginHistoryResponseList = new ArrayList<LoginHistoryResponse>();
+		
+		for(AuthenticationAndHistoryEntity entity : entityList){
+			
+			LoginHistoryResponse loginHistoryResponse = new LoginHistoryResponse();
+			BeanUtils.copyProperties(entity, loginHistoryResponse);
+			loginHistoryResponseList.add(loginHistoryResponse);
+		}
+		
+		commonPaginationResponse  = new CommonPaginationResponse();
+		commonPaginationResponse.setOjectList(loginHistoryResponseList);
+		commonPaginationResponse.setTotalNumberOfPagesAsPerGivenPageLimit(auPage.getTotalPages());
+	}
+		catch(AppException appException)
+		{
+			throw appException;
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			String errorMessage = "Error in UserServiceImpl --> getTransactionHistorygetTransactionHistory()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		
+		return commonPaginationResponse;
+		
+	}
+
+	@Override
+	public String getEmailByClientId(String clientId) {
+	
+		String email = null;
+	UserEntity userEntity = userRepository.getUserByStaffId(Integer.parseInt(clientId));
+		
+	if(userEntity!=null){
+		
+		email =  userEntity.getEmail();
+	
+	}
+	return email;
+		
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public CommonMessageResponse deleteCaseForMyLibrary(String userEmail,String docId) {
+		
+		CommonMessageResponse commonMessageResponse = null;
+		try
+		{
+		
+		UserCaseLibraryEntity userCaseLibraryEntity = userCaseLibraryRepository.getUserCaseLibraryEntityByUserEmailAndDocId(userEmail,Long.parseLong(docId));
+		
+		userCaseLibraryEntity.setActive(false);
+		
+		
+		commonMessageResponse  = new CommonMessageResponse();
+		commonMessageResponse.setMsg("Case deleted form My Library");
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			String errorMessage = "Error in UserServiceImpl --> deleteCaseForMyLibrary()";
+			AppException appException = new AppException("Type : " + ex.getClass()
+			+ ", " + "Cause : " + ex.getCause() + ", " + "Message : " + ex.getMessage(),ErrorConstant.InternalServerError.ERROR_CODE,
+					ErrorConstant.InternalServerError.ERROR_MESSAGE + " : " + errorMessage);
+			throw appException;
+			
+		}
+		return commonMessageResponse;
+	}
+	
+	
+	}
+	
+	
+	
+	
+
 		
 		
 	
 
-}
+

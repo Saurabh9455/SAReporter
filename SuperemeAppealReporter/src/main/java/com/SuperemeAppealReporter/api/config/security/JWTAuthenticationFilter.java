@@ -142,8 +142,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import javax.management.RuntimeErrorException;
-import javax.security.sasl.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -151,16 +149,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.SuperemeAppealReporter.api.constant.ErrorConstant;
 import com.SuperemeAppealReporter.api.constant.SecurityConstant;
@@ -182,6 +177,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	 private AuthenticationManager authenticationManager;
 	 
 	 private UserService userService;
+	 
+	 
 	   
  public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
 	        this.authenticationManager = authenticationManager;
@@ -251,7 +248,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	      
 	        /**Checking if the email is verified. If it is verified then only the user will get token**/
 	        
-	      if(userService.checkEmailVerification(user.getUsername()))
+	        boolean flag = userService.checkEmailVerification(user.getUsername());
+	        
+	       
+	        
+	      if(flag)
 	      {
 	    	  
 	    
@@ -260,26 +261,26 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	    	  {
 	    		  
 	    	  
-	    	  int k = 0;
+	    	  int userType = 0;
 	        if(authorities.equals("ROLE_SUPER_ADMIN"))
 	        		{
-	        	k = 0;
+	        	userType = 0;
 	        		}
 	        else if(authorities.equals("ROLE_ADMIN"))
 	        		{
-	        	k =1;
+	        	userType =1;
 	        		}
 	        else  if(authorities.equals("ROLE_DATA_ENTRY_OPERATOR"))
 	        		{
-	        	k = 2;
+	        	userType = 2;
 	        		}
 	        else  if(authorities.equals("ROLE_USER"))
 	        		{
-	        	k = 3;
+	        	userType = 3;
 	        		}
 	       
 	        		
-	      res.addHeader(SecurityConstant.HEADER_STRING, SecurityConstant.TOKEN_PREFIX + token+"@"+k);
+	      res.addHeader(SecurityConstant.HEADER_STRING, SecurityConstant.TOKEN_PREFIX + token+"@"+userType);
 	
 	
 	      res.setHeader("Content-Type", "application/json");
@@ -294,6 +295,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		  BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(loginResponse);
 		  
 		  byte[] responseToSend = restResponseBytes(baseApiResponse);
+		  
+		  /**saving token into db only in case of Website**/
+		  if(!"MOBILE_APP".equals(req.getHeader("CLIENT_TYPE"))){
+			  userService.logUserActivity(token, userEntity.getEmail(), true,userType);         
+		  }
+	    
     	  res.setHeader("Content-Type", "application/json");
     	  res.setHeader("Access-Control-Allow-Headers",
   				"Authorization, Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, "

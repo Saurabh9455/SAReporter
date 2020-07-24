@@ -5,7 +5,10 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,9 +36,11 @@ import com.SuperemeAppealReporter.api.ui.model.request.DeleteClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.DeleteStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetClientListRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetStaffListRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.PostRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.SearhClientRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.SearhStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UpdateClientRequest;
+import com.SuperemeAppealReporter.api.ui.model.request.UpdatePostRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.UpdateStaffRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.AddStaffResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
@@ -297,5 +302,65 @@ public class AdminController {
 		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
 	
 	}
+	
+	
+	
+	@PostMapping(path = RestMappingConstant.Admin.MAKE_POST_URI)	
+	public ResponseEntity<BaseApiResponse> makePost( @RequestBody PostRequest postRequest){
+	
+		
+		/** Calling service **/
+		CommonMessageResponse commonMessageResponse = adminService.makePost(postRequest);
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	
+	}
+	
+	@PutMapping(path = RestMappingConstant.Admin.UPDATE_POST_URI)	
+	public ResponseEntity<BaseApiResponse> updatePost(@RequestBody UpdatePostRequest updatePostRequest){
+	
+		
+		/** Calling service **/
+		CommonMessageResponse commonMessageResponse = adminService.updatePost(updatePostRequest);
+
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+	
+	}
+	
+	
+	@PostMapping(path = RestMappingConstant.Admin.GET_POST_URI)	
+	public ResponseEntity<BaseApiResponse> getPost(@RequestParam(name = AppConstant.CommonConstant.PAGE_NUMBER, defaultValue = "1") int pageNumber,
+			@RequestParam(name = AppConstant.CommonConstant.PAGE_LIMIT, defaultValue = "8") int perPageLimit){
+	
+		
+		/** Calling service **/
+		CommonPaginationResponse commonPaginationResponse = adminService.getPost(pageNumber,
+				perPageLimit);
+
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonPaginationResponse);
+		return new ResponseEntity<BaseApiResponse> (baseApiResponse, HttpStatus.OK);
+	
+	}
+	
+	@DeleteMapping(path = RestMappingConstant.Admin.DELETE_POST_URI)	
+	public ResponseEntity<BaseApiResponse> deletePost(@PathVariable ("postId") String postId){
+		
+
+		/** Calling service **/
+		CommonMessageResponse commonMessageResponse = adminService.deletePost(postId);
+
+		/** Generating Response **/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse, HttpStatus.OK);
+		
+	}
+	
+
+	
+
 	
 }

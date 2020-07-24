@@ -17,4 +17,5 @@ public class CasesRefferedRequest {
 
 	private String casesReferred;
 	
+   private String  linkedDocId;
 }

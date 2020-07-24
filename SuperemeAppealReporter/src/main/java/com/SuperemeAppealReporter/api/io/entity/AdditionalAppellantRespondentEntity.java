@@ -16,7 +16,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "additonal_appellant_respondent_entity")

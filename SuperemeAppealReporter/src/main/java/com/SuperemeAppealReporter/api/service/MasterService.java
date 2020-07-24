@@ -40,6 +40,9 @@ public interface MasterService {
 	
 	/**master dropdown for add case**/
 	public AddCaseMasterResponse getAddCaseDropdownMasterService();
+	
+	/**master dropdown for other Citation Journals Dropdown (used in Other Citation Search)**/
+	public GetCommonMasterDataResponse getOtherCitationJournalDropDownMasterResponse();
 
 
 

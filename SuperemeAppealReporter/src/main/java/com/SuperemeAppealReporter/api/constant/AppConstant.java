@@ -58,5 +58,6 @@ public interface AppConstant {
 		String PAGE_LIMIT = "perPageLimit";
 		String DOC_ID = "docId";
 		String JOURNAL_TYPE_SAR_ONLINE = "SAR Online";
+		String CLIENT_ID = "clientId";
 	}
 }

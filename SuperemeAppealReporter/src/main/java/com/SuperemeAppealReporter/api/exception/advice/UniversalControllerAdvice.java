@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import com.SuperemeAppealReporter.api.constant.ErrorConstant;
 import com.SuperemeAppealReporter.api.exception.type.AppException;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
@@ -39,7 +42,10 @@ public class UniversalControllerAdvice extends ResponseEntityExceptionHandler {
 		
        BaseApiResponse baseApiResponse = ResponseBuilder.getFailureResponse(appException);
 
-		return new ResponseEntity<Object>(baseApiResponse, HttpStatus.OK);
+      
+      
+       return new ResponseEntity<Object>(baseApiResponse, HttpStatus.OK);
+       
 	}
 
 	

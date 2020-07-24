@@ -10,6 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +27,10 @@ import com.SuperemeAppealReporter.api.bo.UploadCasePdfBo;
 import com.SuperemeAppealReporter.api.constant.AppConstant;
 import com.SuperemeAppealReporter.api.constant.RestMappingConstant;
 import com.SuperemeAppealReporter.api.converter.CaseConverter;
+import com.SuperemeAppealReporter.api.enums.UserType;
+import com.SuperemeAppealReporter.api.io.entity.UserEntity;
 import com.SuperemeAppealReporter.api.service.CaseService;
+import com.SuperemeAppealReporter.api.service.UserService;
 import com.SuperemeAppealReporter.api.ui.model.request.AddCaseRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.DeleteCaseRequest;
 import com.SuperemeAppealReporter.api.ui.model.request.GetCaseListRequest;
@@ -33,7 +38,6 @@ import com.SuperemeAppealReporter.api.ui.model.request.UploadPdfRequest;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonMessageResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.CommonPaginationResponse;
-import com.SuperemeAppealReporter.api.ui.model.response.GetCaseListResponse;
 import com.SuperemeAppealReporter.api.ui.model.response.GetCaseListResponseForSingleCase;
 import com.SuperemeAppealReporter.api.ui.model.response.ResponseBuilder;
 
@@ -44,6 +48,10 @@ public class CaseController {
 	
 	@Autowired
 	CaseService caseService;
+	
+	@Autowired
+	UserService userService;
+	
 	
 	
 /****************************************Add Case handler method*****************************************/
@@ -63,7 +71,7 @@ public class CaseController {
 		
 	}
 	
-	/****************************************Upload Case Pdf*****************************************/
+		/****************************************Upload Case Pdf*****************************************/
 	@PostMapping(path=RestMappingConstant.Admin.UPLOAD_PDF_CASE_URI,consumes = {
 	"multipart/form-data" })
 	public ResponseEntity<BaseApiResponse> uploadCasePdf(@RequestParam("file")MultipartFile file, @RequestParam("docId") String docId)
@@ -95,8 +103,24 @@ public class CaseController {
 		/**converting from request to bo**/
 		GetCaseListBo getCaseListBo = CaseConverter.convertGetCaseListRequestToGetCaseListBo(getCaseListRequest);
 		
-		/**calling service layer**/
-	   CommonPaginationResponse commonMessageResponse = caseService.getCaseList(getCaseListBo,pageNumber,perPage);
+		CommonPaginationResponse commonMessageResponse = null;
+
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		UserEntity user = userService.findByEmail(email);
+		
+		if (user.getUserType().equalsIgnoreCase(UserType.DATA_ENTRY_OPERATOR.toString())) {
+
+			/** calling service layer in case of Data Entry Operator **/
+			commonMessageResponse = caseService.getCaseListForDataEntryOperator(getCaseListBo, pageNumber, perPage,
+					email);
+
+		}
+
+		else {
+			/** calling service layer **/
+			commonMessageResponse = caseService.getCaseList(getCaseListBo, pageNumber, perPage);
+		}
 		
 		/**returning get case list response**/
 		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
@@ -188,4 +212,41 @@ public class CaseController {
 		
 		
 	}
+	
+	
+	
+	@GetMapping(path=RestMappingConstant.Admin.GET_SINGLE_CASE_URI_FOR_GUEST)
+	public ResponseEntity<BaseApiResponse> getSingleCaseForGuest(@PathVariable("docId") int docId)
+	{
+		/**converting request to bo**/
+		
+		
+		/**calling service layer**/
+		GetCaseListResponseForSingleCase getCaseListResponse = caseService.getSingleCase(docId);
+		
+		/**returning get role master data response**/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(getCaseListResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse,HttpStatus.OK);
+		
+		
+	}
+	
+	
+	@DeleteMapping(path=RestMappingConstant.Admin.DELETE_PDF_DOC)
+	public ResponseEntity<BaseApiResponse> deletePdf(@PathVariable("docId") int docId)
+	{
+		/**converting request to bo**/
+		
+		
+		/**calling service layer**/
+		CommonMessageResponse commonMessageResponse = caseService.deletePdf(docId+"");
+		
+		/**returning get role master data response**/
+		BaseApiResponse baseApiResponse = ResponseBuilder.getSuccessResponse(commonMessageResponse);
+		return new ResponseEntity<BaseApiResponse>(baseApiResponse,HttpStatus.OK);
+		
+		
+	}
+	
+	
 }

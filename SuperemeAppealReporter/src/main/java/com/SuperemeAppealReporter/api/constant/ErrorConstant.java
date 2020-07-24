@@ -274,4 +274,10 @@ public interface ErrorConstant {
 		String ERROR_MESSAGE = "You have not subscribed to any Plan yet. Please subscribe to any plan by clicking Purchase tab.";
 	}
 	
+	public interface AddToMyLibraryError {
+		String ERROR_CODE = "128";
+		String ERROR_TYPE = "Case Already Present in Library";
+		String ERROR_MESSAGE = " The case is already present in Library";
+	}
+	
 }

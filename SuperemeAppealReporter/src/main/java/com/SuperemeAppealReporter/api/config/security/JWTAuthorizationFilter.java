@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,23 +17,25 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.SuperemeAppealReporter.api.constant.ErrorConstant;
 import com.SuperemeAppealReporter.api.constant.SecurityConstant;
-import com.SuperemeAppealReporter.api.exception.type.AppException;
+import com.SuperemeAppealReporter.api.io.entity.AuthenticationAndHistoryEntity;
+import com.SuperemeAppealReporter.api.service.UserService;
 import com.SuperemeAppealReporter.api.ui.model.response.BaseApiResponse;
-import com.SuperemeAppealReporter.api.ui.model.response.ResponseBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
+	
+	 
+	 private UserService userService;
+	
 	public JWTAuthorizationFilter(AuthenticationManager authenticationManager,
 			AuthenticationEntryPoint authenticationEntryPoint) {
 		super(authenticationManager, authenticationEntryPoint);
@@ -41,6 +44,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 	public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
 		super(authenticationManager);
 	}
+	
+	
 	
 
 
@@ -59,7 +64,34 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     	//	 System.out.println("REQUEST's ------------>>"+req.getRequestURI());
         String header = req.getHeader(SecurityConstant.HEADER_STRING);
         
-			if ((header == null || !header.startsWith(SecurityConstant.TOKEN_PREFIX) )) {
+        /**added for clinet history**/
+    	String alltoken = header.substring(7);	
+		String token_arr[] = alltoken.split("@");
+		String token = token_arr[0];
+		
+		 if(userService==null){
+             ServletContext servletContext = req.getServletContext();
+             WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+             userService = webApplicationContext.getBean(UserService.class);
+         }
+		 
+		 boolean loginCanOccur = false;
+		 if("WEB_APP".equals(req.getHeader("CLIENT_TYPE"))){
+		 AuthenticationAndHistoryEntity authenticationAndHistoryEntity = userService.getAuthenticationAndHistoryEntityByToken(token);
+		 
+		 
+		 if(authenticationAndHistoryEntity!=null ){
+			
+			 loginCanOccur = authenticationAndHistoryEntity.getActive();
+		 }
+		 }
+		
+		/**Client history end**/
+        
+		 else if("MOBILE_APP".equals(req.getHeader("CLIENT_TYPE"))){
+			 loginCanOccur=true;       
+		  }
+			if ((header == null || !header.startsWith(SecurityConstant.TOKEN_PREFIX) ) || !loginCanOccur) {
 
 				
 			 chain.doFilter(req, res); 
@@ -70,6 +102,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
        
         UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        
         chain.doFilter(req, res);
     
     }

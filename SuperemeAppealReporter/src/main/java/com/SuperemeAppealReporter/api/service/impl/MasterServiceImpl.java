@@ -16,12 +16,14 @@ import com.SuperemeAppealReporter.api.io.entity.CountryEntity;
 import com.SuperemeAppealReporter.api.io.entity.CourtBenchEntity;
 import com.SuperemeAppealReporter.api.io.entity.DocIdGenerator;
 import com.SuperemeAppealReporter.api.io.entity.JournalEntity;
+import com.SuperemeAppealReporter.api.io.entity.OtherJournalEntity;
 import com.SuperemeAppealReporter.api.io.entity.StateEntity;
 import com.SuperemeAppealReporter.api.io.repository.CitationCategoryRepository;
 import com.SuperemeAppealReporter.api.io.repository.ClientIdGeneratorRepository;
 import com.SuperemeAppealReporter.api.io.repository.CourtBenchRepository;
 import com.SuperemeAppealReporter.api.io.repository.DocIdGeneratorRepository;
 import com.SuperemeAppealReporter.api.io.repository.JournalReposiotry;
+import com.SuperemeAppealReporter.api.io.repository.OtherJournalRepository;
 import com.SuperemeAppealReporter.api.service.MasterService;
 import com.SuperemeAppealReporter.api.shared.dto.CommonDto;
 import com.SuperemeAppealReporter.api.shared.util.AppUtility;
@@ -49,6 +51,9 @@ public class MasterServiceImpl implements MasterService {
 	
 	@Autowired
 	CourtBenchRepository courtBenchRepository;
+	
+	@Autowired
+	OtherJournalRepository otherJournalRepository; 
 	
 	@Override
 	public GetCommonMasterDataResponse getRoleMasterData() {
@@ -342,6 +347,30 @@ public class MasterServiceImpl implements MasterService {
 		 addCaseMasterResponse.setCitationCategoryDropdown(citationCategoryDropDownResponse);
 		 
 		return addCaseMasterResponse;
+	}
+
+
+
+	@Override
+	public GetCommonMasterDataResponse getOtherCitationJournalDropDownMasterResponse() {
+		
+		
+		GetCommonMasterDataResponse getCommonMasterDataResponse = new GetCommonMasterDataResponse();
+		
+		Iterable<OtherJournalEntity> otherJournalIterator = otherJournalRepository.findAll();
+		
+		List<GetCourtDropDownResponse> dropDownResponseList = new ArrayList<GetCourtDropDownResponse>();
+		
+		for(OtherJournalEntity entity : otherJournalIterator){
+			GetCourtDropDownResponse getCourtDropDownResponse = new GetCourtDropDownResponse();
+			getCourtDropDownResponse.setId(entity.getId());
+			getCourtDropDownResponse.setLabel(entity.getJournalType());
+			getCourtDropDownResponse.setValue(entity.getJournalType());
+			dropDownResponseList.add(getCourtDropDownResponse);
+		}
+		
+		getCommonMasterDataResponse.setObjectList(dropDownResponseList);
+		return getCommonMasterDataResponse;
 	}
 
 

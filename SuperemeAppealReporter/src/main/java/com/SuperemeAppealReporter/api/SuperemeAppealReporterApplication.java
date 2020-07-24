@@ -36,7 +36,7 @@ public class SuperemeAppealReporterApplication extends SpringBootServletInitiali
 	    return new WebMvcConfigurerAdapter() {
 	        @Override
 	        public void addCorsMappings(CorsRegistry registry) {
-	            registry.addMapping("/**").allowedHeaders(new String[]{"*"});
+	            registry.addMapping("/**").allowedHeaders(new String[]{"*"}).allowedMethods(new String[]{"PUT","POST","DELETE","GET"});
 	            
 	        }
 	    };

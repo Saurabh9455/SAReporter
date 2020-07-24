@@ -32,6 +32,18 @@ public interface CaseRepository extends PagingAndSortingRepository<CaseEntity, I
 			@Param("caseCategoryList")  List <String> caseCategoryList,
 			@Param("liveList") List<Boolean> liveList,
 			@Param("overuledList") List<Boolean> overuledList);
+	
+	
+	@Query(value="select c.docId, c.appellant, c.respondent, c.citationEntity.citationCategoryEntity.citationCategoryName,"
+			+ "c.courtDetailEntity.courtEntity.courtType, c.isOverruled, c.isLive, c.createdBy, c.createdDate, c.originalPdfPath from CaseEntity c where c.active = 1"+
+            " and c.citationEntity.citationCategoryEntity.citationCategoryName in (:caseCategoryList) and "+
+		     " c.courtDetailEntity.courtEntity.courtType in (:courtCategoryList) and "+
+            " c.isLive in (:liveList) and "+
+            " c.isOverruled in (:overuledList) and c.updatedBy = :email order by c.createdDate desc")
+	public Page<Object> getCaseListForDataEntry(Pageable pageable,@Param("courtCategoryList")List<String> courtCategoryList,
+			@Param("caseCategoryList")  List <String> caseCategoryList,
+			@Param("liveList") List<Boolean> liveList,
+			@Param("overuledList") List<Boolean> overuledList,@Param("email") String email);
 /*	
 	@Query(value="select c from CaseEntity c inner join CitationEntity cc inner join CitationCategoryEntity cce inner join CourtDetailEntity cde inner join CourtEntity ce "+
             " where cce.citationCategoryName in (:caseCategoryList) and "+
@@ -47,7 +59,8 @@ public interface CaseRepository extends PagingAndSortingRepository<CaseEntity, I
 		     " ce.courtType in (:courtCategoryList) and "+
             " c.isLive in (:liveList) and "+
             " (c.docId =(:searchValue) OR c.createdBy =(:searchValue)) ")*/
-	
+	@Query(value= "select cE.docId, cE.appellant, cE.respondent, cE.courtDetailEntity.courtEntity.courtType, cE.caseHistoryEntity.decided_day, cE.caseHistoryEntity.decidedMonth, cE.caseHistoryEntity.decidedYear,cE.id from CaseEntity cE where cE.id in (:idList) order by field(cE.id,:idList)")
+	public List<Object[]> getCaseEntityFieldsForPreparation(@Param("idList")List idList);
 	
 	@Query(value="select c.docId, c.appellant, c.respondent, c.citationEntity.citationCategoryEntity.citationCategoryName,"
 			+ "c.courtDetailEntity.courtEntity.courtType, c.isOverruled, c.isLive, c.createdBy, c.createdDate, c.originalPdfPath from CaseEntity c where c.active = 1 "+
@@ -63,6 +76,20 @@ public Page<Object> getCaseList(Pageable pageable,@Param("courtCategoryList")Lis
 		@Param("searchValue") String searchValue);
 	
 	
+	@Query(value="select c.docId, c.appellant, c.respondent, c.citationEntity.citationCategoryEntity.citationCategoryName,"
+			+ "c.courtDetailEntity.courtEntity.courtType, c.isOverruled, c.isLive, c.createdBy, c.createdDate, c.originalPdfPath from CaseEntity c where c.active = 1 "+
+            " and c.citationEntity.citationCategoryEntity.citationCategoryName in (:caseCategoryList) and "+
+		     " c.courtDetailEntity.courtEntity.courtType in (:courtCategoryList) and "+
+            " c.isLive in (:liveList) and "+
+			" c.isOverruled in (:overuledList) and"+
+            " ( c.createdBy LIKE (:searchValue) OR c.appellant LIKE (:searchValue) OR c.respondent LIKE (:searchValue) ) and c.active = 1 and c.updatedBy = :email order by c.createdDate desc")
+public Page<Object> getCaseListForDataEntry(Pageable pageable,@Param("courtCategoryList")List<String> courtCategoryList,
+		@Param("caseCategoryList")  List <String> caseCategoryList,
+		@Param("liveList") List<Boolean> liveList,
+		@Param("overuledList") List<Boolean> overuledList,
+		@Param("searchValue") String searchValue,@Param("email") String email);
+	
+	
 	@Query(value="select c.docId, c.appellant, c.respondent, c.citationEntity.citationCategoryEntity.citationCategoryName,"+
 			 " c.courtDetailEntity.courtEntity.courtType, c.isOverruled, c.isLive, c.createdBy, c.createdDate, c.originalPdfPath from CaseEntity c where c.active = 1 "+
             " and c.citationEntity.citationCategoryEntity.citationCategoryName in (:caseCategoryList) and "+
@@ -75,6 +102,21 @@ public Page<Object> getCaseListInt(Pageable pageable,@Param("courtCategoryList")
 		@Param("liveList") List<Boolean> liveList,
 		@Param("overuledList") List<Boolean> overuledList,
 		@Param("searchValue") Long searchValue);
+	
+	
+	
+	@Query(value="select c.docId, c.appellant, c.respondent, c.citationEntity.citationCategoryEntity.citationCategoryName,"+
+			 " c.courtDetailEntity.courtEntity.courtType, c.isOverruled, c.isLive, c.createdBy, c.createdDate, c.originalPdfPath from CaseEntity c where c.active = 1 "+
+           " and c.citationEntity.citationCategoryEntity.citationCategoryName in (:caseCategoryList) and "+
+		     " c.courtDetailEntity.courtEntity.courtType in (:courtCategoryList) and "+
+           " c.isLive in (:liveList) and "+
+			" c.isOverruled in (:overuledList) and"+
+           " c.docId =(:searchValue) and c.updatedBy = :email order by c.createdDate desc")
+public Page<Object> getCaseListIntForDataEntry(Pageable pageable,@Param("courtCategoryList")List<String> courtCategoryList,
+		@Param("caseCategoryList")  List <String> caseCategoryList,
+		@Param("liveList") List<Boolean> liveList,
+		@Param("overuledList") List<Boolean> overuledList,
+		@Param("searchValue") Long searchValue, @Param("email") String email);
 	
 	@Query(value = "select original_pdf_path from case_entity where doc_id = ?1",nativeQuery=true)
 	public String getPdfPathByDocId(long docId);
@@ -147,7 +189,11 @@ public Page<Object> getCaseListInt(Pageable pageable,@Param("courtCategoryList")
 	@Query(value = "select c.docId, c.appellant, c.respondent, c.citationEntity.citationCategoryEntity.citationCategoryName,"
 			+ "c.courtDetailEntity.courtEntity.courtType, c.isOverruled, c.isLive, c.createdBy, c.createdDate, c.originalPdfPath from CaseEntity c where c.active = 1 order by c.createdDate desc")
 	public Page<Object> findAllByActive(boolean active,Pageable page);
+
 	
+	@Query(value = "select c.docId, c.appellant, c.respondent, c.citationEntity.citationCategoryEntity.citationCategoryName,"
+			+ "c.courtDetailEntity.courtEntity.courtType, c.isOverruled, c.isLive, c.createdBy, c.createdDate, c.originalPdfPath from CaseEntity c where c.active = :active and c.updatedBy = :email order by c.createdDate desc")
+	public Page<Object> findAllByActiveForDataEntryOperator(@Param("active")boolean active,@Param("email")String email,Pageable page);
 	
 	/****************************************ALL USER SEARCH METHODS***********************************/
 	/*
@@ -161,28 +207,13 @@ H1 indicates Headnote 1
 H2 indicates Headnote 2
 	 */
 	/**For DASHBOARD SEARCH TYPE**/
-	@Query(value = "select c.id, c.appellant,c.respondent,c.courtDetailEntity.courtEntity.courtType, hes.actname1, hes.section1, hes.actname2, hes.section2, hes.actname3, hes.section3, hes.topic, "
-			+ "c.caseHistoryEntity.decided_day,"
-			+ "c.caseHistoryEntity.decidedMonth,c.caseHistoryEntity.decidedYear, c.docId "
-			+ "from  CaseEntity c LEFT OUTER JOIN c.headNoteEntitySet hes LEFT OUTER JOIN c.casesReferredEntitySet cre where ( upper(hes.topic) like %:searchValue% or upper(cre.partyName) like %:searchValue%) and c.active = 1 and c.isLive = 1")
 
-	public Page<Object> dashboardSearch(Pageable page,@Param("searchValue") String searchValue);
-	
 	@Query(value = "select distinct c.id "
 			+ " from  CaseEntity c LEFT OUTER JOIN c.headNoteEntitySet hes  where ( upper(hes.topic) like %:searchValue% or upper(c.appellant) like %:searchValue% or upper(c.respondent) like %:searchValue%) and c.active = 1 and c.isLive = 1")
-
 	public Page<Object> dashboardSearchV2(Pageable page,@Param("searchValue") String searchValue);
 
-	@Query(value = "select c.id, c.appellant,c.respondent,c.courtDetailEntity.courtEntity.courtType, hes.actname1, hes.section1, hes.actname2, hes.section2, hes.actname3, hes.section3, hes.topic, "
-			+ "c.caseHistoryEntity.decided_day,"
-			+ "c.caseHistoryEntity.decidedMonth,c.caseHistoryEntity.decidedYear, c.docId "
-			+ "from  CaseEntity c LEFT OUTER JOIN c.headNoteEntitySet hes  LEFT OUTER JOIN c.casesReferredEntitySet cre where c.docId =:searchValue  and c.active = 1 and c.isLive = 1")
-	
-	public Page<Object> dashboardSearchForDocId(Pageable page,@Param("searchValue") long searchValue);
-	
 	@Query(value = "select distinct c.id "
 			+ " from  CaseEntity c where c.docId =:searchValue  and c.active = 1 and c.isLive = 1")
-	
 	public Page<Object> dashboardSearchForDocIdV2(Pageable page,@Param("searchValue") long searchValue);
 	
 	
@@ -283,7 +314,15 @@ H2 indicates Headnote 2
 	
 	@Query(value = "select * from case_entity where id in ?1 ",nativeQuery=true)
 	public List<CaseEntity> findAppResByIdV2(List<Integer> caseIdList);
+	
+/*	@Query(value = "select * from case_entity where id in ?1 ",nativeQuery=true)
+	public List<CaseEntity> findAppResByIdV2(List<Integer> caseIdList);*/
 
 	@Query(value = "select ch.decided_day,ch.decided_month,ch.decided_year from case_entity ce left join case_history ch on ce.case_history_entity_id = ch.id where ce.id = ?1",nativeQuery=true)
 	public List<String[]> findRecordCaseHisotry(Integer caseId);
+	
+	@Query(value = "select doc_id from case_entity where is_active = 1  ORDER BY id DESC LIMIT 1",nativeQuery = true)
+	public Object getLatestDocId();
+	
 }
+

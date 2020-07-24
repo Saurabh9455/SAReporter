@@ -12,8 +12,14 @@ public interface CaseDao {
 	public Page<Object> getCasePage(Pageable pageable, List<String> courtCtegoryList,
 			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList );
 	
+	public Page<Object> getCasePageForDataEntry(Pageable pageable, List<String> courtCtegoryList,
+			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList, String email );
+	
 	public Page<Object> getCasePage(Pageable pageable, List<String> courtCtegoryList,
 			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList,String searchValue );
+	
+	public Page<Object> getCasePageForDataEntry(Pageable pageable, List<String> courtCtegoryList,
+			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList,String searchValue,String email );
 	
 	public Page<Object> getCasePageInt(Pageable pageable, List<String> courtCtegoryList,
 			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList,Long searchValue );
@@ -21,5 +27,9 @@ public interface CaseDao {
 	public String getPdfPathByDocId(long docId);
 	
 	public CaseEntity getSingleCaseByDocId(int docId);
+
+	Page<Object> getCasePageIntForDataEntry(Pageable pageable, List<String> courtCtegoryList,
+			List<String> caseCategoryList, List<Boolean> liveList, List<Boolean> overRuledList, Long searchValue,
+			String email);
 
 }
