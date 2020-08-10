@@ -107,30 +107,11 @@ public class MasterController {
 	public ResponseEntity<BaseApiResponse> getNextDocId()
 	{
 		
-		/**calling service layer**//*
-		int nextDocId = masterService.getNextDocId();
-		
-		*//**check if this id already existed**//*
-		boolean isUnique = false;
-		
-		while (!isUnique) {
+		synchronized (this) {
 
-			DocIdDummyEntity docIdDummyEntity = docIdRepository.findByDocId(String.valueOf(nextDocId));
-
-			if (docIdDummyEntity == null) {
-				isUnique = true;
-			}
-			
-			else {
-				nextDocId = masterService.getNextDocId();
-			}
-
+			caseSequence = caseSequence + 1;
 		}
-		DocIdDummyEntity docIdDummyEntity = new DocIdDummyEntity();
-		docIdDummyEntity.setDocId(String.valueOf(nextDocId));
-		*/
 		
-		caseSequence = caseSequence+1;
 		
 		GetCommonMasterDataResponse getCommonMasterDataResponse = new GetCommonMasterDataResponse();
 		getCommonMasterDataResponse.setObjectList(caseSequence);
